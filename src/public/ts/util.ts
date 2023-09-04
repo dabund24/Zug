@@ -1,0 +1,96 @@
+/**
+ * adds, if necessary, leading zeroes to a number to reach an amount of digits
+ * @param {number} number - the number that needs leading zeroes
+ * @param {number} digits - the amount of digits the number is supposed to have
+ * @returns {string} - the number with leading zeroes
+ */
+export function leadingZeros(number: number, digits: number): string {
+    return String(number).padStart(digits, '0');
+}
+
+/**
+ * converts unix timestamp to human-readable string in German
+ * @param {number} unix - timestamp
+ * @returns {string} - a string following this scheme: `hh.mm Uhr`
+ */
+export function unixToHoursString(unix: string | number | Date | undefined): string {
+    if (unix === undefined) {
+        unix = new Date(0);
+    }
+    let date = new Date(unix);
+    return leadingZeros(date.getHours(), 2) + "." + leadingZeros(date.getMinutes(), 2) + " Uhr"
+}
+
+/**
+ * converts unix timestamp to human-readable string in German
+ * @param {number} unix - timestamp
+ * @returns {string} - a string following this scheme: `hh.mm Uhr`
+ */
+export function unixToHoursStringShort(unix: string | number | Date | undefined): string {
+    if (unix === undefined) {
+        unix = new Date(0);
+    }
+    let date = new Date(unix);
+    return leadingZeros(date.getHours(), 2) + "." + leadingZeros(date.getMinutes(), 2)
+}
+
+export function dateDifference(sooner: string | number | Date, later: string | number | Date): [number, number] {
+    let dateA = new Date(sooner).getTime()
+    let dateB = new Date(later).getTime()
+    const difference = dateB - dateA;
+    return [(difference / 60000) % 60, Math.floor(difference / 3600000)]
+}
+
+export function timeToString(time: [number, number]) {
+    if (time[1] === 0) {
+        return time[0] + "min"
+    } else {
+        return time[1] + "h " + time[0] + "min"
+    }
+}
+
+/**
+ * adds a class to a child of a parent
+ * @param {DocumentFragment} parent - the parent
+ * @param {string} childSelector - a selector of the child
+ * @param {string} newClass - the class the child should have
+ */
+export function addClassToChildOfParent(parent: HTMLElement | DocumentFragment, childSelector: string, newClass: string): void {
+    if (newClass !== "") {
+        parent.querySelector(childSelector)!.classList.add(newClass);
+    }
+}
+
+/**
+ * replaces the class `wi-na` of a child of a parent
+ * @param {HTMLElement} parent - the parent
+ * @param {string} childSelector - a selector of the child
+ * @param {string} newClass - the class that should replace `wi-na`
+ */
+export function replaceNaClassOfChildOfParent(parent: Element | DocumentFragment, childSelector: string, newClass: string | undefined): void {
+    if (newClass === undefined) {
+        return;
+    }
+    parent.querySelector(childSelector)!.classList.replace("wi-na", newClass);
+}
+
+/**
+ * sets the innerHTML of a child of a parent
+ * @param {HTMLElement} parent - the parent
+ * @param {string} childSelector - a selector of the child
+ * @param {string} innerHTML - the innerHTML the child should have
+ */
+export function setHTMLOfChildOfParent(parent: Element | DocumentFragment, childSelector: string, innerHTML: string | undefined): void {
+    if (parent != null && innerHTML !== undefined) {
+        parent.querySelector(childSelector)!.innerHTML = innerHTML;
+    }
+}
+
+/**
+ * displays a notification in page footer in this scheme:
+ * `hh.mm Uhr: <notification>`
+ * @param {string} notification - the notification to be displayed
+ */
+export function printNotification(notification: string): void {
+    document.getElementById("footer__status-bar__content")!.innerHTML = /*unixToHoursString(Date.now()) + ": " +*/ notification;
+}

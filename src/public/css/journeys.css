@@ -1,0 +1,194 @@
+#station-names {
+    margin: 0 -15rem;
+}
+
+.station-name {
+    width: 100%;
+    text-align: center;
+}
+
+.station-name:first-child {
+    padding-left: 15rem;
+    text-align: left;
+}
+
+.station-name:last-child {
+    padding-right: 15rem;
+    text-align: right;
+}
+
+#journeys {
+    width: 30rem;
+}
+
+.connection {
+    align-items: stretch;
+    min-height: 3.5rem;
+}
+
+.time {
+    align-self: center;
+    width: 4rem;
+    text-align: center;
+    margin: auto;
+}
+
+.on-time {
+    color: var(--accent-green);
+}
+
+.delayed {
+    color: var(--accent-red);
+}
+
+.connection-line-container {
+    margin: auto .3rem;
+}
+
+.connection-line {
+    display: block;
+    animation: grow-connection-line .5s ease-in-out 0s normal both;
+    margin: auto;
+}
+
+@keyframes grow-connection-line {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.connection-line--horizontal {
+    align-self: center;
+    margin: auto;
+    animation: grow-connection-line--horizontal .5s ease-in-out 0s normal both;
+}
+
+@keyframes grow-connection-line--horizontal {
+    from {
+        height: 0;
+    }
+    to {
+        height: 100%;
+    }
+}
+
+.connection-line--suburban {
+    background-color: var(--suburban-color);
+}
+
+.connection-line--subway {
+    background-color: var(--underground-color);
+}
+
+.connection-line--tram {
+    background-color: var(--tram-color);
+}
+
+.connection-line--bus {
+    background-color: var(--bus-color);
+}
+
+.connection-line--ferry {
+    background-color: var(--ferry-color);
+}
+
+.connection-line--taxi {
+    background-color: var(--taxi-color);
+}
+
+.connection-line--regional {
+    background-color: var(--regional-color);
+}
+
+.connection-line--national {
+    background-color: var(--national-color);
+}
+
+.connection-line--nationalExpress {
+    background-color: var(--national-express-color);
+}
+
+.connection-line--walk {
+    background-color: transparent;
+    outline: var(--foreground-color) solid 2px;
+}
+
+.connection-line--transfer {
+    animation: none;
+    height: 4px;
+}
+
+.connection-line-selectable {
+    height: unset;
+    padding: 0 .5rem;
+    width: 24rem;
+}
+
+.connection-line-selectable button {
+    height: 100%;
+    padding: 0;
+}
+
+.connection-line-selectable * {
+    width: 100%;
+}
+
+.connection-line-name {
+    position: relative;
+}
+
+.modal__trip__element {
+}
+
+.modal__trip:not(.modal__walk) {
+    height: 15rem;
+}
+
+.modal__trip__ltl {
+    width: 4rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.modal__trip__rtl {
+    width: 100%;
+}
+
+.modal__departure, .modal__arrival {
+    margin-right: auto;
+}
+
+.modal__trip__l {
+    padding: 1.7rem 1rem;
+}
+
+.modal__walk__l {
+    padding: 0 1rem;
+}
+
+.modal__trip__element__first-last-child {
+    height: 3.5rem;
+    align-items: center;
+}
+
+.modal__trip__element__middle-child {
+    margin: auto 0;
+    align-items: center;
+}
+
+.modal__trip__element__middle-child > * {
+    max-height: 8rem;
+    overflow-y: scroll;
+}
+
+.modal__trip-info:first-child {
+    margin-top: 0;
+}
+
+.modal__trip-info:last-child {
+    margin-bottom: 0;
+}
+

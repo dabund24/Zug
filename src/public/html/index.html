@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="" data-color="">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- <link rel="icon" type="image/x-icon" href=""> -->
+    <title>🚂</title>
+    <link href="/css/main.css" rel="stylesheet">
+    <link href="/css/journeys.css" rel="stylesheet">
+    <link href="/css/tooltips.css" rel="stylesheet">
+</head>
+<body ontouchstart="">
+<script type="module">
+    import {setColor, setTheme} from "./ts/pageActions.js";
+    import {findConnections, hideModal} from "./ts/main.js"
+
+    setTheme([1, 'dark'])
+
+    window.setColor = setColor;
+    window.setTheme = setTheme;
+
+    window.findConnections = findConnections;
+    window.hideModal = hideModal;
+</script>
+<div id="content">
+    <div id="load-indicator" class="line--accent"></div>
+    <section id="inputs">
+        <div id="from-search" class="search">
+            <label>
+                <input type="text" name="search" id="from__input" class="search__input padded-top-bottom" placeholder="Start">
+            </label>
+            <!--
+            <div id="from__suggestions" class="search__suggestions options flex-column hoverable">
+                <div class="search__suggestion option flex-row padded-top-bottom">
+                    <div class="line--accent"></div>
+                    <div class="option__text center">Keine Vorschläge</div>
+                    <input class="search__suggestion__click" type="hidden">
+                </div>
+            </div>
+            -->
+            <template>
+                <div class="search__suggestion option flex-row padded-top-bottom">
+                    <div class="line--accent"></div>
+                    <div class="option__text center"></div>
+                    <input class="search__suggestion__click" type="hidden">
+                </div>
+            </template>
+            <div class="line--regular"></div>
+        </div>
+
+        <div id="to-search" class="search">
+            <label>
+                <input type="text" name="search" id="to__input" class="search__input padded-top-bottom" placeholder="Ziel">
+            </label>
+            <!--
+            <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
+                <div class="search__suggestion option flex-row padded-top-bottom">
+                    <div class="line--accent"></div>
+                    <div class="option__text center">Keine Vorschläge</div>
+                    <input class="search__suggestion__click" type="hidden">
+                </div>
+            </div>
+            -->
+            <template>
+                <div class="search__suggestion option flex-row padded-top-bottom">
+                    <div class="line--accent"></div>
+                    <div class="option__text center"></div>
+                    <input class="search__suggestion__click" type="hidden">
+                </div>
+            </template>
+            <div class="line--regular"></div>
+        </div>
+        <button class="hoverable" onclick="findConnections()">
+            Los
+        </button>
+    </section>
+    <section id="journeys" class="center">
+        <div id="station-names" class="flex-row padded-top-bottom">
+            <div class="station-name">
+
+            </div>
+            <div class="station-name">
+
+            </div>
+        </div>
+        <div id="connections" class="flex-column">
+
+        </div>
+        <template>
+            <div class="flex-row connection">
+                <div class="time time--departure flex-column">
+                    <div class="time--scheduled time--departure--scheduled">
+
+                    </div>
+                    <div class="time--actual time--departure--actual">
+
+                    </div>
+                </div>
+                <div class="connection-line-selectable selectable--horizontal">
+                    <button class="hoverable selectable__text flex-row">
+
+                    </button>
+                    <template>
+                        <span class="connection-line-container">
+                            <span class="connection-line-name"></span>
+                            <span class="line--regular connection-line"></span>
+                        </span>
+                    </template>
+                    <div class="line--accent"></div>
+                </div>
+                <div class="time time--arrival flex-column">
+                    <div class="time--scheduled time--arrival--scheduled">
+
+                    </div>
+                    <div class="time--scheduled time--arrival--actual">
+
+                    </div>
+                </div>
+            </div>
+        </template>
+    </section>
+</div>
+<footer class="flex-column">
+    <div style="width: 100%"></div>
+    <div class="content-wrapper">
+        <div id="footer__status-bar" class="flex-row">
+            <span id="footer__status-bar__content" class="center">
+                Seite wird vorbereitet. Bitte warten...
+            </span>
+        </div>
+        <div id="footer__settings" class="flex-column">
+            <div class="line--regular"></div>
+            <div class="tab-row flex-row">
+                <button type="button" class="hoverable tab-row__tab" onclick="setTheme([0, 'light'])">
+                    <span class="desktop-only">Hell</span>
+                    <span class="mobile-only">
+                    <i class="wi wi-day-sunny"></i>
+                </span>
+                </button>
+                <button type="button" class="hoverable tab-row__tab" onclick="setTheme([1, 'dark'])">
+                    <span class="desktop-only">Dunkel</span>
+                    <span class="mobile-only">
+                    <i class="wi wi-night-clear"></i>
+                </span>
+                </button>
+            </div>
+            <div class="tab-indicator-container indicator-line-container">
+                <div class="line--accent indicator indicator__animation-to-right" id="theme-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+            </div>
+            <div class="tab-row flex-row">
+                <button type="button" class="hoverable tab-row__tab" onclick="setColor([0, 'red'])">
+                    <span class="desktop-only">Rot</span>
+                    <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-red)"></i>
+                </span>
+                </button>
+                <button type="button" class="hoverable tab-row__tab" onclick="setColor([1, 'yellow'])">
+                    <span class="desktop-only">Gelb</span>
+                    <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-yellow)"></i>
+                </span>
+                </button>
+                <button type="button" class="hoverable tab-row__tab" onclick="setColor([2, 'green'])">
+                    <span class="desktop-only">Grün</span>
+                    <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-green)"></i>
+                </span>
+                </button>
+                <button type="button" class="hoverable tab-row__tab" onclick="setColor([3, 'blue'])">
+                    <span class="desktop-only">Blau</span>
+                    <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-blue)"></i>
+                </span>
+                </button>
+                <button type="button" class="hoverable tab-row__tab" onclick="setColor([4, 'purple'])">
+                    <span class="desktop-only">Lila</span>
+                    <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-purple)"></i>
+                </span>
+                </button>
+                <button type="button" class="hoverable tab-row__tab" onclick="setColor([5, 'gray'])">
+                    <span class="desktop-only">Grau</span>
+                    <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-gray)"></i>
+                </span>
+                </button>
+            </div>
+            <div class="tab-indicator-container indicator-line-container">
+                <div class="line--accent indicator indicator__animation-to-right" id="color-indicator" style="--animation--tab-indicator__start: calc(100% / 6); --animation--tab-indicator__end: calc(100% / 6);"></div>
+            </div>
+
+            <div id="credits">
+                <a href="https://github.com/dabund24/Zug">Github</a>
+                <div>Daniel Bund</div>
+                <div>2023</div>
+            </div>
+
+        </div>
+    </div>
+
+</footer>
+
+<div id="connection-modal" class="modal" style="display: none">
+    <div class="modal-content content-wrapper">
+        <header class="flex-row">
+            <span class="modal__title header padded-top-bottom"></span>
+            <button class="modal__close header hoverable" onclick="hideModal()">
+                &times;
+            </button>
+        </header>
+        <div id="modal__trips">
+
+        </div>
+        <template id="modal__leg-template">
+            <div class="modal__trip flex-row padded-top-bottom">
+                <div class="modal__trip__element modal__trip__ltl flex-column">
+                    <div class="modal__trip__element__first-last-child flex-column">
+                        <div class="time time--departure flex-column">
+                            <div class="time--scheduled time--departure--scheduled">
+
+                            </div>
+                            <div class="time--scheduled time--departure--actual">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal__trip__element__middle-child">
+                        <div class="duration"></div>
+                    </div>
+                    <div class="modal__trip__element__first-last-child flex-column">
+                        <div class="time time--arrival flex-column">
+                            <div class="time--scheduled time--arrival--scheduled">
+
+                            </div>
+                            <div class="time--scheduled time--arrival--actual">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal__trip__element modal__trip__l flex-column">
+                    <div class="connection-line--horizontal line--vertical">
+
+                    </div>
+                </div>
+                <div class="modal__trip__element modal__trip__rtl flex-column">
+                    <div class="flex-row modal__trip__element__first-last-child">
+                        <div class="modal__departure">
+
+                        </div>
+                        <div class="modal__departure-platform">
+
+                        </div>
+                    </div>
+                    <div class="modal__trip__element__middle-child flex-row-column">
+                        <div class="modal__line-info">
+
+                        </div>
+                        <div class="modal__trip-infos">
+
+                        </div>
+                        <template class="modal__trip-info-template">
+                            <p class="modal__trip-info">
+
+                            </p>
+                        </template>
+                    </div>
+                    <div class="flex-row modal__trip__element__first-last-child">
+                        <div class="modal__arrival">
+
+                        </div>
+                        <div class="modal__arrival-platform">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template id="modal__walk-template">
+            <div class="modal__trip modal__walk flex-row padded-top-bottom">
+                <div class="modal__trip__element modal__trip__ltl flex-column">
+                    <div class="transfer-time">
+
+                    </div>
+                </div>
+                <div class="modal__trip__element modal__walk__l flex-column">
+                    <div class="connection-line--horizontal connection-line--walk line--vertical">
+
+                    </div>
+                </div>
+                <a class="modal__trip__element modal__walk__text modal__trip__element__middle-child flex-column" target="_blank">
+
+                </a>
+            </div>
+        </template>
+    </div>
+
+</div>
+
+</body>
+</html>
