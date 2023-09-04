@@ -14,67 +14,94 @@
 <body ontouchstart="">
 <script type="module">
     import {setColor, setTheme} from "./ts/pageActions.js";
-    import {findConnections, hideModal} from "./ts/main.js"
-
-    setTheme([1, 'dark'])
+    import {findConnections, hideModal} from "./ts/main.js";
+    import {setDepArr} from "./ts/memorizer.js";
 
     window.setColor = setColor;
     window.setTheme = setTheme;
 
     window.findConnections = findConnections;
     window.hideModal = hideModal;
+
+    window.setDepArr = setDepArr;
 </script>
 <div id="content">
     <div id="load-indicator" class="line--accent"></div>
     <section id="inputs">
-        <div id="from-search" class="search">
-            <label>
-                <input type="text" name="search" id="from__input" class="search__input padded-top-bottom" placeholder="Start">
-            </label>
-            <!--
-            <div id="from__suggestions" class="search__suggestions options flex-column hoverable">
-                <div class="search__suggestion option flex-row padded-top-bottom">
-                    <div class="line--accent"></div>
-                    <div class="option__text center">Keine Vorschläge</div>
-                    <input class="search__suggestion__click" type="hidden">
+        <div class="station-inputs flex-row-column padded-top-bottom">
+            <div id="from-search" class="search">
+                <label class="padded-top-bottom">
+                    <input type="text" name="search" id="from__input" class="search__input padded-top-bottom" placeholder="Start">
+                </label>
+                <!--
+                <div id="from__suggestions" class="search__suggestions options flex-column hoverable">
+                    <div class="search__suggestion option flex-row padded-top-bottom">
+                        <div class="line--accent"></div>
+                        <div class="option__text center">Keine Vorschläge</div>
+                        <input class="search__suggestion__click" type="hidden">
+                    </div>
+                </div>
+                -->
+                <template>
+                    <div class="search__suggestion option flex-row padded-top-bottom">
+                        <div class="line--accent"></div>
+                        <div class="option__text center"></div>
+                        <input class="search__suggestion__click" type="hidden">
+                    </div>
+                </template>
+                <div class="line--regular"></div>
+            </div>
+            <div id="to-search" class="search">
+                <label>
+                    <input type="text" name="search" id="to__input" class="search__input padded-top-bottom" placeholder="Ziel">
+                </label>
+                <!--
+                <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
+                    <div class="search__suggestion option flex-row padded-top-bottom">
+                        <div class="line--accent"></div>
+                        <div class="option__text center">Keine Vorschläge</div>
+                        <input class="search__suggestion__click" type="hidden">
+                    </div>
+                </div>
+                -->
+                <template>
+                    <div class="search__suggestion option flex-row padded-top-bottom">
+                        <div class="line--accent"></div>
+                        <div class="option__text center"></div>
+                        <input class="search__suggestion__click" type="hidden">
+                    </div>
+                </template>
+                <div class="line--regular"></div>
+            </div>
+        </div>
+        <div class="setting-inputs flex-row-column padded-top-bottom">
+            <div>
+                <div id="time-select" class="search">
+                    <label>
+                        <input type="datetime-local" name="search" id="time__input" class="search__input padded-top-bottom" placeholder="Ziel">
+                    </label>
+                    <div class="line--regular"></div>
                 </div>
             </div>
-            -->
-            <template>
-                <div class="search__suggestion option flex-row padded-top-bottom">
-                    <div class="line--accent"></div>
-                    <div class="option__text center"></div>
-                    <input class="search__suggestion__click" type="hidden">
+            <div>
+                <div class="tab-row flex-row">
+                    <button type="button" class="hoverable tab-row__tab" onclick="setDepArr(0)">
+                        <span class="">Abfahrt</span>
+                    </button>
+                    <button type="button" class="hoverable tab-row__tab" onclick="setDepArr(1)">
+                        <span class="desktop-only">Ankunft</span>
+                    </button>
                 </div>
-            </template>
-            <div class="line--regular"></div>
-        </div>
-
-        <div id="to-search" class="search">
-            <label>
-                <input type="text" name="search" id="to__input" class="search__input padded-top-bottom" placeholder="Ziel">
-            </label>
-            <!--
-            <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
-                <div class="search__suggestion option flex-row padded-top-bottom">
-                    <div class="line--accent"></div>
-                    <div class="option__text center">Keine Vorschläge</div>
-                    <input class="search__suggestion__click" type="hidden">
+                <div class="tab-indicator-container indicator-line-container">
+                    <div class="line--accent indicator indicator__animation-to-right" id="dep-arr-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
                 </div>
             </div>
-            -->
-            <template>
-                <div class="search__suggestion option flex-row padded-top-bottom">
-                    <div class="line--accent"></div>
-                    <div class="option__text center"></div>
-                    <input class="search__suggestion__click" type="hidden">
-                </div>
-            </template>
-            <div class="line--regular"></div>
+            <div>
+                <button class="hoverable tab-row__tab" onclick="findConnections()">
+                    Los
+                </button>
+            </div>
         </div>
-        <button class="hoverable" onclick="findConnections()">
-            Los
-        </button>
     </section>
     <section id="journeys" class="center">
         <div id="station-names" class="flex-row padded-top-bottom">
@@ -210,6 +237,16 @@
                 &times;
             </button>
         </header>
+        <div id="modal__connecion-infos" class="padded-top-bottom flex-column">
+            <div class="flex-row-column">
+                <div class="modal__connection-date">
+                    24.08.2023
+                </div>
+                <i class="modal__connection-duration">
+                    30h 45min
+                </i>
+            </div>
+        </div>
         <div id="modal__trips">
 
         </div>
@@ -227,7 +264,7 @@
                         </div>
                     </div>
                     <div class="modal__trip__element__middle-child">
-                        <div class="duration"></div>
+                        <i class="duration"></i>
                     </div>
                     <div class="modal__trip__element__first-last-child flex-column">
                         <div class="time time--arrival flex-column">
@@ -247,7 +284,7 @@
                 </div>
                 <div class="modal__trip__element modal__trip__rtl flex-column">
                     <div class="flex-row modal__trip__element__first-last-child">
-                        <div class="modal__departure">
+                        <div class="modal__departure header">
 
                         </div>
                         <div class="modal__departure-platform">
@@ -258,8 +295,27 @@
                         <div class="modal__line-info">
 
                         </div>
-                        <div class="modal__trip-infos">
+                        <div class="modal__trip-infos-container" data-warnings="false" data-hints="false">
+                            <div class="flex-row modal__trip-infos-buttons">
+                                <div class="selectable--horizontal modal__trip-warnings-button-container" style="display: none">
+                                    <button class="hoverable selectable__text modal__trip-warnings-button delayed">
+                                        &#9888;
+                                    </button>
+                                    <div class="line--accent"></div>
+                                </div>
+                                <div class="selectable--horizontal modal__trip-hints-button-container" style="display: none">
+                                    <button class="hoverable selectable__text modal__trip-hints-button">
+                                        &#128712;
+                                    </button>
+                                    <div class="line--accent"></div>
+                                </div>
+                            </div>
+                            <div class="modal__trip-warnings delayed padded-top-bottom">
 
+                            </div>
+                            <div class="modal__trip-hints padded-top-bottom">
+
+                            </div>
                         </div>
                         <template class="modal__trip-info-template">
                             <p class="modal__trip-info">
@@ -268,7 +324,7 @@
                         </template>
                     </div>
                     <div class="flex-row modal__trip__element__first-last-child">
-                        <div class="modal__arrival">
+                        <div class="modal__arrival header">
 
                         </div>
                         <div class="modal__arrival-platform">
@@ -279,11 +335,11 @@
             </div>
         </template>
         <template id="modal__walk-template">
-            <div class="modal__trip modal__walk flex-row padded-top-bottom">
+            <div class="modal__walk flex-row padded-top-bottom">
                 <div class="modal__trip__element modal__trip__ltl flex-column">
-                    <div class="transfer-time">
+                    <i class="transfer-time">
 
-                    </div>
+                    </i>
                 </div>
                 <div class="modal__trip__element modal__walk__l flex-column">
                     <div class="connection-line--horizontal connection-line--walk line--vertical">

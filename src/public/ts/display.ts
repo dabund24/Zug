@@ -1,6 +1,6 @@
-import {Journeys, Leg, Status, Warning, Location} from "hafas-client";
+import {Journeys, Leg, Location} from "hafas-client";
 import {
-    addClassToChildOfParent, dateDifference,
+    addClassToChildOfParent, dateDifference, dateToString,
     printNotification,
     setHTMLOfChildOfParent, timeToString,
     unixToHoursString,
@@ -94,11 +94,16 @@ function setConnectionLines(legs: readonly Leg[], connectionToBeAdded: DocumentF
     return connectionToBeAdded;
 }
 
+let legCounter = 0;
+
 export function displayJourneyModal(index: number) {
+    legCounter = 0;
     const journey = getJourney(index);
     const modal = document.getElementById("connection-modal")!;
 
     setHTMLOfChildOfParent(modal, ".modal__title", journey.legs[0].origin!.name + " &longrightarrow; " + journey.legs[journey.legs.length - 1]!.destination!.name)
+    setHTMLOfChildOfParent(modal, ".modal__connection-date", dateToString(journey.legs[0].departure!))
+    setHTMLOfChildOfParent(modal, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)))
 
     const legsTarget = document.getElementById("modal__trips")!;
     legsTarget.replaceChildren()
@@ -118,6 +123,7 @@ export function displayJourneyModal(index: number) {
                 addWalkToModal(undefined, legsTarget, transferTime)
             }
             addLegToModal(legs[i], legsTarget)
+            legCounter++;
         }
     }
 
@@ -138,8 +144,7 @@ function addWalkToModal(walk: Leg | undefined, legsTarget: HTMLElement, transfer
         if ((<any>walk.origin).location.latitude !== undefined && (<any>walk.destination).location.latitude !== undefined) {
             let originLocation: Location = (<any>walk.origin).location
             let destinationLocation: Location = (<any>walk.destination).location
-            console.log(originLocation)
-            const osmLink = "https://www.openstreetmap.org/directions?engine=fossgis_valhalla_foot&from=" +
+            const osmLink = "https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&from=" +
                 originLocation.latitude + "%2C" + originLocation.longitude + "&to=" +
                 destinationLocation.latitude + "%2C" + destinationLocation.longitude
 
@@ -193,6 +198,8 @@ function addLegToModal(leg: Leg, legsTarget: HTMLElement) {
 
     if (leg.remarks !== undefined) {
         addLegInfoToModal(leg, toBeAdded)
+    } else {
+        (<HTMLElement>toBeAdded.querySelector(".modal__trip-infos-container")).style.setProperty("display", "none")
     }
 
     legsTarget.append(toBeAdded);
@@ -200,7 +207,9 @@ function addLegToModal(leg: Leg, legsTarget: HTMLElement) {
 
 function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
     const infoTemplate = (<HTMLTemplateElement> legToBeAdded.querySelector(".modal__trip-info-template")).content
-    const infosTarget = legToBeAdded.querySelector(".modal__trip-infos")!
+    const warningsTarget = legToBeAdded.querySelector(".modal__trip-warnings")!
+    const hintsTarget = legToBeAdded.querySelector(".modal__trip-hints")!
+
     let remarks = leg.remarks!.concat()
     remarks.sort((a, b) => {
         if (a.type === "hint" && b.type !== "hint") {
@@ -208,7 +217,18 @@ function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
         } else {
             return -1
         }
-    })
+    });
+
+    if (remarks[0].type !== "hint") {
+        (<HTMLElement>legToBeAdded.querySelector(".modal__trip-warnings-button-container")).style.setProperty("display", "block")
+    }
+    if (remarks[remarks.length - 1].type === "hint") {
+        (<HTMLElement>legToBeAdded.querySelector(".modal__trip-hints-button-container")).style.setProperty("display", "block")
+    }
+
+    let a = legCounter;
+    (<HTMLButtonElement>legToBeAdded.querySelector(".modal__trip-warnings-button")).onclick = function(){toggleLegWarnings(a)};
+    (<HTMLButtonElement>legToBeAdded.querySelector(".modal__trip-hints-button")).onclick = function(){toggleLegHints(a)};
 
 
     for (let i = 0; i < remarks.length; i++) {
@@ -216,8 +236,35 @@ function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
         let remark = remarks[i]
         setHTMLOfChildOfParent(toBeAdded, ".modal__trip-info", remarks[i].text)
         if (remark.type !== "hint") {
-            addClassToChildOfParent(toBeAdded, ".modal__trip-info", "delayed")
+            //addClassToChildOfParent(toBeAdded, ".modal__trip-info", "delayed")
+            warningsTarget.appendChild(toBeAdded)
+        } else {
+            hintsTarget.appendChild(toBeAdded)
         }
-        infosTarget.appendChild(toBeAdded)
     }
 }
+
+export function toggleLegWarnings(index: number) {
+    let legContainer = <HTMLElement>document.getElementsByClassName("modal__trip")[index]
+    let infosContainer = legContainer.querySelector(".modal__trip-infos-container")!
+    if (infosContainer.getAttribute("data-warnings") === "true") {
+        infosContainer.setAttribute("data-warnings", "false")
+        legContainer.querySelector(".modal__trip-warnings-button-container")!.classList.remove("selectable--horizontal--active")
+    } else {
+        infosContainer.setAttribute("data-warnings", "true")
+        addClassToChildOfParent(legContainer, ".modal__trip-warnings-button-container", "selectable--horizontal--active")
+    }
+}
+
+export function toggleLegHints(index: number) {
+    let legContainer = <HTMLElement>document.getElementsByClassName("modal__trip")[index]
+    let infosContainer = legContainer.querySelector(".modal__trip-infos-container")!
+    if (infosContainer.getAttribute("data-hints") === "true") {
+        infosContainer.setAttribute("data-hints", "false")
+        legContainer.querySelector(".modal__trip-hints-button-container")!.classList.remove("selectable--horizontal--active")
+    } else {
+        infosContainer.setAttribute("data-hints", "true")
+        addClassToChildOfParent(legContainer, ".modal__trip-hints-button-container", "selectable--horizontal--active")
+    }
+}
+

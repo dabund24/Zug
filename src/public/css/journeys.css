@@ -1,5 +1,6 @@
 #station-names {
     margin: 0 -15rem;
+    align-items: center;
 }
 
 .station-name {
@@ -140,11 +141,12 @@
     position: relative;
 }
 
-.modal__trip__element {
+.modal__connection-duration {
+    text-align: right;
 }
 
 .modal__trip:not(.modal__walk) {
-    height: 15rem;
+    min-height: 15rem;
 }
 
 .modal__trip__ltl {
@@ -180,8 +182,6 @@
 }
 
 .modal__trip__element__middle-child > * {
-    max-height: 8rem;
-    overflow-y: scroll;
 }
 
 .modal__trip-info:first-child {
@@ -192,3 +192,19 @@
     margin-bottom: 0;
 }
 
+.modal__trip-infos-buttons {
+    margin-left: auto;
+    width: fit-content;
+}
+
+.modal__trip-infos-container {
+    text-align: right;
+}
+
+[data-warnings="false"] .modal__trip-warnings {
+    display: none;
+}
+
+[data-hints="false"] .modal__trip-hints {
+    display: none;
+}

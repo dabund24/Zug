@@ -1,7 +1,11 @@
 import {Journey, Journeys, Station, Stop} from "hafas-client";
 import {displayJourneys} from "./display.js";
-import {hideLoadSlider, showLoadSlider} from "./pageActions.js";
-import {saveJourney} from "./memorizer.js";
+import {hideLoadSlider, setColor, setTheme, showLoadSlider} from "./pageActions.js";
+import {isArrival, saveJourney} from "./memorizer.js";
+
+setColor([2, "green"])
+setTheme([1, 'dark'])
+
 
 export async function findConnections() {
     showLoadSlider();
@@ -18,8 +22,15 @@ export async function findConnections() {
         return;
     }
 
-    const journeys: Journeys = await fetch("/api/journeys?from=" + fromID + "&to=" + toID).then(res => res.json());
-    if (journeys.journeys === undefined) {
+    const isArrQuery = "&isArrival=" + isArrival
+    let timeQuery = "";
+    if ((<HTMLInputElement>document.getElementById("time__input")).value !== "") {
+        timeQuery = "&time=" + (<HTMLInputElement>document.getElementById("time__input")).value
+    }
+
+    const journeys: Journeys = await fetch("/api/journeys?from=" + fromID + "&to=" + toID + timeQuery + isArrQuery).then(res => res.json());
+    if (journeys === undefined || journeys.journeys === undefined) {
+        hideLoadSlider();
         return;
     }
 

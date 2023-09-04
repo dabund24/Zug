@@ -49,6 +49,15 @@ export function timeToString(time: [number, number]) {
     }
 }
 
+export function dateToString(date: string | number | Date) {
+    const dateA = new Date(date)
+    return dateA.toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    })
+}
+
 /**
  * adds a class to a child of a parent
  * @param {DocumentFragment} parent - the parent

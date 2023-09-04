@@ -61,6 +61,7 @@
 }
 
 [data-theme="dark"] {
+    color-scheme: dark;
     --background-color: #121212;
     --foreground-color: #ffffff;
     --background-color--opaque: #121212e0;
@@ -356,7 +357,6 @@ p {
 
 .search__input {
     width: 100%;
-    height: 100%;
     text-align: center;
     border: none;
     outline: none;
@@ -487,7 +487,7 @@ footer:hover, footer:active {
     border: var(--line-width) solid var(--foreground-color--opaque);
     border-radius: var(--border-radius-large);
     background-color: var(--background-color--opaque);
-    padding: .5rem 1rem;
+    padding: 1rem 1.5rem;
     max-height: calc(100vh - 10rem);
     overflow-y: scroll;
 }
