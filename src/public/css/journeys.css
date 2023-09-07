@@ -1,30 +1,39 @@
-#station-names {
-    margin: 0 -15rem;
+#station-names, .station-inputs {
     align-items: center;
 }
 
 .station-name {
-    width: 100%;
+    width: 15rem;
+    margin: 0 7.5rem;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .station-name:first-child {
-    padding-left: 15rem;
+    margin: 0 auto 0 0;
+    width: 15rem;
     text-align: left;
 }
 
 .station-name:last-child {
-    padding-right: 15rem;
+    margin: 0 0 0 auto;
+    width: 15rem;
     text-align: right;
 }
 
 #journeys {
-    width: 30rem;
+    overflow-x: scroll;
+}
+
+.connections-container {
+    align-items: start;
 }
 
 .connection {
     align-items: stretch;
     min-height: 3.5rem;
+    width: 30rem;
+    flex-shrink: 0;
 }
 
 .time {
@@ -125,7 +134,7 @@
 .connection-line-selectable {
     height: unset;
     padding: 0 .5rem;
-    width: 24rem;
+    width: 22rem;
 }
 
 .connection-line-selectable button {

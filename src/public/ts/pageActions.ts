@@ -1,3 +1,5 @@
+import {Color, Theme} from "./types.js";
+
 export function slideIndicator(indicatorID: string, selectableCount: number, start: number, end: number): void {
     const indicator = document.getElementById(indicatorID)!
 

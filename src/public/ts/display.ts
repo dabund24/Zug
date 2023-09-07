@@ -1,4 +1,4 @@
-import {Journeys, Leg, Location} from "hafas-client";
+import {Journeys, Journey, Leg, Location} from "hafas-client";
 import {
     addClassToChildOfParent, dateDifference, dateToString,
     printNotification,
@@ -7,64 +7,99 @@ import {
     unixToHoursStringShort
 } from "./util.js";
 import {getJourney, resetJourneys, saveJourney} from "./memorizer.js";
+import {JourneyNode, JourneyTree} from "./types.js";
 
 let journeyCounter: number;
+const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content
 
-export function displayJourneys(journeys: Journeys, start: string, end: string) {
-
+export function displayJourneyTree(tree: JourneyTree, stations: string[]) {
     journeyCounter = 0;
-    resetJourneys();
+    resetJourneys()
 
-    const stationNames = document.getElementById("station-names")!.getElementsByClassName("station-name")
-    stationNames.item(0)!.innerHTML = start;
-    stationNames.item(1)!.innerHTML = end;
+    addStationNames(stations)
+    const connectionsRootContainer = document.getElementById("connections-root-container")!
+    connectionsRootContainer.replaceChildren()
 
-    if (journeys.journeys === undefined) {
-        printNotification("Keine Verbindungen gefundem")
+    tree.children.forEach(node => {
+        addJourneyNode(node, connectionsRootContainer)
+    })
+
+}
+
+export function addJourneyNode(node: JourneyNode, parent: HTMLElement | DocumentFragment) {
+    const newParent = displayJourney(node.journey, parent)
+    //console.log(newParent)
+    if (node.children === null) {
         return
     }
+    node.children.forEach(child => addJourneyNode(child, newParent))
+}
 
-    const connectionsTarget = document.getElementById("connections")!
-    connectionsTarget.replaceChildren()
+function addStationNames(stations: string[]) {
+    console.log(stations)
+    const target = document.getElementById("station-names")!
+    target.replaceChildren()
+    const template = (<HTMLTemplateElement>document.getElementById("station-template")).content
+    let toBeAdded;
 
+    for (let i = 0; i < stations.length; i++) {
+        toBeAdded = document.importNode(template, true)
+        setHTMLOfChildOfParent(toBeAdded, ".station-name", stations[i])
+        target.append(toBeAdded)
+    }
+}
+
+export function displayJourney(journey: Journey, connectionsTarget: HTMLElement | DocumentFragment): HTMLElement {
+
+    /*if (journey === undefined) {
+        printNotification("Keine Verbindungen gefundem")
+        return
+    }*/
+
+    //connectionsTarget.replaceChildren()
+/*
     const journeySection = document.getElementById("journeys")!;
     const connectionTemplate = journeySection.querySelector("template")!.content;
     let toBeAdded;
 
-    let journeysArray = journeys.journeys;
+    let journeysArray = journeys;
 
-    for (let i = 0; i < journeysArray.length; i++) {
-        toBeAdded = document.importNode(connectionTemplate, true)
-        const journey = journeysArray[i];
+    for (let i = 0; i < journeysArray.length; i++) {*/
+    let toBeAdded = document.importNode(connectionTemplate, true)
 
-        saveJourney(journey);
-        let a = journeyCounter;
-        toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModal(a)};
-        journeyCounter++;
+    saveJourney(journey);
+    let a = journeyCounter;
+    toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModal(a)};
+    journeyCounter++;
 
-        const firstLeg = journey.legs[0];
-        const lastLeg = journey.legs[journey.legs.length - 1]
-        const scheduledDeparture = firstLeg.plannedDeparture;
-        const actualDeparture = firstLeg.departure;
-        const scheduledArrival = lastLeg.plannedArrival;
-        const actualArrival = lastLeg.arrival;
+    const firstLeg = journey.legs[0];
+    const lastLeg = journey.legs[journey.legs.length - 1]
+    const scheduledDeparture = firstLeg.plannedDeparture;
+    const actualDeparture = firstLeg.departure;
+    const scheduledArrival = lastLeg.plannedArrival;
+    const actualArrival = lastLeg.arrival;
 
-        setHTMLOfChildOfParent(toBeAdded, ".time--departure--scheduled", unixToHoursStringShort(scheduledDeparture))
-        if (firstLeg.departureDelay !== undefined && firstLeg.departurePrognosisType !== null && firstLeg.departureDelay !== null) {
-            setHTMLOfChildOfParent(toBeAdded, ".time--departure--actual", unixToHoursStringShort(actualDeparture))
-            addClassToChildOfParent(toBeAdded, ".time--departure--actual", firstLeg.departureDelay <= 300 ? "on-time" : "delayed")
-        }
-
-        setHTMLOfChildOfParent(toBeAdded, ".time--arrival--scheduled", unixToHoursStringShort(scheduledArrival))
-        if (lastLeg.arrivalDelay !== undefined && (lastLeg.arrivalPrognosisType !== null && lastLeg.arrivalDelay !== null)) {
-            setHTMLOfChildOfParent(toBeAdded, ".time--arrival--actual", unixToHoursStringShort(actualArrival))
-            addClassToChildOfParent(toBeAdded, ".time--arrival--actual", lastLeg.arrivalDelay <= 300 ? "on-time" : "delayed")
-        }
-
-        setConnectionLines(journey.legs, toBeAdded)
-
-        connectionsTarget.append(toBeAdded)
+    setHTMLOfChildOfParent(toBeAdded, ".time--departure--scheduled", unixToHoursStringShort(scheduledDeparture))
+    if (firstLeg.departureDelay !== undefined && firstLeg.departurePrognosisType !== null && firstLeg.departureDelay !== null) {
+        setHTMLOfChildOfParent(toBeAdded, ".time--departure--actual", unixToHoursStringShort(actualDeparture))
+        addClassToChildOfParent(toBeAdded, ".time--departure--actual", firstLeg.departureDelay <= 300 ? "on-time" : "delayed")
     }
+
+    setHTMLOfChildOfParent(toBeAdded, ".time--arrival--scheduled", unixToHoursStringShort(scheduledArrival))
+    if (lastLeg.arrivalDelay !== undefined && (lastLeg.arrivalPrognosisType !== null && lastLeg.arrivalDelay !== null)) {
+        setHTMLOfChildOfParent(toBeAdded, ".time--arrival--actual", unixToHoursStringShort(actualArrival))
+        addClassToChildOfParent(toBeAdded, ".time--arrival--actual", lastLeg.arrivalDelay <= 300 ? "on-time" : "delayed")
+    }
+
+    setConnectionLines(journey.legs, toBeAdded)
+
+    let children = toBeAdded.children
+    //console.log(children)
+    connectionsTarget.append(toBeAdded)
+    //console.log(connectionsTarget.lastChild)
+
+
+    return (<HTMLElement>connectionsTarget.lastElementChild!.querySelector(".connections"))
 }
 
 function setConnectionLines(legs: readonly Leg[], connectionToBeAdded: DocumentFragment) {

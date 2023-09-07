@@ -29,49 +29,121 @@
     <div id="load-indicator" class="line--accent"></div>
     <section id="inputs">
         <div class="station-inputs flex-row-column padded-top-bottom">
-            <div id="from-search" class="search">
-                <label class="padded-top-bottom">
-                    <input type="text" name="search" id="from__input" class="search__input padded-top-bottom" placeholder="Start">
-                </label>
-                <!--
-                <div id="from__suggestions" class="search__suggestions options flex-column hoverable">
-                    <div class="search__suggestion option flex-row padded-top-bottom">
-                        <div class="line--accent"></div>
-                        <div class="option__text center">Keine Vorschläge</div>
-                        <input class="search__suggestion__click" type="hidden">
+            <div>
+                <div id="from-search" class="search">
+                    <label class="padded-top-bottom">
+                        <input type="text" name="search" id="from__input" class="search__input padded-top-bottom" placeholder="Start">
+                    </label>
+                    <!--
+                    <div id="from__suggestions" class="search__suggestions options flex-column hoverable">
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center">Keine Vorschläge</div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
                     </div>
+                    -->
+                    <template>
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center"></div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
+                    </template>
+                    <div class="line--regular"></div>
                 </div>
-                -->
-                <template>
-                    <div class="search__suggestion option flex-row padded-top-bottom">
-                        <div class="line--accent"></div>
-                        <div class="option__text center"></div>
-                        <input class="search__suggestion__click" type="hidden">
-                    </div>
-                </template>
-                <div class="line--regular"></div>
             </div>
-            <div id="to-search" class="search">
-                <label>
-                    <input type="text" name="search" id="to__input" class="search__input padded-top-bottom" placeholder="Ziel">
-                </label>
-                <!--
-                <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
-                    <div class="search__suggestion option flex-row padded-top-bottom">
-                        <div class="line--accent"></div>
-                        <div class="option__text center">Keine Vorschläge</div>
-                        <input class="search__suggestion__click" type="hidden">
+            <div>
+                <div id="via1-search" class="search">
+                    <label>
+                        <input type="text" name="search" id="via1__input" class="search__input padded-top-bottom" placeholder="Via">
+                    </label>
+                    <!--
+                    <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center">Keine Vorschläge</div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
                     </div>
+                    -->
+                    <template>
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center"></div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
+                    </template>
+                    <div class="line--regular"></div>
                 </div>
-                -->
-                <template>
-                    <div class="search__suggestion option flex-row padded-top-bottom">
-                        <div class="line--accent"></div>
-                        <div class="option__text center"></div>
-                        <input class="search__suggestion__click" type="hidden">
+                <div id="via2-search" class="search">
+                    <label>
+                        <input type="text" name="search" id="via2__input" class="search__input padded-top-bottom" placeholder="Via">
+                    </label>
+                    <!--
+                    <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center">Keine Vorschläge</div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
                     </div>
-                </template>
-                <div class="line--regular"></div>
+                    -->
+                    <template>
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center"></div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
+                    </template>
+                    <div class="line--regular"></div>
+                </div>
+                <div id="via3-search" class="search">
+                    <label>
+                        <input type="text" name="search" id="via3__input" class="search__input padded-top-bottom" placeholder="Via">
+                    </label>
+                    <!--
+                    <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center">Keine Vorschläge</div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
+                    </div>
+                    -->
+                    <template>
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center"></div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
+                    </template>
+                    <div class="line--regular"></div>
+                </div>
+            </div>
+            <div>
+                <div id="to-search" class="search">
+                    <label>
+                        <input type="text" name="search" id="to__input" class="search__input padded-top-bottom" placeholder="Ziel">
+                    </label>
+                    <!--
+                    <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center">Keine Vorschläge</div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
+                    </div>
+                    -->
+                    <template>
+                        <div class="search__suggestion option flex-row padded-top-bottom">
+                            <div class="line--accent"></div>
+                            <div class="option__text center"></div>
+                            <input class="search__suggestion__click" type="hidden">
+                        </div>
+                    </template>
+                    <div class="line--regular"></div>
+                </div>
             </div>
         </div>
         <div class="setting-inputs flex-row-column padded-top-bottom">
@@ -105,48 +177,55 @@
     </section>
     <section id="journeys" class="center">
         <div id="station-names" class="flex-row padded-top-bottom">
+
+        </div>
+        <template id="station-template">
             <div class="station-name">
 
             </div>
-            <div class="station-name">
+        </template>
 
-            </div>
-        </div>
-        <div id="connections" class="flex-column">
+        <div id="connections-root-container" class="connections flex-column">
 
         </div>
-        <template>
-            <div class="flex-row connection">
-                <div class="time time--departure flex-column">
-                    <div class="time--scheduled time--departure--scheduled">
+        <template id="connection-template">
+            <div class="flex-row connections-container">
+                <div class="flex-row connection">
+                    <div class="time time--departure flex-column">
+                        <div class="time--scheduled time--departure--scheduled">
 
+                        </div>
+                        <div class="time--actual time--departure--actual">
+
+                        </div>
                     </div>
-                    <div class="time--actual time--departure--actual">
+                    <div class="connection-line-selectable selectable--horizontal">
+                        <button class="hoverable selectable__text flex-row">
 
-                    </div>
-                </div>
-                <div class="connection-line-selectable selectable--horizontal">
-                    <button class="hoverable selectable__text flex-row">
-
-                    </button>
-                    <template>
+                        </button>
+                        <template>
                         <span class="connection-line-container">
                             <span class="connection-line-name"></span>
                             <span class="line--regular connection-line"></span>
                         </span>
-                    </template>
-                    <div class="line--accent"></div>
+                        </template>
+                        <div class="line--accent"></div>
+                    </div>
+                    <div class="time time--arrival flex-column">
+                        <div class="time--scheduled time--arrival--scheduled">
+
+                        </div>
+                        <div class="time--scheduled time--arrival--actual">
+
+                        </div>
+                    </div>
                 </div>
-                <div class="time time--arrival flex-column">
-                    <div class="time--scheduled time--arrival--scheduled">
+                <div class="connections flex-column">
 
-                    </div>
-                    <div class="time--scheduled time--arrival--actual">
-
-                    </div>
                 </div>
             </div>
         </template>
+
     </section>
 </div>
 <footer class="flex-column">
