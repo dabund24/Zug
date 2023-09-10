@@ -14,16 +14,26 @@
 <body ontouchstart="">
 <script type="module">
     import {setColor, setTheme} from "./ts/pageActions.js";
-    import {findConnections, hideModal} from "./ts/main.js";
-    import {setDepArr} from "./ts/memorizer.js";
+    import {findConnections} from "./ts/main.js";
+    import {hideConnectionModal, showSettingsModal, hideSettingsModal} from "./ts/display.js"
+    import {setDepArr, setLanguage, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "./ts/memorizer.js";
 
     window.setColor = setColor;
     window.setTheme = setTheme;
 
     window.findConnections = findConnections;
-    window.hideModal = hideModal;
+
+    window.hideConnectionModal = hideConnectionModal;
+    window.showSettingsModal = showSettingsModal;
+    window.hideSettingsModal = hideSettingsModal;
 
     window.setDepArr = setDepArr;
+    window.setLanguage = setLanguage;
+    window.setTransfers = setTransfers;
+    window.setTransferTime = setTransferTime;
+    window.setAccessibility = setAccessibility;
+    window.setWalkingSpeed = setWalkingSpeed;
+    window.setBike = setBike;
 </script>
 <div id="content">
     <div id="load-indicator" class="line--accent"></div>
@@ -238,6 +248,7 @@
         </div>
         <div id="footer__settings" class="flex-column">
             <div class="line--regular"></div>
+            <!--
             <div class="tab-row flex-row">
                 <button type="button" class="hoverable tab-row__tab" onclick="setTheme([0, 'light'])">
                     <span class="desktop-only">Hell</span>
@@ -296,7 +307,10 @@
             <div class="tab-indicator-container indicator-line-container">
                 <div class="line--accent indicator indicator__animation-to-right" id="color-indicator" style="--animation--tab-indicator__start: calc(100% / 6); --animation--tab-indicator__end: calc(100% / 6);"></div>
             </div>
-
+            -->
+            <button class="center hoverable selectable__text" onclick="showSettingsModal()">
+                Einstellungen
+            </button>
             <div id="credits">
                 <a href="https://github.com/dabund24/Zug">Github</a>
                 <div>Daniel Bund</div>
@@ -312,7 +326,7 @@
     <div class="modal-content content-wrapper">
         <header class="flex-row">
             <span class="modal__title header padded-top-bottom"></span>
-            <button class="modal__close header hoverable" onclick="hideModal()">
+            <button class="modal__close header hoverable" onclick="hideConnectionModal()">
                 &times;
             </button>
         </header>
@@ -432,6 +446,241 @@
         </template>
     </div>
 
+</div>
+
+<div id="settings-modal" class="modal" style="display: flex">
+    <div class="modal-content content-wrapper">
+        <header class="flex-row">
+            <span class="modal__title header padded-top-bottom">
+                <span class="de">Einstellungen</span><span class="en">Settings</span>
+            </span>
+            <button class="modal__close header hoverable" onclick="hideSettingsModal()">
+                &times;
+            </button>
+        </header>
+        <div id="settings" class="flex-column">
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name"><span class="de">Farbschema</span><span class="en">Color scheme</span></div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTheme([0, 'light'])">
+                            <span class="desktop-only"><span class="de">hell</span><span class="en">light</span></span>
+                            <span class="mobile-only">
+                    <i class="wi wi-day-sunny"></i>
+                </span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTheme([1, 'dark'])">
+                            <span class="desktop-only"><span class="de">dunkel</span><span class="en">dark</span></span>
+                            <span class="mobile-only">
+                    <i class="wi wi-night-clear"></i>
+                </span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="theme-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Akzentfarbe</span><span class="en">Accent color</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([0, 'red'])">
+                            <span class="desktop-only"><span class="de">rot</span><span class="en">red</span></span>
+                            <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-red)"></i>
+                </span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([1, 'yellow'])">
+                            <span class="desktop-only"><span class="de">gelb</span><span class="en">yellow</span></span>
+                            <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-yellow)"></i>
+                </span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([2, 'green'])">
+                            <span class="desktop-only"><span class="de">grün</span><span class="en">green</span></span>
+                            <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-green)"></i>
+                </span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([3, 'blue'])">
+                            <span class="desktop-only"><span class="de">blau</span><span class="en">blue</span></span>
+                            <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-blue)"></i>
+                </span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([4, 'purple'])">
+                            <span class="desktop-only"><span class="de">lila</span><span class="en">purple</span></span>
+                            <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-purple)"></i>
+                </span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([5, 'gray'])">
+                            <span class="desktop-only"><span class="de">grau</span><span class="en">gray</span></span>
+                            <span class="mobile-only">
+                    <i class="wi wi-moon-full" style="color: var(--accent-gray)"></i>
+                </span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="color-indicator" style="--animation--tab-indicator__start: calc(100% / 6); --animation--tab-indicator__end: calc(100% / 6);"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Spache</span><span class="en">Language</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setLanguage('de')">
+                            <span class="desktop-only"><span class="de">Deutsch</span><span class="en">German</span></span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setLanguage('en')">
+                            <span class="desktop-only"><span class="de">Englisch</span><span class="en">English</span></span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="language-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Umstiegsmaximum</span><span class="en">Transfer limit</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(0)">
+                            <span class="desktop-only">0</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(1)">
+                            <span class="desktop-only">1</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(2)">
+                            <span class="desktop-only">2</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(3)">
+                            <span class="desktop-only">3</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(4)">
+                            <span class="desktop-only">4</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(5)">
+                            <span class="desktop-only">5</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(6)">
+                            <span class="desktop-only">6</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(-1)">
+                            <span class="desktop-only"><span class="de">keins</span><span class="en">none</span></span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="transfers-indicator" style="--animation--tab-indicator__start: calc(15 * 100% / 16); --animation--tab-indicator__end: calc(15 * 100% / 16)"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Mindestumsteigezeit</span><span class="en">Minimum transfer time</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(0)">
+                            <span class="desktop-only">0min</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(2)">
+                            <span class="desktop-only">2min</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(5)">
+                            <span class="desktop-only">5min</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(10)">
+                            <span class="desktop-only">10min</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(15)">
+                            <span class="desktop-only">15min</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(20)">
+                            <span class="desktop-only">20min</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(30)">
+                            <span class="desktop-only">30min</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(40)">
+                            <span class="desktop-only">40min</span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="transfer-time-indicator" style="--animation--tab-indicator__start: calc(100% / 16); --animation--tab-indicator__end: calc(100% / 16)"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Barrierefreiheit</span><span class="en">Accessibility</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setAccessibility('none')">
+                            <span class="desktop-only"><span class="de">egal</span><span class="en">ignore</span></span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setAccessibility('partial')">
+                            <span class="desktop-only"><span class="de">priorisierend</span><span class="en">prioritize</span></span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setAccessibility('complete')">
+                            <span class="desktop-only"><span class="de">strikt</span><span class="en">strict</span></span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="accessibility-indicator" style="--animation--tab-indicator__start: calc(100% / 6); --animation--tab-indicator__end: calc(100% / 6)"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Gehgeschwindigkeit</span><span class="en">Walking speed</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setWalkingSpeed('slow')">
+                            <span class="desktop-only"><span class="de">langsam</span><span class="en">slow</span></span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setWalkingSpeed('normal')">
+                            <span class="desktop-only">normal</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setWalkingSpeed('fast')">
+                            <span class="desktop-only"><span class="de">schnell</span><span class="en">fast</span></span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="walking-speed-indicator" style="--animation--tab-indicator__start: 50%; --animation--tab-indicator__end: 50%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Fahrradmitnahme</span><span class="en">Bicycle transport</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setBike(false)">
+                            <span class="desktop-only"><span class="de">nein</span><span class="en">no</span></span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setBike(true)">
+                            <span class="desktop-only"><span class="de">ja</span><span class="en">yes</span></span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="bike-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

@@ -6,7 +6,7 @@ import {
     unixToHoursString,
     unixToHoursStringShort
 } from "./util.js";
-import {getJourney, resetJourneys, saveJourney} from "./memorizer.js";
+import {getJourney, resetJourneys, saveJourney, selectedJourney} from "./memorizer.js";
 import {JourneyNode, JourneyTree} from "./types.js";
 
 let journeyCounter: number;
@@ -70,6 +70,7 @@ export function displayJourney(journey: Journey, connectionsTarget: HTMLElement 
     saveJourney(journey);
     let a = journeyCounter;
     toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModal(a)};
+    toBeAdded.querySelector(".connection-line-selectable")!.setAttribute("id", "connection-line-selectable-" + a)
     journeyCounter++;
 
     const firstLeg = journey.legs[0];
@@ -93,7 +94,6 @@ export function displayJourney(journey: Journey, connectionsTarget: HTMLElement 
 
     setConnectionLines(journey.legs, toBeAdded)
 
-    let children = toBeAdded.children
     //console.log(children)
     connectionsTarget.append(toBeAdded)
     //console.log(connectionsTarget.lastChild)
@@ -133,6 +133,7 @@ let legCounter = 0;
 
 export function displayJourneyModal(index: number) {
     legCounter = 0;
+    document.getElementById("connection-line-selectable-" + index)!.classList.add("selectable--horizontal--active")
     const journey = getJourney(index);
     const modal = document.getElementById("connection-modal")!;
 
@@ -303,3 +304,15 @@ export function toggleLegHints(index: number) {
     }
 }
 
+export function hideConnectionModal() {
+    document.getElementById("connection-modal")!.style.setProperty("display", "none")
+    document.getElementById("connection-line-selectable-" + selectedJourney)!.classList.remove("selectable--horizontal--active")
+}
+
+export function showSettingsModal() {
+    document.getElementById("settings-modal")!.style.setProperty("display", "flex")
+}
+
+export function hideSettingsModal() {
+    document.getElementById("settings-modal")!.style.setProperty("display", "none")
+}

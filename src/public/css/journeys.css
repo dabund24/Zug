@@ -217,3 +217,16 @@
 [data-hints="false"] .modal__trip-hints {
     display: none;
 }
+
+.setting {
+    width: 100%;
+    align-items: center;
+}
+
+.setting__name {
+    width: 25%;
+}
+
+.setting__name {
+    padding-right: 2rem;
+}

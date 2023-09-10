@@ -1,3 +1,11 @@
+[lang="de"] .en {
+    display: none;
+}
+
+[lang="en"] .de {
+    display: none;
+}
+
 [data-color="red"] {
     --accent-light: #cb1a29;
     --accent-dark: #eb6c68;

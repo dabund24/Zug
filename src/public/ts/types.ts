@@ -12,6 +12,10 @@ export type Theme =
     | [0, "light"]
     | [1, "dark"]
 
+export type Language = "en" | "de"
+export type Accessibility = "none" | "partial" | "complete"
+export type WalkingSpeed = "slow" | "normal" | "fast"
+
 export type JourneyTree = {
     children: JourneyNode[]
 }
@@ -21,6 +25,11 @@ export type JourneyNode = {
     children: JourneyNode[] | null
 }
 
-export type ZugError = "error"
+export type ZugError = "noConnections" | "error"
+
+export function isZugError(value: any) {
+    console.log(value)
+    return value === "noConnections" || value === "error"
+}
 
 export type TreeMatrixPair = [JourneyTree, Journey[][]]

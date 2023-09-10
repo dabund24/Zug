@@ -1,8 +1,9 @@
 import {Journey, Journeys, Station, Stop} from "hafas-client";
 import {displayJourneyTree} from "./display.js";
 import {hideLoadSlider, setColor, setTheme, showLoadSlider} from "./pageActions.js";
-import {isArrival, saveJourney} from "./memorizer.js";
-import {JourneyTree, TreeMatrixPair} from "./types";
+import {isArrival, journeyOptions, saveJourney, selectedJourney} from "./memorizer.js";
+import {isZugError, JourneyTree, TreeMatrixPair, ZugError} from "./types.js";
+import {printNotification} from "./util.js";
 
 setColor([2, "green"])
 setTheme([1, 'dark'])
@@ -46,8 +47,18 @@ export async function findConnections() {
         timeQuery = "&time=" + (<HTMLInputElement>document.getElementById("time__input")).value
     }
     let viasQuery = "&vias=" + JSON.stringify(vias)
+    let journeyOptionsQuery = "&options=" + JSON.stringify(journeyOptions)
 
-    const pair: TreeMatrixPair = await fetch("/api/journeys?from=" + fromID + viasQuery + "&to=" + toID + timeQuery + isArrQuery).then(res => res.json());
+    console.log("a")
+    let pair: TreeMatrixPair
+    try {
+        pair = await fetch("/api/journeys?from=" + fromID + viasQuery + "&to=" + toID + timeQuery + isArrQuery + journeyOptionsQuery).then(res => res.json());
+    } catch (err) {
+        printNotification("Keine Verbindungen gefunden.")
+        hideLoadSlider()
+        return
+    }
+
     console.log(pair[1])
     const journeyTree = pair[0]
 
@@ -62,8 +73,4 @@ export async function findConnections() {
 
     displayJourneyTree(journeyTree, [<string> from[0].name, viaNames, <string> to[0].name].flat())
     hideLoadSlider();
-}
-
-export function hideModal() {
-    document.getElementById("connection-modal")!.style.setProperty("display", "none")
 }

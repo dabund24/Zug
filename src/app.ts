@@ -38,13 +38,13 @@ app.get("/api/journeys", (req, res) => {
     const from = <string>req.query.from;
     const vias: string[] = JSON.parse(<string>req.query.vias);
     const to = <string>req.query.to;
+    const options: JourneysOptions = JSON.parse(<string>req.query.options)
 
     let stops :string[] = [];
     stops.push(from)
     stops = stops.concat(vias)
     stops.push(to)
 
-    let options: JourneysOptions = {};
     if (req.query.time !== undefined) {
         options.departure = new Date(<string>req.query.time)
     }
