@@ -36,6 +36,14 @@
     --accent-dark: #adbbc5;
 }
 
+[data-blur="true"] {
+    --blur: blur(1px);
+}
+
+[data-blur="false"] {
+    --blur: none;
+}
+
 :root {
     --background-color: #ffffff;
     --foreground-color: #000000;
@@ -57,6 +65,7 @@
     --ferry-color: #309FD1;
     --taxi-color: #FFD800;
     --regional-color: #EC0016;
+    --regional-express-color: #F39200;
     --national-color: #646973;
     --national-express-color: var(--foreground-color);
 
@@ -65,7 +74,6 @@
     --line-width: 4px;
     --line-length: 2rem;
     --line-length--vertical: 2rem;
-    --blur: blur(1px);
 }
 
 [data-theme="dark"] {
@@ -222,6 +230,22 @@ p {
     border-radius: var(--border-radius-small);
     height: 100%;
     width: var(--line-width);
+}
+
+.line--success {
+    background-color: var(--accent-green);
+}
+
+.line--neutral {
+    background-color: var(--foreground-color);
+}
+
+.line--warning {
+    background-color: var(--accent-yellow);
+}
+
+.line--error {
+    background-color: var(--accent-red);
 }
 
 .hoverable {
@@ -448,35 +472,16 @@ footer {
     backdrop-filter: var(--blur);
     -webkit-backdrop-filter: var(--blur);
     background-color: var(--background-color--opaque);
-    padding: 0 .5rem .2rem;
+    border-top: var(--line-width) solid var(--foreground-color--opaque);
+    border-right: var(--line-width) solid var(--foreground-color--opaque);
+    border-top-right-radius: var(--border-radius-large);
+    width: fit-content;
     position: sticky;
     bottom: 0;
-    z-index: 1000;
-    height: 1.7rem;
-    transition: height .3s ease-in-out, background-color .5s ease-in-out;
+    padding: .5rem;
+    z-index: 100;
     overflow-y: clip;
     text-align: center;
-}
-
-footer .line--regular {
-    margin: .3rem 0;
-}
-
-footer:hover, footer:active {
-    height: 15.5rem;
-}
-
-#footer__status-bar {
-    text-align: center;
-    height: 1.7rem;
-}
-
-#footer__status-bar__content {
-    margin: auto;
-}
-
-#credits {
-    margin-top: 1rem;
 }
 
 .modal {
@@ -513,4 +518,62 @@ footer:hover, footer:active {
 .modal__close {
     padding: .5rem .6rem;
     line-height: 0;
+}
+
+#toasts {
+    width: 30rem;
+    position: fixed;
+    z-index: 1001;
+    left: calc(50% - 15rem);
+    bottom: 0;
+}
+
+.toast {
+    margin: 1rem 0;
+    backdrop-filter: var(--blur);
+    animation: toast__fadein-animation .2s ease-out, toast__fadeout-animation .5s ease-in-out 2.5s both;
+}
+
+.toast__text {
+    padding: .5rem 0;
+    border: var(--line-width) solid var(--foreground-color--opaque);
+    background-color: var(--background-color--opaque);
+    border-radius: var(--border-radius-large);
+    text-align: center;
+}
+
+.toast__line {
+    width: calc(100% - 2 * var(--line-width));
+    height: var(--line-width);
+    margin: calc(-1 * var(--line-width)) auto 0;
+    animation: toast__line-animation 3s ease-out 0s;
+}
+
+@keyframes toast__line-animation {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
+}
+
+@keyframes toast__fadein-animation {
+    0% {
+        margin: 0 0 -2rem;
+        opacity: 0;
+    }
+    100% {
+        margin: 1rem 0;
+        opacity: 1;
+    }
+}
+
+@keyframes toast__fadeout-animation {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }

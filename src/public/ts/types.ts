@@ -12,9 +12,22 @@ export type Theme =
     | [0, "light"]
     | [1, "dark"]
 
+export type ToasterType = "success" | "neutral" | "warning" | "error"
+
 export type Language = "en" | "de"
+export type Product =
+    | "nationalExpress"
+    | "national"
+    | "regional"
+    | "suburban"
+    | "subway"
+    | "tram"
+    | "bus"
+    | "ferry"
+    | "taxi"
 export type Accessibility = "none" | "partial" | "complete"
 export type WalkingSpeed = "slow" | "normal" | "fast"
+export type LoadFactor = "low-to-medium" | "high" | "very-high" | "exceptionally-high"
 
 export type JourneyTree = {
     children: JourneyNode[]

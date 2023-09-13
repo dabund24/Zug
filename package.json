@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.css src/**/*.eot src/**/*.svg src/**/*.ttf src/**/*.woff src/**/*.woff2 dist/",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/app.js"
   },
   "repository": {
     "type": "git",

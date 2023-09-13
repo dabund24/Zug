@@ -1,7 +1,6 @@
 import {Journey, JourneysOptions} from "hafas-client";
 import {slideIndicator} from "./pageActions.js";
-import {Accessibility, Language, WalkingSpeed} from "./types";
-import {start} from "repl";
+import {Accessibility, Language, Product, WalkingSpeed} from "./types.js";
 
 let displayedJourneys: Journey[] = [];
 
@@ -33,8 +32,21 @@ export function setDepArr(isArr: number) {
 
 export let journeyOptions: JourneysOptions = {
     language: "de",
+    results: 10,
     transfers: -1,
     transferTime: 0,
+    products: {
+        nationalExpress: true,
+        national: true,
+        regionalExpress: true,
+        regional: true,
+        suburban: true,
+        subway: true,
+        tram: true,
+        bus: true,
+        ferry: true,
+        taxi: true
+    },
     accessibility: "none",
     walkingSpeed: "normal",
     bike: false
@@ -51,6 +63,18 @@ export function setLanguage(language: Language) {
     document.documentElement.setAttribute("lang", language)
 
     journeyOptions.language = language
+}
+
+export function setProduct(product: Product) {
+    console.log(product)
+    const productButton = document.getElementById("product-indicator__" + product)!
+    if (journeyOptions.products![product]) {
+        productButton.classList.remove("selectable--horizontal--active")
+        journeyOptions.products![product] = false
+    } else {
+        productButton.classList.add("selectable--horizontal--active")
+        journeyOptions.products![product] = true
+    }
 }
 
 export function setTransfers(transfers: number) {

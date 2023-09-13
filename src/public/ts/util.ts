@@ -8,6 +8,12 @@ export function leadingZeros(number: number, digits: number): string {
     return String(number).padStart(digits, '0');
 }
 
+export function numberWithSign(number: number): string {
+    return new Intl.NumberFormat("de-DE", {
+        signDisplay: "always"
+    }).format(number)
+}
+
 /**
  * converts unix timestamp to human-readable string in German
  * @param {number} unix - timestamp
@@ -93,13 +99,4 @@ export function setHTMLOfChildOfParent(parent: Element | DocumentFragment, child
     if (parent != null && innerHTML !== undefined) {
         parent.querySelector(childSelector)!.innerHTML = innerHTML;
     }
-}
-
-/**
- * displays a notification in page footer in this scheme:
- * `hh.mm Uhr: <notification>`
- * @param {string} notification - the notification to be displayed
- */
-export function printNotification(notification: string): void {
-    document.getElementById("footer__status-bar__content")!.innerHTML = /*unixToHoursString(Date.now()) + ": " +*/ notification;
 }

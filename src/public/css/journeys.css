@@ -41,6 +41,7 @@
     width: 4rem;
     text-align: center;
     margin: auto;
+    flex-shrink: 0;
 }
 
 .on-time {
@@ -49,6 +50,14 @@
 
 .delayed {
     color: var(--accent-red);
+}
+
+.warning {
+    color: var(--accent-yellow);
+}
+
+.info {
+    color: var(--accent-blue);
 }
 
 .connection-line-container {
@@ -113,6 +122,10 @@
     background-color: var(--regional-color);
 }
 
+.connection-line--regionalExpress {
+    background-color: var(--regional-express-color);
+}
+
 .connection-line--national {
     background-color: var(--national-color);
 }
@@ -168,7 +181,7 @@
     width: 100%;
 }
 
-.modal__departure, .modal__arrival {
+.modal__departure-container, .modal__arrival-container {
     margin-right: auto;
 }
 
@@ -185,12 +198,46 @@
     align-items: center;
 }
 
+.modal__trip__element__first-last-child > * {
+    width: 100%;
+}
+
+.modal__platform {
+    margin-left: auto;
+    white-space: nowrap;
+}
+
 .modal__trip__element__middle-child {
     margin: auto 0;
     align-items: center;
 }
 
-.modal__trip__element__middle-child > * {
+.modal__line-info {
+    width: fit-content;
+    margin-left: calc(-.5rem - var(--line-width));
+}
+
+.modal__line-info__text {
+    padding: .5rem;
+    text-align: left;
+    white-space: unset;
+}
+
+[data-stopovers="false"].modal__line-stopovers {
+    display: none;
+}
+
+.stopover {
+    align-items: center;
+    margin: 0 auto 0 calc(-6rem - var(--line-width));
+}
+
+.stopover .time {
+    margin: 0;
+}
+
+.stopover__middle {
+    margin: auto auto auto calc(2rem + var(--line-width));
 }
 
 .modal__trip-info:first-child {
@@ -211,6 +258,10 @@
 }
 
 [data-warnings="false"] .modal__trip-warnings {
+    display: none;
+}
+
+[data-static-infos="false"] .modal__trip-static-infos {
     display: none;
 }
 

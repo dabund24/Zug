@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="" data-color="">
+<html lang="de" data-theme="" data-color="" data-blur="true">
 
 <head>
     <meta charset="UTF-8"/>
@@ -13,13 +13,14 @@
 </head>
 <body ontouchstart="">
 <script type="module">
-    import {setColor, setTheme} from "./ts/pageActions.js";
+    import {setColor, setTheme, setBlurEffect} from "./ts/pageActions.js";
     import {findConnections} from "./ts/main.js";
     import {hideConnectionModal, showSettingsModal, hideSettingsModal} from "./ts/display.js"
-    import {setDepArr, setLanguage, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "./ts/memorizer.js";
+    import {setDepArr, setLanguage, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "./ts/memorizer.js";
 
     window.setColor = setColor;
     window.setTheme = setTheme;
+    window.setBlurEffect = setBlurEffect;
 
     window.findConnections = findConnections;
 
@@ -29,6 +30,7 @@
 
     window.setDepArr = setDepArr;
     window.setLanguage = setLanguage;
+    window.setProduct = setProduct;
     window.setTransfers = setTransfers;
     window.setTransferTime = setTransferTime;
     window.setAccessibility = setAccessibility;
@@ -165,6 +167,7 @@
                     <div class="line--regular"></div>
                 </div>
             </div>
+            <!--
             <div>
                 <div class="tab-row flex-row">
                     <button type="button" class="hoverable tab-row__tab" onclick="setDepArr(0)">
@@ -178,6 +181,7 @@
                     <div class="line--accent indicator indicator__animation-to-right" id="dep-arr-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
                 </div>
             </div>
+            -->
             <div>
                 <button class="hoverable tab-row__tab" onclick="findConnections()">
                     Los
@@ -238,88 +242,13 @@
 
     </section>
 </div>
-<footer class="flex-column">
-    <div style="width: 100%"></div>
-    <div class="content-wrapper">
-        <div id="footer__status-bar" class="flex-row">
-            <span id="footer__status-bar__content" class="center">
-                Seite wird vorbereitet. Bitte warten...
-            </span>
-        </div>
-        <div id="footer__settings" class="flex-column">
-            <div class="line--regular"></div>
-            <!--
-            <div class="tab-row flex-row">
-                <button type="button" class="hoverable tab-row__tab" onclick="setTheme([0, 'light'])">
-                    <span class="desktop-only">Hell</span>
-                    <span class="mobile-only">
-                    <i class="wi wi-day-sunny"></i>
-                </span>
-                </button>
-                <button type="button" class="hoverable tab-row__tab" onclick="setTheme([1, 'dark'])">
-                    <span class="desktop-only">Dunkel</span>
-                    <span class="mobile-only">
-                    <i class="wi wi-night-clear"></i>
-                </span>
-                </button>
-            </div>
-            <div class="tab-indicator-container indicator-line-container">
-                <div class="line--accent indicator indicator__animation-to-right" id="theme-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
-            </div>
-            <div class="tab-row flex-row">
-                <button type="button" class="hoverable tab-row__tab" onclick="setColor([0, 'red'])">
-                    <span class="desktop-only">Rot</span>
-                    <span class="mobile-only">
-                    <i class="wi wi-moon-full" style="color: var(--accent-red)"></i>
-                </span>
-                </button>
-                <button type="button" class="hoverable tab-row__tab" onclick="setColor([1, 'yellow'])">
-                    <span class="desktop-only">Gelb</span>
-                    <span class="mobile-only">
-                    <i class="wi wi-moon-full" style="color: var(--accent-yellow)"></i>
-                </span>
-                </button>
-                <button type="button" class="hoverable tab-row__tab" onclick="setColor([2, 'green'])">
-                    <span class="desktop-only">Grün</span>
-                    <span class="mobile-only">
-                    <i class="wi wi-moon-full" style="color: var(--accent-green)"></i>
-                </span>
-                </button>
-                <button type="button" class="hoverable tab-row__tab" onclick="setColor([3, 'blue'])">
-                    <span class="desktop-only">Blau</span>
-                    <span class="mobile-only">
-                    <i class="wi wi-moon-full" style="color: var(--accent-blue)"></i>
-                </span>
-                </button>
-                <button type="button" class="hoverable tab-row__tab" onclick="setColor([4, 'purple'])">
-                    <span class="desktop-only">Lila</span>
-                    <span class="mobile-only">
-                    <i class="wi wi-moon-full" style="color: var(--accent-purple)"></i>
-                </span>
-                </button>
-                <button type="button" class="hoverable tab-row__tab" onclick="setColor([5, 'gray'])">
-                    <span class="desktop-only">Grau</span>
-                    <span class="mobile-only">
-                    <i class="wi wi-moon-full" style="color: var(--accent-gray)"></i>
-                </span>
-                </button>
-            </div>
-            <div class="tab-indicator-container indicator-line-container">
-                <div class="line--accent indicator indicator__animation-to-right" id="color-indicator" style="--animation--tab-indicator__start: calc(100% / 6); --animation--tab-indicator__end: calc(100% / 6);"></div>
-            </div>
-            -->
-            <button class="center hoverable selectable__text" onclick="showSettingsModal()">
-                Einstellungen
-            </button>
-            <div id="credits">
-                <a href="https://github.com/dabund24/Zug">Github</a>
-                <div>Daniel Bund</div>
-                <div>2023</div>
-            </div>
-
-        </div>
-    </div>
-
+<footer class="flex-row">
+    <button class="hoverable selectable__text" onclick="showSettingsModal()">
+        &#9881;
+    </button>
+    <button class="hoverable selectable__text" onclick="showSettingsModal()">
+        &#128712;
+    </button>
 </footer>
 
 <div id="connection-modal" class="modal" style="display: none">
@@ -377,22 +306,59 @@
                 </div>
                 <div class="modal__trip__element modal__trip__rtl flex-column">
                     <div class="flex-row modal__trip__element__first-last-child">
-                        <div class="modal__departure header">
+                        <div class="modal__departure-container flex-row">
+                            <div>
+                                <span class="modal__departure header"></span><span class="modal__departure-delay"></span>
+                            </div>
+                            <div class="modal__departure-platform modal__platform">
 
+                            </div>
                         </div>
-                        <div class="modal__departure-platform">
+                        <div class="desktop-only">
 
                         </div>
                     </div>
-                    <div class="modal__trip__element__middle-child flex-row-column">
-                        <div class="modal__line-info">
+                    <div class="modal__trip__element__middle-child padded-top-bottom flex-row-column">
+                        <div class="modal__line-infos flex-column">
+                            <div class="modal__line-info selectable--horizontal">
+                                <button class="modal__line-info__text hoverable selectable__text tab-row__tab">
 
+                                </button>
+                                <div class="line--accent"></div>
+                            </div>
+                            <div class="modal__line-stopovers" data-stopovers="false">
+
+                            </div>
+                            <template class="stopover-template">
+                                <div class="stopover padded-top-bottom flex-row">
+                                    <div class="time time--arrival flex-column">
+                                        <div class="time--scheduled time--stopover--arrival">
+
+                                        </div>
+                                        <div class="time--scheduled time--stopover--departure">
+
+                                        </div>
+                                    </div>
+                                    <div class="stopover__middle">
+                                        <span class="stopover__name"></span><span class="stopover__delay"></span>
+                                    </div>
+                                    <div class="stopover__platform">
+
+                                    </div>
+                                </div>
+                            </template>
                         </div>
-                        <div class="modal__trip-infos-container" data-warnings="false" data-hints="false">
+                        <div class="modal__trip-infos-container" data-warnings="false" data-static-infos="false" data-hints="false">
                             <div class="flex-row modal__trip-infos-buttons">
                                 <div class="selectable--horizontal modal__trip-warnings-button-container" style="display: none">
                                     <button class="hoverable selectable__text modal__trip-warnings-button delayed">
                                         &#9888;
+                                    </button>
+                                    <div class="line--accent"></div>
+                                </div>
+                                <div class="selectable--horizontal modal__trip-static-infos-button-container" style="display: none">
+                                    <button class="hoverable selectable__text modal__trip-static-infos-button info">
+                                        &#128712;
                                     </button>
                                     <div class="line--accent"></div>
                                 </div>
@@ -406,6 +372,9 @@
                             <div class="modal__trip-warnings delayed padded-top-bottom">
 
                             </div>
+                            <div class="modal__trip-static-infos info padded-top-bottom">
+
+                            </div>
                             <div class="modal__trip-hints padded-top-bottom">
 
                             </div>
@@ -417,10 +386,15 @@
                         </template>
                     </div>
                     <div class="flex-row modal__trip__element__first-last-child">
-                        <div class="modal__arrival header">
+                        <div class="modal__arrival-container flex-row">
+                            <div>
+                                <span class="modal__arrival header"></span><span class="modal__arrival-delay"></span>
+                            </div>
+                            <div class="modal__arrival-platform modal__platform">
 
+                            </div>
                         </div>
-                        <div class="modal__arrival-platform">
+                        <div class="desktop-only">
 
                         </div>
                     </div>
@@ -448,7 +422,7 @@
 
 </div>
 
-<div id="settings-modal" class="modal" style="display: flex">
+<div id="settings-modal" class="modal" style="display: none">
     <div class="modal-content content-wrapper">
         <header class="flex-row">
             <span class="modal__title header padded-top-bottom">
@@ -531,7 +505,25 @@
             </div>
             <div class="setting flex-row-column padded-top-bottom">
                 <div class="setting__name">
-                    <span class="de">Spache</span><span class="en">Language</span>
+                    <span class="de">Unschärfe-Effekt</span><span class="en">Blur effect</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setBlurEffect(true)">
+                            <span class="desktop-only"><span class="de">aktivieren</span><span class="en">activate</span></span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setBlurEffect(false)">
+                            <span class="desktop-only"><span class="de">deaktivieren</span><span class="en">deactivate</span></span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="blur-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Sprache</span><span class="en">Language</span>
                 </div>
                 <div class="setting__action flex-column">
                     <div class="tab-row flex-row">
@@ -544,6 +536,79 @@
                     </div>
                     <div class="tab-indicator-container indicator-line-container">
                         <div class="line--accent indicator indicator__animation-to-right" id="language-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Verkehrsmittel</span><span class="en">Modes of transprt</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="flex-row">
+                        <div id="product-indicator__nationalExpress" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('nationalExpress')">
+                                <span class="de">Intercity-Express</span><span class="en">national express</span>
+                            </button>
+                            <div class="line--accent connection-line--nationalExpress"></div>
+                        </div>
+                        <div id="product-indicator__national" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('national')">
+                                <span class="de">Intercity / Eurocity</span><span class="en">national</span>
+                            </button>
+                            <div class="line--accent connection-line--national"></div>
+                        </div>
+                        <div id="product-indicator__regionalExpress" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('regionalExpress')">
+                                <span class="de">Regional-Schnellzug</span><span class="en">regional express</span>
+                            </button>
+                            <div class="line--accent connection-line--regionalExpress"></div>
+                        </div>
+                    </div>
+                    <div class="flex-row">
+                        <div id="product-indicator__regional" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('regional')">
+                                <span class="de">Regionalzug</span><span class="en">regional</span>
+                            </button>
+                            <div class="line--accent connection-line--regional"></div>
+                        </div>
+                        <div id="product-indicator__suburban" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('suburban')">
+                                <span class="de">S-Bahn</span><span class="en">suburban</span>
+                            </button>
+                            <div class="line--accent connection-line--suburban"></div>
+                        </div>
+                        <div id="product-indicator__subway" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('subway')">
+                                <span class="de">U-Bahn</span><span class="en">underground</span>
+                            </button>
+                            <div class="line--accent connection-line--subway"></div>
+                        </div>
+                    </div>
+                    <div class="flex-row">
+                        <div id="product-indicator__tram" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('tram')">
+                                <span class="de">Straßenbahn</span><span class="en">tram</span>
+                            </button>
+                            <div class="line--accent connection-line--tram"></div>
+                        </div>
+                        <div id="product-indicator__bus" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('bus')">
+                                <span class="de">Bus</span><span class="en">bus</span>
+                            </button>
+                            <div class="line--accent connection-line--bus"></div>
+                        </div>
+                        <div id="product-indicator__taxi" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('taxi')">
+                                <span class="de">Ruftaxi</span><span class="en">taxi</span>
+                            </button>
+                            <div class="line--accent connection-line--taxi"></div>
+                        </div>
+                        <div id="product-indicator__ferry" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('ferry')">
+                                <span class="de">Schiff</span><span class="en">ferry</span>
+                            </button>
+                            <div class="line--accent connection-line--ferry"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -682,6 +747,17 @@
         </div>
     </div>
 </div>
+<div id="toasts">
+
+</div>
+<template id="toast-template">
+    <div class="toast">
+        <div class="toast__text">
+
+        </div>
+        <div class="line--accent toast__line"></div>
+    </div>
+</template>
 
 </body>
 </html>

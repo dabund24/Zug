@@ -1,9 +1,11 @@
 import {HafasClient, Journey, JourneysOptions} from "hafas-client";
-import {isZugError, JourneyNode, JourneyTree, TreeMatrixPair, ZugError} from "../public/ts/types.js"
+import {JourneyNode, JourneyTree, TreeMatrixPair, ZugError} from "../public/ts/types.js"
 
 let hafasClient: HafasClient
 
 export async function getJourneys(stops: string[], opt: JourneysOptions, client: HafasClient): Promise<TreeMatrixPair | ZugError> {
+    opt.routingMode = "REALTIME"
+    opt.stopovers = true
     console.log(opt)
     hafasClient = client;
     //opt.results = 20
@@ -33,6 +35,7 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
         opt.departure = new Date(earliestArrival)
     }
 
+    opt.routingMode = "FULL"
     for (let i = 1; i < stops.length - 1; i++) {
 
         let latestNext = getLatestArrivalFromJourneys(journeysArray[i - 1])
@@ -111,9 +114,7 @@ function getLatestDepartureFromJourneys(journeys: readonly Journey[] | Journey[]
 
 function getEarliestArrivalFromJourney(journeys: readonly Journey[] | Journey[]) {
     const firstJourney = journeys[0]
-    let ea = firstJourney.legs[firstJourney.legs.length - 1].arrival
-    //console.log(ea + " in " + firstJourney.legs[firstJourney.legs.length - 1].plannedArrival)
-    return ea
+    return firstJourney.legs[firstJourney.legs.length - 1].arrival
 }
 
 function journeyMatrixToJourneyTree(matrix: Journey[][]): JourneyTree {
@@ -123,22 +124,13 @@ function journeyMatrixToJourneyTree(matrix: Journey[][]): JourneyTree {
 }
 
 function getNodesFromMatrix(matrix: Journey[][], nextDeparture: Date, depth: number): JourneyNode[] | null {
-    //console.log("depth: " + depth + ", nextDep: " + nextDeparture)
-    //console.log(matrix)
     if (depth === matrix.length) {
         return null
     }
-    //console.log("matrLen: " + matrix[depth].length)
 
-    let childNodes: JourneyNode[] = []
-
-    let end = getLastMatchingJourneyIndex(nextDeparture, matrix[depth]);
-
-    let children = matrix[depth].splice(0, end)
-    //console.log("end")
-    //console.log("oldLength: " + matrix[depth].length)
-    //matrix[depth] = matrix[depth].slice(0, end)
-    //console.log("newLength: " + matrix[depth].length)
+    const childNodes: JourneyNode[] = []
+    const end = getLastMatchingJourneyIndex(nextDeparture, matrix[depth]);
+    const children = matrix[depth].splice(0, end)
 
     for (let i = 0; i < children.length; i++) {
         let nextArrival: Date;
@@ -147,15 +139,13 @@ function getNodesFromMatrix(matrix: Journey[][], nextDeparture: Date, depth: num
         } else {
             const nextChild = children[i + 1];
             nextArrival = new Date(nextChild.legs[nextChild.legs.length - 1].arrival!)
-            //console.log("next arr: " + nextArrival)
         }
 
-        let childNode: JourneyNode = {
+        const childNode: JourneyNode = {
             journey: children[i],
             children: getNodesFromMatrix(matrix, nextArrival, depth + 1)
         }
         childNodes.push(childNode)
-        //console.log(childNode)
     }
     return childNodes
 }

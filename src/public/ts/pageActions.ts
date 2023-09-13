@@ -1,4 +1,5 @@
-import {Color, Theme} from "./types.js";
+import {Color, Theme, ToasterType} from "./types.js";
+import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util.js";
 
 export function slideIndicator(indicatorID: string, selectableCount: number, start: number, end: number): void {
     const indicator = document.getElementById(indicatorID)!
@@ -46,4 +47,32 @@ export function setColor(color: Color) {
     currentColor = color;
     document.documentElement.setAttribute("data-color", color[1]);
     //fetch("/setcookie?key=color&value=" + color)
+}
+
+export function setBlurEffect(blur: boolean) {
+    if ("" + blur === document.documentElement.getAttribute("data-blur")) {
+        return
+    }
+    if (blur) {
+        document.documentElement.setAttribute("data-blur", "true")
+        slideIndicator("blur-indicator", 2, 1, 0)
+    } else {
+        document.documentElement.setAttribute("data-blur", "false")
+        slideIndicator("blur-indicator", 2, 0, 1)
+    }
+}
+
+export function toast(type: ToasterType, message: string) {
+    const template = (<HTMLTemplateElement>document.getElementById("toast-template")).content
+    const toBeAdded = document.importNode(template, true)
+    const target = document.getElementById("toasts")!
+    setHTMLOfChildOfParent(toBeAdded, ".toast__text", message)
+    addClassToChildOfParent(toBeAdded, ".line--accent", "line--" + type)
+    target.appendChild(toBeAdded)
+    setTimeout(() => {
+        const toBeRemoved = target.querySelector(".toast")
+        if (toBeRemoved !== null) {
+            target.removeChild(target.querySelector(".toast")!)
+        }
+    }, 3000)
 }

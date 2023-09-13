@@ -1,13 +1,12 @@
-import {Journeys, Journey, Leg, Location} from "hafas-client";
+import {Journey, Leg, Location, StopOver} from "hafas-client";
 import {
-    addClassToChildOfParent, dateDifference, dateToString,
-    printNotification,
+    addClassToChildOfParent, dateDifference, dateToString, numberWithSign,
     setHTMLOfChildOfParent, timeToString,
-    unixToHoursString,
     unixToHoursStringShort
 } from "./util.js";
 import {getJourney, resetJourneys, saveJourney, selectedJourney} from "./memorizer.js";
-import {JourneyNode, JourneyTree} from "./types.js";
+import {JourneyNode, JourneyTree, LoadFactor} from "./types.js";
+import {toast} from "./pageActions.js";
 
 let journeyCounter: number;
 const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content
@@ -205,7 +204,7 @@ function addLegToModal(leg: Leg, legsTarget: HTMLElement) {
     // departure
     setHTMLOfChildOfParent(toBeAdded, ".modal__departure", leg.origin?.name);
     if (leg.departurePlatform !== null) {
-        setHTMLOfChildOfParent(toBeAdded, ".modal__departure-platform", "Gleis " + leg.departurePlatform)
+        setHTMLOfChildOfParent(toBeAdded, ".modal__departure-platform", getPlatformHTML(leg.departurePlatform))
         if (leg.departurePlatform !== leg.plannedDeparturePlatform) {
             addClassToChildOfParent(toBeAdded, ".modal__departure-platform", "delayed")
         }
@@ -214,12 +213,14 @@ function addLegToModal(leg: Leg, legsTarget: HTMLElement) {
     if (leg.departureDelay !== undefined && leg.departurePrognosisType !== null && leg.departureDelay !== null) {
         setHTMLOfChildOfParent(toBeAdded, ".time--departure--actual", unixToHoursStringShort(leg.departure))
         addClassToChildOfParent(toBeAdded, ".time--departure--actual", leg.departureDelay <= 300 ? "on-time" : "delayed")
+        setHTMLOfChildOfParent(toBeAdded, ".modal__departure-delay", " (" + numberWithSign(leg.departureDelay / 60) + ")")
+        addClassToChildOfParent(toBeAdded, ".modal__departure-delay", leg.departureDelay <= 300 ? "on-time" : "delayed")
     }
 
     // arrival
     setHTMLOfChildOfParent(toBeAdded, ".modal__arrival", leg.destination?.name);
     if (leg.arrivalPlatform !== null) {
-        setHTMLOfChildOfParent(toBeAdded, ".modal__arrival-platform", "Gleis " + leg.arrivalPlatform)
+        setHTMLOfChildOfParent(toBeAdded, ".modal__arrival-platform", getPlatformHTML(leg.arrivalPlatform))
         if (leg.arrivalPlatform !== leg.plannedArrivalPlatform) {
             addClassToChildOfParent(toBeAdded, ".modal__arrival-platform", "delayed")
         }
@@ -228,17 +229,51 @@ function addLegToModal(leg: Leg, legsTarget: HTMLElement) {
     if (leg.arrivalDelay !== undefined && leg.arrivalPrognosisType !== null && leg.arrivalDelay !== null) {
         setHTMLOfChildOfParent(toBeAdded, ".time--arrival--actual", unixToHoursStringShort(leg.arrival))
         addClassToChildOfParent(toBeAdded, ".time--arrival--actual", leg.arrivalDelay <= 300 ? "on-time" : "delayed")
+        setHTMLOfChildOfParent(toBeAdded, ".modal__arrival-delay", " (" + numberWithSign(leg.arrivalDelay / 60) + ")")
+        addClassToChildOfParent(toBeAdded, ".modal__arrival-delay", leg.arrivalDelay <= 300 ? "on-time" : "delayed")
     }
 
-    setHTMLOfChildOfParent(toBeAdded, ".modal__line-info", leg.line?.name + " &rightarrow; " + leg.direction)
+    setHTMLOfChildOfParent(toBeAdded, ".modal__line-info__text", leg.line?.name + " &rightarrow; " + leg.direction)
+    const a = legCounter;
+    (<HTMLButtonElement>toBeAdded.querySelector(".modal__line-info__text")).onclick = function(){toggleStopovers(a)};
+
+    if (leg.stopovers !== undefined) {
+        addStopoversToModal(leg.stopovers, toBeAdded)
+    }
 
     if (leg.remarks !== undefined) {
         addLegInfoToModal(leg, toBeAdded)
-    } else {
-        (<HTMLElement>toBeAdded.querySelector(".modal__trip-infos-container")).style.setProperty("display", "none")
     }
+    addStaticLegInfoToModal(leg, toBeAdded);
 
     legsTarget.append(toBeAdded);
+}
+
+function addStopoversToModal(stopovers: readonly StopOver[], legToBeAdded: DocumentFragment) {
+    const stopoverTemplate = (<HTMLTemplateElement>legToBeAdded.querySelector(".stopover-template")!).content
+    const stopoverTarget = legToBeAdded.querySelector(".modal__line-stopovers")!
+
+    for (let i = 1; i < stopovers.length - 1; i++) {
+        const stopover = stopovers[i]
+        const stopoverToBeAdded = document.importNode(stopoverTemplate, true)
+        if (stopover.arrival !== undefined && stopover.arrival !== null) {
+            setHTMLOfChildOfParent(stopoverToBeAdded, ".time--stopover--arrival", unixToHoursStringShort(stopover.arrival))
+            if (stopover.arrivalDelay !== undefined && stopover.arrivalPrognosisType !== undefined && stopover.arrivalDelay !== null) {
+                addClassToChildOfParent(stopoverToBeAdded, ".time--stopover--arrival", stopover.arrivalDelay <= 300 ? "on-time" : "delayed")
+                addClassToChildOfParent(stopoverToBeAdded, ".stopover__delay", stopover.arrivalDelay <= 300 ? "on-time" : "delayed")
+                setHTMLOfChildOfParent(stopoverToBeAdded, ".stopover__delay", " (" + numberWithSign(stopover.arrivalDelay / 60) + ")")
+            }
+        }
+        if (stopover.departure !== undefined && stopover.departure !== null) {
+            setHTMLOfChildOfParent(stopoverToBeAdded, ".time--stopover--departure", unixToHoursStringShort(stopover.departure))
+            if (stopover.departureDelay !== undefined && stopover.departurePrognosisType !== undefined && stopover.arrivalDelay !== null) {
+                addClassToChildOfParent(stopoverToBeAdded, ".time--stopover--departure", stopover.departureDelay <= 300 ? "on-time" : "delayed")
+            }
+        }
+        setHTMLOfChildOfParent(stopoverToBeAdded, ".stopover__name", stopover.stop?.name)
+        setHTMLOfChildOfParent(stopoverToBeAdded, ".stopover__platform", getPlatformHTML(stopover.arrivalPlatform))
+        stopoverTarget.append(stopoverToBeAdded)
+    }
 }
 
 function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
@@ -278,17 +313,86 @@ function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
             hintsTarget.appendChild(toBeAdded)
         }
     }
+
+}
+
+function addStaticLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
+    let hasInfo = false
+    const infoTemplate = (<HTMLTemplateElement> legToBeAdded.querySelector(".modal__trip-info-template")).content
+    const target = legToBeAdded.querySelector(".modal__trip-static-infos")!
+    if (leg.loadFactor !== undefined) {
+        const loadFactor = ({
+            "low-to-medium": "<span class='de on-time'>gering</span><span class='en on-time'>low</span>",
+            "high": "<span class='de warning'>mittel</span><span class='en warning'>medium</span>",
+            "very-high": "<span class='de delayed'>hoch</span><span class='en delayed'>high</span>",
+            "exceptionally-high": "<span class='de delayed'>außergewöhnlich hoch</span><span class='en delayed'>exceptionally high</span>"
+        })[<LoadFactor>leg.loadFactor]
+        addInfoToTarget(target, infoTemplate, "<span class='de'>Auslastung</span><span class='en'>load</span>: " + loadFactor)
+        hasInfo = true
+    }
+    if (leg.line?.operator !== undefined) {
+        addInfoToTarget(target, infoTemplate, "<span class='de'>Betreiber</span><span class='en'>operator</span>: " + leg.line.operator.name)
+        hasInfo = true
+    }
+    if (leg.cycle?.min !== undefined && leg.cycle.max !== undefined) {
+        addInfoToTarget(target, infoTemplate, "<span class='de'>fährt alle</span><span class='en'>every</span> " + (leg.cycle.min / 60)
+            + " <span class='de'>bis</span><span class='en'>to</span> " + (leg.cycle.max / 60)
+            + " <span class='de'>Minuten</span><span class='en'>minutes</span>")
+        hasInfo = true
+    }
+    if (leg.line?.fahrtNr !== undefined) {
+        addInfoToTarget(target, infoTemplate, "<span class='de'>Fahrtnummer</span><span class='en'>train number</span>: " + leg.line.fahrtNr)
+        hasInfo = true
+    }
+    console.log(hasInfo)
+    if (hasInfo) {
+        const a = legCounter;
+        (<HTMLButtonElement>legToBeAdded.querySelector(".modal__trip-static-infos-button")).onclick = function(){toggleStaticInfoWarnings(a)};
+        (<HTMLElement>legToBeAdded.querySelector(".modal__trip-static-infos-button-container")).style.setProperty("display", "block")
+    }
+}
+
+function addInfoToTarget(target: Element, template: DocumentFragment, text: string) {
+    const info = document.importNode(template, true)
+    setHTMLOfChildOfParent(info, ".modal__trip-info", text)
+    target.append(info)
+}
+
+function toggleStopovers(index: number) {
+    const legContainer = <HTMLElement>document.getElementsByClassName("modal__trip")[index]
+    const stopoversContainer = legContainer.querySelector(".modal__line-stopovers")!
+    if (stopoversContainer.getAttribute("data-stopovers") === "true") {
+        stopoversContainer.setAttribute("data-stopovers", "false")
+        legContainer.querySelector(".modal__line-info")!.classList.remove("selectable--horizontal--active");
+        (<HTMLElement>legContainer.querySelector(".duration")).style.setProperty("display", "block")
+    } else {
+        stopoversContainer.setAttribute("data-stopovers", "true")
+        addClassToChildOfParent(legContainer, ".modal__line-info", "selectable--horizontal--active");
+        (<HTMLElement>legContainer.querySelector(".duration")).style.setProperty("display", "none")
+    }
 }
 
 export function toggleLegWarnings(index: number) {
-    let legContainer = <HTMLElement>document.getElementsByClassName("modal__trip")[index]
-    let infosContainer = legContainer.querySelector(".modal__trip-infos-container")!
+    const legContainer = <HTMLElement>document.getElementsByClassName("modal__trip")[index]
+    const infosContainer = legContainer.querySelector(".modal__trip-infos-container")!
     if (infosContainer.getAttribute("data-warnings") === "true") {
         infosContainer.setAttribute("data-warnings", "false")
         legContainer.querySelector(".modal__trip-warnings-button-container")!.classList.remove("selectable--horizontal--active")
     } else {
         infosContainer.setAttribute("data-warnings", "true")
         addClassToChildOfParent(legContainer, ".modal__trip-warnings-button-container", "selectable--horizontal--active")
+    }
+}
+
+function toggleStaticInfoWarnings(index: number) {
+    const legContainer = <HTMLElement>document.getElementsByClassName("modal__trip")[index]
+    const infosContainer = legContainer.querySelector(".modal__trip-infos-container")!
+    if (infosContainer.getAttribute("data-static-infos") === "true") {
+        infosContainer.setAttribute("data-static-infos", "false")
+        legContainer.querySelector(".modal__trip-static-infos-button-container")!.classList.remove("selectable--horizontal--active")
+    } else {
+        infosContainer.setAttribute("data-static-infos", "true")
+        addClassToChildOfParent(legContainer, ".modal__trip-static-infos-button-container", "selectable--horizontal--active")
     }
 }
 
@@ -304,6 +408,13 @@ export function toggleLegHints(index: number) {
     }
 }
 
+export function getPlatformHTML(platform: number | string | undefined) {
+    if (platform === undefined || platform === null) {
+        return ""
+    }
+    return "<span class='de'>Gl.</span><span class='en'>Pl.</span> " + platform
+}
+
 export function hideConnectionModal() {
     document.getElementById("connection-modal")!.style.setProperty("display", "none")
     document.getElementById("connection-line-selectable-" + selectedJourney)!.classList.remove("selectable--horizontal--active")
@@ -315,4 +426,5 @@ export function showSettingsModal() {
 
 export function hideSettingsModal() {
     document.getElementById("settings-modal")!.style.setProperty("display", "none")
+    toast("success", "Einstellungen gespeichert")
 }
