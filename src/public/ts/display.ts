@@ -1,4 +1,4 @@
-import {Journey, Leg, Location, StopOver} from "hafas-client";
+import {Journey, Leg, Location, StopOver, Hint, Warning, Status} from "hafas-client";
 import {
     addClassToChildOfParent, dateDifference, dateToString, numberWithSign,
     setHTMLOfChildOfParent, timeToString,
@@ -22,7 +22,7 @@ export function displayJourneyTree(tree: JourneyTree, stations: string[]) {
     tree.children.forEach(node => {
         addJourneyNode(node, connectionsRootContainer)
     })
-
+    return journeyCounter
 }
 
 export function addJourneyNode(node: JourneyNode, parent: HTMLElement | DocumentFragment) {
@@ -131,12 +131,13 @@ function setConnectionLines(legs: readonly Leg[], connectionToBeAdded: DocumentF
 let legCounter = 0;
 
 export function displayJourneyModal(index: number) {
+    document.documentElement.classList.add("no-scroll")
     legCounter = 0;
     document.getElementById("connection-line-selectable-" + index)!.classList.add("selectable--horizontal--active")
     const journey = getJourney(index);
     const modal = document.getElementById("connection-modal")!;
 
-    setHTMLOfChildOfParent(modal, ".modal__title", journey.legs[0].origin!.name + " &longrightarrow; " + journey.legs[journey.legs.length - 1]!.destination!.name)
+    setHTMLOfChildOfParent(modal, ".modal__title", journey.legs[0].origin!.name + " &#129106; " + journey.legs[journey.legs.length - 1]!.destination!.name)
     setHTMLOfChildOfParent(modal, ".modal__connection-date", dateToString(journey.legs[0].departure!))
     setHTMLOfChildOfParent(modal, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)))
 
@@ -174,8 +175,8 @@ function addWalkToModal(walk: Leg | undefined, legsTarget: HTMLElement, transfer
     setHTMLOfChildOfParent(toBeAdded, ".transfer-time", transferTime)
 
     if (walk !== undefined) {
-        let walkingTime = timeToString(dateDifference(walk.departure!, walk.arrival!));
-        setHTMLOfChildOfParent(toBeAdded, ".modal__walk__text", walk.distance + "m Fußweg (ca. " + walkingTime + ")")
+        const walkingTime = timeToString(dateDifference(walk.departure!, walk.arrival!));
+        setHTMLOfChildOfParent(toBeAdded, ".modal__walk__text", getWalkHTML(walk.distance, walkingTime))
         if ((<any>walk.origin).location.latitude !== undefined && (<any>walk.destination).location.latitude !== undefined) {
             let originLocation: Location = (<any>walk.origin).location
             let destinationLocation: Location = (<any>walk.destination).location
@@ -198,8 +199,8 @@ function addLegToModal(leg: Leg, legsTarget: HTMLElement) {
     const toBeAdded = document.importNode(legTemplate, true)
 
     // line color and duration
-    let productClass = "connection-line--" + leg.line!.product;
-    addClassToChildOfParent(toBeAdded, ".connection-line--horizontal", productClass);
+    let productClass = "modal__trip--" + leg.line!.product;
+    addClassToChildOfParent(toBeAdded, ".modal__trip", productClass);
     setHTMLOfChildOfParent(toBeAdded, ".duration", timeToString(dateDifference(leg.departure!, leg.arrival!)));
     // departure
     setHTMLOfChildOfParent(toBeAdded, ".modal__departure", leg.origin?.name);
@@ -266,42 +267,88 @@ function addStopoversToModal(stopovers: readonly StopOver[], legToBeAdded: Docum
         }
         if (stopover.departure !== undefined && stopover.departure !== null) {
             setHTMLOfChildOfParent(stopoverToBeAdded, ".time--stopover--departure", unixToHoursStringShort(stopover.departure))
-            if (stopover.departureDelay !== undefined && stopover.departurePrognosisType !== undefined && stopover.arrivalDelay !== null) {
+            if (stopover.departureDelay !== undefined && stopover.departurePrognosisType !== undefined && stopover.departureDelay !== null) {
                 addClassToChildOfParent(stopoverToBeAdded, ".time--stopover--departure", stopover.departureDelay <= 300 ? "on-time" : "delayed")
             }
         }
         setHTMLOfChildOfParent(stopoverToBeAdded, ".stopover__name", stopover.stop?.name)
         setHTMLOfChildOfParent(stopoverToBeAdded, ".stopover__platform", getPlatformHTML(stopover.arrivalPlatform))
+        if (stopover.arrivalPlatform !== stopover.plannedArrivalPlatform) {
+            addClassToChildOfParent(stopoverToBeAdded, ".stopover__platform", "delayed")
+        }
         stopoverTarget.append(stopoverToBeAdded)
     }
 }
 
 function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
     const infoTemplate = (<HTMLTemplateElement> legToBeAdded.querySelector(".modal__trip-info-template")).content
+    const statusesTarget = legToBeAdded.querySelector(".modal__trip-statuses")!
     const warningsTarget = legToBeAdded.querySelector(".modal__trip-warnings")!
     const hintsTarget = legToBeAdded.querySelector(".modal__trip-hints")!
 
     let remarks = leg.remarks!.concat()
+    if (leg.stopovers?.[0]?.remarks !== undefined) {
+        remarks = leg.stopovers[0].remarks.concat(remarks)
+    }
+
+    const hints: (Hint | Status | Warning)[] = []
+    const warnings: (Hint | Status | Warning)[] = []
+    const statuses: (Hint | Status | Warning)[] = []
+
+    remarks.forEach(remark => {
+        switch (remark.type) {
+            case "hint":
+                hints.push(remark)
+                break
+            case "status":
+                statuses.push(remark)
+                break
+            default:
+                warnings.push(remark)
+        }
+    })
+/*
     remarks.sort((a, b) => {
         if (a.type === "hint" && b.type !== "hint") {
             return 1
         } else {
             return -1
         }
-    });
+    });*/
 
-    if (remarks[0].type !== "hint") {
+    if (hints.length !== 0) {
+        (<HTMLElement>legToBeAdded.querySelector(".modal__trip-hints-button-container")).style.setProperty("display", "block")
+    }
+    if (warnings.length !== 0) {
         (<HTMLElement>legToBeAdded.querySelector(".modal__trip-warnings-button-container")).style.setProperty("display", "block")
     }
-    if (remarks[remarks.length - 1].type === "hint") {
-        (<HTMLElement>legToBeAdded.querySelector(".modal__trip-hints-button-container")).style.setProperty("display", "block")
+    if (statuses.length !== 0) {
+        (<HTMLElement>legToBeAdded.querySelector(".modal__trip-statuses-button-container")).style.setProperty("display", "block")
     }
 
     let a = legCounter;
+    (<HTMLButtonElement>legToBeAdded.querySelector(".modal__trip-statuses-button")).onclick = function(){toggleLegStatuses(a)};
     (<HTMLButtonElement>legToBeAdded.querySelector(".modal__trip-warnings-button")).onclick = function(){toggleLegWarnings(a)};
     (<HTMLButtonElement>legToBeAdded.querySelector(".modal__trip-hints-button")).onclick = function(){toggleLegHints(a)};
 
+    statuses.forEach(status => {
+        const toBeAdded = document.importNode(infoTemplate, true)
+        setHTMLOfChildOfParent(toBeAdded, ".modal__trip-info", status.text)
+        statusesTarget.appendChild(toBeAdded)
+    })
 
+    warnings.forEach(warning => {
+        const toBeAdded = document.importNode(infoTemplate, true)
+        setHTMLOfChildOfParent(toBeAdded, ".modal__trip-info", warning.text)
+        warningsTarget.appendChild(toBeAdded)
+    })
+
+    hints.forEach(hint => {
+        const toBeAdded = document.importNode(infoTemplate, true)
+        setHTMLOfChildOfParent(toBeAdded, ".modal__trip-info", hint.text)
+        hintsTarget.appendChild(toBeAdded)
+    })
+/*
     for (let i = 0; i < remarks.length; i++) {
         const toBeAdded = document.importNode(infoTemplate, true)
         let remark = remarks[i]
@@ -312,7 +359,7 @@ function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
         } else {
             hintsTarget.appendChild(toBeAdded)
         }
-    }
+    }*/
 
 }
 
@@ -335,8 +382,14 @@ function addStaticLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
         hasInfo = true
     }
     if (leg.cycle?.min !== undefined && leg.cycle.max !== undefined) {
-        addInfoToTarget(target, infoTemplate, "<span class='de'>fährt alle</span><span class='en'>every</span> " + (leg.cycle.min / 60)
-            + " <span class='de'>bis</span><span class='en'>to</span> " + (leg.cycle.max / 60)
+        let xToY: string;
+        if (leg.cycle.min === leg.cycle.max) {
+            xToY = "" + (leg.cycle.min / 60)
+        } else {
+            xToY = (leg.cycle.min / 60) + " <span class='de'>bis</span><span class='en'>to</span> " + (leg.cycle.max / 60)
+        }
+        addInfoToTarget(target, infoTemplate, "<span class='de'>fährt alle</span><span class='en'>every</span> "
+            + xToY
             + " <span class='de'>Minuten</span><span class='en'>minutes</span>")
         hasInfo = true
     }
@@ -369,6 +422,18 @@ function toggleStopovers(index: number) {
         stopoversContainer.setAttribute("data-stopovers", "true")
         addClassToChildOfParent(legContainer, ".modal__line-info", "selectable--horizontal--active");
         (<HTMLElement>legContainer.querySelector(".duration")).style.setProperty("display", "none")
+    }
+}
+
+function toggleLegStatuses(index: number) {
+    const legContainer = <HTMLElement>document.getElementsByClassName("modal__trip")[index]
+    const infosContainer = legContainer.querySelector(".modal__trip-infos-container")!
+    if (infosContainer.getAttribute("data-statuses") === "true") {
+        infosContainer.setAttribute("data-statuses", "false")
+        legContainer.querySelector(".modal__trip-statuses-button-container")!.classList.remove("selectable--horizontal--active")
+    } else {
+        infosContainer.setAttribute("data-statuses", "true")
+        addClassToChildOfParent(legContainer, ".modal__trip-statuses-button-container", "selectable--horizontal--active")
     }
 }
 
@@ -408,23 +473,31 @@ export function toggleLegHints(index: number) {
     }
 }
 
-export function getPlatformHTML(platform: number | string | undefined) {
+function getPlatformHTML(platform: number | string | undefined) {
     if (platform === undefined || platform === null) {
         return ""
     }
     return "<span class='de'>Gl.</span><span class='en'>Pl.</span> " + platform
 }
 
+function getWalkHTML(distance: number | undefined, time: string) {
+    return distance + "m <span class='de'>Fußweg (ca.</span><span class='en'>by foot (approx.</span> " + time + ")"
+}
+
 export function hideConnectionModal() {
+    document.documentElement.classList.remove("no-scroll")
     document.getElementById("connection-modal")!.style.setProperty("display", "none")
     document.getElementById("connection-line-selectable-" + selectedJourney)!.classList.remove("selectable--horizontal--active")
 }
 
-export function showSettingsModal() {
-    document.getElementById("settings-modal")!.style.setProperty("display", "flex")
+export function showModal(name: string) {
+    document.documentElement.classList.add("no-scroll")
+    document.getElementById(name + "-modal-indicator")!.classList.add("selectable--horizontal--active")
+    document.getElementById(name + "-modal")!.style.setProperty("display", "flex")
 }
 
-export function hideSettingsModal() {
-    document.getElementById("settings-modal")!.style.setProperty("display", "none")
-    toast("success", "Einstellungen gespeichert")
+export function hideModal(name: string) {
+    document.documentElement.classList.remove("no-scroll")
+    document.getElementById(name + "-modal-indicator")!.classList.remove("selectable--horizontal--active")
+    document.getElementById(name + "-modal")!.style.setProperty("display", "none")
 }

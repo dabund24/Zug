@@ -1,32 +1,32 @@
-import {HafasClient, Journey, JourneysOptions} from "hafas-client";
-import {JourneyNode, JourneyTree, TreeMatrixPair, ZugError} from "../public/ts/types.js"
+import {HafasClient, Journey, Journeys, JourneysOptions} from "hafas-client";
+import {JourneyNode, JourneyTree, TreeMatrixPair, ZugResponse} from "../public/ts/types.js"
+import {respondErrorNoStations, respondErrorStations, respondHafasError, respondNoError} from "./responses.js";
 
 let hafasClient: HafasClient
 
-export async function getJourneys(stops: string[], opt: JourneysOptions, client: HafasClient): Promise<TreeMatrixPair | ZugError> {
+export async function getJourneys(stops: string[], opt: JourneysOptions, client: HafasClient): Promise<ZugResponse> {
     opt.routingMode = "REALTIME"
     opt.stopovers = true
     console.log(opt)
     hafasClient = client;
-    //opt.results = 20
-    //opt.language = "de"
     let journeysArray: Journey[][] = [];
 
-    // journeys from -> vias[0]
+    let firstJourneysResponse: Journeys;
+    try {
+        firstJourneysResponse = await hafasClient.journeys(stops[0], stops[1], opt)
+    } catch (err) {
+        return respondHafasError(err, 0, 1)
+    }
 
-    let firstJourneysResponse = await hafasClient.journeys(stops[0], stops[1], opt).catch((err) => {
-        return undefined
-    });
-    //console.log(firstJourneysResponse)
-    if (firstJourneysResponse === undefined || firstJourneysResponse.journeys === undefined) {
-        return "error"
+    if (firstJourneysResponse.journeys === undefined || firstJourneysResponse.journeys.length === 0) {
+        return respondErrorStations("noConnections", 0, 1)
     }
     journeysArray.push(firstJourneysResponse.journeys.concat())
 
     let latestNext = getLatestArrivalFromJourneys(firstJourneysResponse.journeys)
     //console.log(latestNext)
     if (latestNext === undefined) {
-        return "error"
+        return respondErrorStations("missingField", 0, 1)
     }
     let latestArrival = latestNext;
     let earliestArrival = getEarliestArrivalFromJourney(firstJourneysResponse.journeys)
@@ -35,24 +35,29 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
         opt.departure = new Date(earliestArrival)
     }
 
+    delete opt.arrival
     opt.routingMode = "FULL"
     for (let i = 1; i < stops.length - 1; i++) {
 
         let latestNext = getLatestArrivalFromJourneys(journeysArray[i - 1])
         //console.log(latestNext)
         if (latestNext === undefined) {
-            return "error"
+            return respondErrorStations("noConnections", i - 1, i)
         }
         let latestArrival = latestNext;
 
         delete opt.laterThan
         //console.log(opt)
-        let journeysResponse = await hafasClient.journeys(stops[i], stops[i + 1], opt).catch(err => {
-            return undefined
-        });
-        if (journeysResponse === undefined || journeysResponse.journeys === undefined) {
-            return "noConnections"
+        let journeysResponse: Journeys;
+        try {
+            journeysResponse = await hafasClient.journeys(stops[i], stops[i + 1], opt)
+        } catch (err) {
+            return respondHafasError(err, i, i + 1)
         }
+        if (journeysResponse.journeys === undefined || journeysResponse.journeys.length === 0) {
+            return respondErrorStations("noConnections", i, i + 1)
+        }
+
         let remainingJourneys = await requestMoreJourneys(journeysResponse.laterRef!, stops[i], stops[i + 1], opt, new Date(latestArrival))
         if (remainingJourneys !== undefined) {
             journeysArray.push(journeysResponse.journeys.concat(remainingJourneys));
@@ -69,9 +74,10 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
     }
     //console.log("c of fc")
 
-    //const tree = journeyMatrixToJourneyTree(journeysArray)
+    const tree = journeyMatrixToJourneyTree(journeysArray)
 
-    return [journeyMatrixToJourneyTree(journeysArray), matrixCopy]
+    return respondNoError(tree)
+    //return [journeyMatrixToJourneyTree(journeysArray), matrixCopy]
 }
 
 async function requestMoreJourneys(laterRef: string, from: string, to: string, opt: JourneysOptions, latest: Date): Promise<Journey[] | undefined> {
@@ -87,14 +93,12 @@ async function requestMoreJourneys(laterRef: string, from: string, to: string, o
             return undefined
         })
         //console.log(laterResult)
-        if (laterResult === undefined || laterResult.journeys === undefined || laterResult.journeys.length === 0) {
+        if (laterResult?.journeys === undefined || laterResult.journeys.length === 0) {
             return undefined;
         }
         journeys = journeys.concat(laterResult.journeys)
         const laterResultLastLegDeparture = getLatestDepartureFromJourneys(laterResult.journeys)
-        //console.log("letzte Abfahrt: " + laterResultLastLegDeparture)
         if (laterResultLastLegDeparture === undefined || new Date(laterResultLastLegDeparture).getTime() > latest.getTime()) {
-            //console.log(laterResultLastLegDeparture)
             return journeys
         }
         opt.laterThan = laterResult.laterRef
@@ -150,11 +154,6 @@ function getNodesFromMatrix(matrix: Journey[][], nextDeparture: Date, depth: num
     return childNodes
 }
 
-/**
- *
- * @param nextJourneyDeparture
- * @param journeysToCheck
- */
 function getLastMatchingJourneyIndex(nextJourneyDeparture: Date, journeysToCheck: Journey[]) {
     //console.log(nextJourneyDeparture + " and length is " + journeysToCheck.length)
     let endIndex = 0;

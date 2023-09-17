@@ -2,7 +2,7 @@ import {Station, Stop} from "hafas-client";
 import {displayJourneyTree} from "./display.js";
 import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
 import {isArrival, journeyOptions} from "./memorizer.js";
-import {TreeMatrixPair} from "./types.js";
+import {TreeMatrixPair, ZugErrorType, ZugResponse} from "./types.js";
 
 setColor([2, "green"])
 setTheme([1, 'dark'])
@@ -10,7 +10,7 @@ setTheme([1, 'dark'])
 
 export async function findConnections() {
     showLoadSlider();
-    toast("neutral", "Suche Verbindungen")
+    toast("neutral", "Suche Verbindungen", "Finding connections")
     const fromStr = (<HTMLInputElement>document.getElementById("from__input")).value
     const vias: string[] = []
     const viaNames: string[] = []
@@ -20,7 +20,19 @@ export async function findConnections() {
             continue
         }
 
-        const via: (Station | Stop)[] = await fetch("/api/stations?name=" + viaStr).then(res => res.json())
+        let via: (Station | Stop)[]
+        try {
+            via = await fetch("/api/stations?name=" + viaStr).then(res => res.json())
+            if (via.length === 0) {
+                toast("error", "Die Station \"" + viaStr + "\" gibt es nicht", "The station \"" + viaStr + "\" does not exist")
+                hideLoadSlider();
+                return
+            }
+        } catch (err) {
+            toast("error", "Die Station \"" + viaStr + "\" gibt es nicht", "The station \"" + viaStr + "\" does not exist")
+            hideLoadSlider();
+            return
+        }
         const viaID = via[0].id
         if (viaStr !== "" && viaID !== undefined) {
             vias.push(viaID)
@@ -30,7 +42,14 @@ export async function findConnections() {
     //const viaStr = (<HTMLInputElement>document.getElementById("via1__input")).value
     const toStr = (<HTMLInputElement>document.getElementById("to__input")).value
 
-    const from: (Station | Stop)[] = await fetch("/api/stations?name=" + fromStr).then(res => res.json())
+    const from: (Station | Stop)[] = await fetch("/api/stations?name=" + fromStr).then(res => res.json()).catch(() => {
+        toast("error", "Verbindung zu Server fehlgeschlagen", "Network error")
+        return []
+    })
+    if (from.length === 0) {
+        hideLoadSlider()
+        return
+    }
     const to: (Station | Stop)[] = await fetch("/api/stations?name=" + toStr).then(res => res.json())
 
     const fromID = from[0].id
@@ -49,29 +68,63 @@ export async function findConnections() {
     let viasQuery = "&vias=" + JSON.stringify(vias)
     let journeyOptionsQuery = "&options=" + JSON.stringify(journeyOptions)
 
-    console.log("a")
-    let pair: TreeMatrixPair
+    let treeResponse: ZugResponse
     try {
-        pair = await fetch("/api/journeys?from=" + fromID + viasQuery + "&to=" + toID + timeQuery + isArrQuery + journeyOptionsQuery).then(res => res.json());
+        treeResponse = await fetch("/api/journeys?from=" + fromID + viasQuery + "&to=" + toID + timeQuery + isArrQuery + journeyOptionsQuery).then(res => res.json());
     } catch (err) {
-        toast("error", "Keine Verbindungen gefunden")
+        toast("error", "Netzwerk-Fehler", "Network error")
         hideLoadSlider()
         return
     }
 
-    console.log(pair[1])
-    const journeyTree = pair[0]
-
-    console.log(journeyTree)
-    const journeys = journeyTree.children.map(child => child.journey)
-
-    if (journeys === undefined) {
-        hideLoadSlider();
-        console.log("no :(")
-        return;
+    if (treeResponse.isError) {
+        let stationA: string
+        let stationB: string
+        if (treeResponse.content.stationA === -1) {
+            stationA = "";
+        } else if (treeResponse.content.stationA === 0) {
+            stationA = <string> from[0].name
+        } else {
+            stationA = viaNames[treeResponse.content.stationA - 1]
+        }
+        if (treeResponse.content.stationB === -1) {
+            stationB = "";
+        } else if (treeResponse.content.stationB === viaNames.length + 1) {
+            stationB = <string> to[0].name
+        } else {
+            stationB = viaNames[treeResponse.content.stationB - 1]
+        }
+        printErrorMessage(treeResponse.content.errorType, stationA, stationB)
+        hideLoadSlider()
+        return
     }
 
-    displayJourneyTree(journeyTree, [<string> from[0].name, viaNames, <string> to[0].name].flat())
-    toast("success", "Verbindungen gefunden")
+    const journeyTree = treeResponse.content
+
+    console.log(journeyTree)
+
+    const connectionCount = displayJourneyTree(journeyTree, [<string> from[0].name, viaNames, <string> to[0].name].flat())
+    toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + "connections")
     hideLoadSlider();
 }
+
+function printErrorMessage(errorType: ZugErrorType, stationA: string, stationB: string) {
+    switch (errorType) {
+        case "noConnections":
+        case "hafasNotFound":
+            toast("error",
+                "Keine Verbindungen von " + stationA + " nach " + stationB + " gefunden",
+                "Found no connections from " + stationA + " to " + stationB)
+            break
+        case "networkError":
+            toast("error",
+                "Hafas-Server nicht erreichbar",
+                "Hafas server not responding")
+            break
+        default:
+            toast("error",
+                "Ein Fehler ist aufgetreten: " + errorType,
+                "An error occurred: " + errorType)
+    }
+}
+

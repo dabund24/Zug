@@ -38,11 +38,43 @@ export type JourneyNode = {
     children: JourneyNode[] | null
 }
 
-export type ZugError = "noConnections" | "error"
+export type ZugErrorDescription = {
+    errorType: ZugErrorType,
+    stationA: number,
+    stationB: number
+}
+
+export type HafasError = {
+    isHafasError: true,
+    code: "ACCESS_DENIED" | "INVALID_REQUEST" | "NOT_FOUND" | "SERVER_ERROR"
+}
+
+export type ZugErrorType =
+    | "hafasAccessDenied"
+    | "hafasInvalidRequest"
+    | "hafasNotFound"
+    | "hafasServer"
+    | "hafasError"
+    | "noConnections"
+    | "missingField"
+    | "networkError"
+    | "error"
 
 export function isZugError(value: any) {
     console.log(value)
     return value === "noConnections" || value === "error"
+}
+
+export type ZugResponse = ZugSuccess | ZugError
+
+type ZugSuccess = {
+    isError: false,
+    content: JourneyTree
+}
+
+type ZugError = {
+    isError: true,
+    content: ZugErrorDescription
 }
 
 export type TreeMatrixPair = [JourneyTree, Journey[][]]

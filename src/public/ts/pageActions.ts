@@ -62,11 +62,11 @@ export function setBlurEffect(blur: boolean) {
     }
 }
 
-export function toast(type: ToasterType, message: string) {
+export function toast(type: ToasterType, messageDe: string, messageEn: string) {
     const template = (<HTMLTemplateElement>document.getElementById("toast-template")).content
     const toBeAdded = document.importNode(template, true)
     const target = document.getElementById("toasts")!
-    setHTMLOfChildOfParent(toBeAdded, ".toast__text", message)
+    setHTMLOfChildOfParent(toBeAdded, ".toast__text", "<span class='de'>" + messageDe + "</span><span class='en'>" + messageEn + "</span>")
     addClassToChildOfParent(toBeAdded, ".line--accent", "line--" + type)
     target.appendChild(toBeAdded)
     setTimeout(() => {

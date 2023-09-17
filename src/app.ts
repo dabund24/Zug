@@ -17,16 +17,6 @@ const port = process.env.PORT || 8081;
 
 const userAgent = "github.com/dabund24/Zug"
 
-const dbProfileWithoutRtModeRealtime = {
-    ...dbProfile,
-    transformReqBody: (ctx:any, body:any) => {
-        // @ts-ignore
-        const reqBody = dbProfile.transformReqBody(ctx, body)
-        delete reqBody.svcReqL[0].cfg.rtMode
-        return reqBody
-    }
-}
-
 const client = createClient(dbProfile, userAgent)
 
 
@@ -49,7 +39,7 @@ app.get("/api/journeys", (req, res) => {
         options.departure = new Date(<string>req.query.time)
     }
 
-    /*
+
     if (req.query.isArrival === "1") {
         if (req.query.time !== undefined) {
             options.arrival = new Date(<string>req.query.time)
@@ -60,7 +50,7 @@ app.get("/api/journeys", (req, res) => {
         if (req.query.time !== undefined) {
             options.departure = new Date(<string>req.query.time)
         }
-    }*/
+    }
     console.log(stops)
 
     getJourneys(stops, options, client).then(journeys => {
@@ -71,8 +61,9 @@ app.get("/api/journeys", (req, res) => {
 
 app.get("/api/stations", (req, res) => {
 
-    client.locations(<string>req.query.name, {results: 10, poi: false, addresses: false})
-        .then(stations => res.send(stations))
+    client.locations(<string>req.query.name, {results: 10, poi: false, addresses: false}).catch(() => {
+        return []
+    }).then(stations => res.send(stations))
 
 })
 
