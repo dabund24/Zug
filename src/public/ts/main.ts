@@ -1,7 +1,7 @@
-import {Station, Stop} from "hafas-client";
-import {displayJourneyTree} from "./display.js";
+import {JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop} from "hafas-client";
+import {displayJourneyModal, displayJourneyTree} from "./display.js";
 import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
-import {isArrival, journeyOptions} from "./memorizer.js";
+import {isArrival, journeyOptions, setJourney} from "./memorizer.js";
 import {TreeMatrixPair, ZugErrorType, ZugResponse} from "./types.js";
 
 setColor([2, "green"])
@@ -104,8 +104,31 @@ export async function findConnections() {
     console.log(journeyTree)
 
     const connectionCount = displayJourneyTree(journeyTree, [<string> from[0].name, viaNames, <string> to[0].name].flat())
+    document.documentElement.setAttribute("data-vias", (vias.length).toString())
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + "connections")
-    hideLoadSlider();
+    hideLoadSlider()
+}
+
+export async function refreshJourney(token: string | undefined, index: number) {
+    showLoadSlider()
+    if (token === undefined) {
+        toast("error", "Aktualisierung gescheitert (fehlendes Token)", "refresh failed (missing token)")
+        hideLoadSlider()
+        return
+    }
+    await fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language).then(res => res.json()).then((refreshed: JourneyWithRealtimeData | null) => {
+        if (refreshed === null) {
+            toast("error", "Aktualisierung gescheitert (Hafas)", "refresh failed (Hafas)")
+            hideLoadSlider()
+            return
+        }
+        setJourney(index, refreshed.journey)
+        displayJourneyModal(refreshed.journey)
+        toast("success", "Verbindungsdaten aktualisiert", "refreshed connection data")
+    }).catch(() => {
+        toast("error", "Netzwerkfehler", "network error")
+    })
+    hideLoadSlider()
 }
 
 function printErrorMessage(errorType: ZugErrorType, stationA: string, stationB: string) {

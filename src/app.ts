@@ -60,11 +60,15 @@ app.get("/api/journeys", (req, res) => {
 })
 
 app.get("/api/stations", (req, res) => {
-
     client.locations(<string>req.query.name, {results: 10, poi: false, addresses: false}).catch(() => {
         return []
     }).then(stations => res.send(stations))
+})
 
+app.get("/api/refresh", (req, res) => {
+    client.refreshJourney?.(<string>req.query.token, {stopovers: true, language: <string>req.query.lang}).catch(() => {
+        return null
+    }).then(refreshed => res.send(refreshed))
 })
 
 app.listen(port)

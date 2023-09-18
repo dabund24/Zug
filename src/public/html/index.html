@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="" data-color="" data-blur="true">
+<html lang="de" data-theme="" data-color="" data-blur="true" data-vias="0">
 
 <head>
     <meta charset="UTF-8"/>
@@ -260,6 +260,9 @@
     <div class="modal-content content-wrapper">
         <header class="flex-row">
             <span class="modal__title header padded-top-bottom"></span>
+            <button class="modal__close modal__refresh header hoverable">
+                &#10227;
+            </button>
             <button class="modal__close header hoverable" onclick="hideConnectionModal()">
                 &times;
             </button>
@@ -620,7 +623,7 @@
                     <div class="flex-row">
                         <div id="product-indicator__tram" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
                             <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('tram')">
-                                <span class="de">Straßenbahn</span><span class="en">tram</span>
+                                <span class="de"><span class="desktop-only">Straßenbahn</span><span class="mobile-only">Tram</span></span><span class="en">tram</span>
                             </button>
                             <div class="line--accent connection-line--tram connection-line-color"></div>
                         </div>

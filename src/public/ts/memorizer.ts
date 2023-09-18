@@ -15,6 +15,10 @@ export function getJourney(i: number) {
     return displayedJourneys[i];
 }
 
+export function setJourney(i: number, journey: Journey) {
+    displayedJourneys[i] = journey
+}
+
 export function resetJourneys() {
     displayedJourneys.length = 0;
 }

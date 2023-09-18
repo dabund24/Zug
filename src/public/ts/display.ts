@@ -1,4 +1,5 @@
 import {Journey, Leg, Location, StopOver, Hint, Warning, Status} from "hafas-client";
+import {refreshJourney} from "./main.js";
 import {
     addClassToChildOfParent, dateDifference, dateToString, numberWithSign,
     setHTMLOfChildOfParent, timeToString,
@@ -50,25 +51,11 @@ function addStationNames(stations: string[]) {
 
 export function displayJourney(journey: Journey, connectionsTarget: HTMLElement | DocumentFragment): HTMLElement {
 
-    /*if (journey === undefined) {
-        printNotification("Keine Verbindungen gefundem")
-        return
-    }*/
-
-    //connectionsTarget.replaceChildren()
-/*
-    const journeySection = document.getElementById("journeys")!;
-    const connectionTemplate = journeySection.querySelector("template")!.content;
-    let toBeAdded;
-
-    let journeysArray = journeys;
-
-    for (let i = 0; i < journeysArray.length; i++) {*/
     let toBeAdded = document.importNode(connectionTemplate, true)
 
     saveJourney(journey);
     let a = journeyCounter;
-    toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModal(a)};
+    toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModalFirstTime(a)};
     toBeAdded.querySelector(".connection-line-selectable")!.setAttribute("id", "connection-line-selectable-" + a)
     journeyCounter++;
 
@@ -130,21 +117,28 @@ function setConnectionLines(legs: readonly Leg[], connectionToBeAdded: DocumentF
 
 let legCounter = 0;
 
-export function displayJourneyModal(index: number) {
+function displayJourneyModalFirstTime(index: number) {
     document.documentElement.classList.add("no-scroll")
-    legCounter = 0;
-    document.getElementById("connection-line-selectable-" + index)!.classList.add("selectable--horizontal--active")
-    const journey = getJourney(index);
+    document.getElementById("connection-line-selectable-" + index)!.classList.add("selectable--horizontal--active");
     const modal = document.getElementById("connection-modal")!;
+    const journey = getJourney(index);
+    (<HTMLButtonElement>modal.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken, index)};
+    displayJourneyModal(journey)
+    modal.style.setProperty("display", "flex")
+}
 
-    setHTMLOfChildOfParent(modal, ".modal__title", journey.legs[0].origin!.name + " &#129106; " + journey.legs[journey.legs.length - 1]!.destination!.name)
+export function displayJourneyModal(journey: Journey) {
+    const modal = document.getElementById("connection-modal")!;
+    legCounter = 0;
+
+    setHTMLOfChildOfParent(modal, ".modal__title", journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name)
     setHTMLOfChildOfParent(modal, ".modal__connection-date", dateToString(journey.legs[0].departure!))
-    setHTMLOfChildOfParent(modal, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)))
+    setHTMLOfChildOfParent(modal, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)));
 
     const legsTarget = document.getElementById("modal__trips")!;
     legsTarget.replaceChildren()
 
-    const legs = journey.legs//.filter(leg => leg.line !== undefined)
+    const legs = journey.legs
 
     for (let i = 0; i < legs.length; i++) {
         if (legs[i].walking) {
@@ -162,10 +156,6 @@ export function displayJourneyModal(index: number) {
             legCounter++;
         }
     }
-
-
-    modal.style.setProperty("display", "flex")
-
 }
 
 function addWalkToModal(walk: Leg | undefined, legsTarget: HTMLElement, transferTime: string) {
