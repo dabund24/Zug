@@ -1,0 +1,77 @@
+.tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.tooltip:after {
+    font-size: 0;
+    position: absolute;
+    transform: translateX(-50%);
+    bottom: 1.5em;
+    left:50%;
+    border-radius: .5rem;
+    line-height: initial;
+    white-space: nowrap;
+    background-color: var(--background-color--opaque);
+    opacity: 0;
+    transition: opacity .5s;
+    z-index: 100;
+}
+
+.tooltip.tooltip--down:after {
+    bottom: -2em;
+}
+
+.tooltip.tooltip--align-left:after {
+    transform: unset;
+    left: 0;
+}
+
+.tooltip.tooltip--align-right:after {
+    transform: translateX(-80%);
+    width: fit-content;
+}
+
+.tooltip:hover:after {
+    font-size: 20px;
+    border: 4px solid var(--foreground-color--opaque);
+    padding: 0 .5rem;
+    opacity: 1;
+}
+
+@media screen and (max-width: 1000px) {
+    .tooltip:hover:after {
+        font-size: 18px;
+    }
+}
+
+[lang="de"] .tooltip {
+    &.time--departure--scheduled:after, &.time--stopover--departure:not(.delayed, .on-time):after {
+        content: "gepl. Abfahrt";
+    }
+    &.time--departure--actual:after, &.time--stopover--departure.delayed, &.time--stopover--departure.on-time:after {
+        content: "vorr. Abfahrt";
+    }
+    &.time--arrival--scheduled:after, &.time--stopover--arrival:not(.delayed, .on-time):after {
+        content: "gepl. Ankunft";
+    }
+    &.time--arrival--actual:after, &.time--stopover--arrival.delayed, &.time--stopover--arrival.on-time:after {
+        content: "vorr. Ankunft";
+    }
+
+    &.modal__arrival-delay:after, &.stopover__delay:after {
+        content: "Versp. (Ankunft)";
+    }
+    &.modal__departure-delay:after {
+        content: "Versp. (Abfahrt)";
+    }
+}
+
+[lang="en"] .tooltip {
+    &.time--departure--scheduled:after {
+        content: "planned dep.";
+    }
+    &.time--departure--actual:after {
+        content: "vorr. Abfahrt";
+    }
+}
