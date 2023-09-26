@@ -17,6 +17,7 @@
     import {findConnections} from "./ts/main.js";
     import {hideConnectionModal, showModal, hideModal} from "./ts/display.js"
     import {setDepArr, setLanguage, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "./ts/memorizer.js";
+    import {clickSuggestion} from "../ts/search.js";
 
     window.setColor = setColor;
     window.setTheme = setTheme;
@@ -36,136 +37,181 @@
     window.setAccessibility = setAccessibility;
     window.setWalkingSpeed = setWalkingSpeed;
     window.setBike = setBike;
+
+    window.clickSuggestion = clickSuggestion;
 </script>
 <div id="content">
     <div id="load-indicator" class="line--accent"></div>
     <section id="inputs">
-        <div class="station-inputs flex-row-column padded-top-bottom">
+        <template id="suggestion-template">
+            <div class="search__suggestion option flex-row padded-top-bottom">
+                <div class="line--accent"></div>
+                <div class="option__text center"></div>
+                <input class="search__suggestion__click" type="hidden">
+            </div>
+        </template>
+        <div class="station-inputs flex-row-column">
             <div>
-                <div id="from-search" class="search">
-                    <label class="padded-top-bottom">
-                        <input type="text" name="search" id="from__input" class="search__input padded-top-bottom" placeholder="Start">
-                    </label>
-                    <!--
-                    <div id="from__suggestions" class="search__suggestions options flex-column hoverable">
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center">Keine Vorschläge</div>
-                            <input class="search__suggestion__click" type="hidden">
-                        </div>
+                <div class="search flex-row">
+                    <div class="search__icon search__icon--from flex-row">
+                        <div class="station-circle--big"></div>
+                        <div class="line--regular"></div>
                     </div>
-                    -->
-                    <template>
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center"></div>
-                            <input class="search__suggestion__click" type="hidden">
+                    <div id="from-search" class="search__input-container">
+                        <label for="from__input"></label>
+                        <input type="text" name="search" id="from__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Start">
+                        <div id="from__suggestions" class="search__suggestions options flex-column hoverable">
+                            <div class="search__suggestion option flex-row padded-top-bottom">
+                                <div class="line--accent"></div>
+                                <div class="option__text center">Keine Vorschläge</div>
+                                <input class="search__suggestion__click" type="hidden">
+                            </div>
                         </div>
-                    </template>
-                    <div class="line--regular"></div>
+                        <div class="line--regular"></div>
+                    </div>
+                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion('', 0)" style="display: none">
+                        <svg width="17px" height="17px" viewBox="0 0 20 20">
+                            <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                                <line x1="4" y1="4" x2="16" y2="16"/>
+                                <line x1="4" y1="16" x2="16" y2="4"/>
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+            <div>
+                <div class="search flex-row">
+                    <div class="search__icon search__icon--via flex-row">
+                        <div class="line--regular"></div>
+                        <div class="station-circle--small"></div>
+                        <div class="line--regular"></div>
+                    </div>
+                    <div id="via1-search" class="search__input-container">
+                        <label>
+                            <input type="text" name="search" id="via1__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Via (optional)">
+                        </label>
+                        <div id="via1__suggestions" class="search__suggestions options flex-column hoverable">
+                            <div class="search__suggestion option flex-row padded-top-bottom">
+                                <div class="line--accent"></div>
+                                <div class="option__text center">Keine Vorschläge</div>
+                                <input class="search__suggestion__click" type="hidden">
+                            </div>
+                        </div>
+                        <div class="line--regular"></div>
+                    </div>
+                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion('', 1)" style="display: none">
+                        <svg width="17px" height="17px" viewBox="0 0 20 20">
+                            <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                                <line x1="4" y1="4" x2="16" y2="16"/>
+                                <line x1="4" y1="16" x2="16" y2="4"/>
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+                <div class="search flex-row">
+                    <div class="search__icon flex-row">
+                        <div class="line--regular"></div>
+                        <div class="station-circle--small"></div>
+                        <div class="line--regular"></div>
+                    </div>
+                    <div id="via2-search" class="search__input-container">
+                        <label>
+                            <input type="text" name="search" id="via2__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Via (optional)">
+                        </label>
+                        <div id="via2__suggestions" class="search__suggestions options flex-column hoverable">
+                            <div class="search__suggestion option flex-row padded-top-bottom">
+                                <div class="line--accent"></div>
+                                <div class="option__text center">Keine Vorschläge</div>
+                                <input class="search__suggestion__click" type="hidden">
+                            </div>
+                        </div>
+                        <div class="line--regular"></div>
+                    </div>
+                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion('', 2)" style="display: none">
+                        <svg width="17px" height="17px" viewBox="0 0 20 20">
+                            <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                                <line x1="4" y1="4" x2="16" y2="16"/>
+                                <line x1="4" y1="16" x2="16" y2="4"/>
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+                <div class="search flex-row">
+                    <div class="search__icon search__icon--via flex-row">
+                        <div class="line--regular"></div>
+                        <div class="station-circle--small"></div>
+                        <div class="line--regular"></div>
+                    </div>
+                    <div id="via3-search" class="search__input-container">
+                        <label>
+                            <input type="text" name="search" id="via3__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Via (optional)">
+                        </label>
+                        <div id="via3__suggestions" class="search__suggestions options flex-column hoverable">
+                            <div class="search__suggestion option flex-row padded-top-bottom">
+                                <div class="line--accent"></div>
+                                <div class="option__text center">Keine Vorschläge</div>
+                                <input class="search__suggestion__click" type="hidden">
+                            </div>
+                        </div>
+                        <div class="line--regular"></div>
+                    </div>
+                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion('', 3)" style="display: none">
+                        <svg width="17px" height="17px" viewBox="0 0 20 20">
+                            <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                                <line x1="4" y1="4" x2="16" y2="16"/>
+                                <line x1="4" y1="16" x2="16" y2="4"/>
+                            </g>
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div>
-                <div id="via1-search" class="search">
-                    <label>
-                        <input type="text" name="search" id="via1__input" class="search__input padded-top-bottom" placeholder="Via">
-                    </label>
-                    <!--
-                    <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center">Keine Vorschläge</div>
-                            <input class="search__suggestion__click" type="hidden">
-                        </div>
+                <div class="search flex-row">
+                    <div class="search__icon search__icon--to flex-row">
+                        <div class="line--regular"></div>
+                        <div class="station-circle--big"></div>
                     </div>
-                    -->
-                    <template>
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center"></div>
-                            <input class="search__suggestion__click" type="hidden">
+                    <div id="to-search" class="search__input-container">
+                        <label>
+                            <input type="text" name="search" id="to__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Ziel">
+                        </label>
+                        <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
+                            <div class="search__suggestion option flex-row padded-top-bottom">
+                                <div class="line--accent"></div>
+                                <div class="option__text center">Keine Vorschläge</div>
+                                <input class="search__suggestion__click" type="hidden">
+                            </div>
                         </div>
-                    </template>
-                    <div class="line--regular"></div>
-                </div>
-                <div id="via2-search" class="search">
-                    <label>
-                        <input type="text" name="search" id="via2__input" class="search__input padded-top-bottom" placeholder="Via">
-                    </label>
-                    <!--
-                    <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center">Keine Vorschläge</div>
-                            <input class="search__suggestion__click" type="hidden">
-                        </div>
+                        <div class="line--regular"></div>
                     </div>
-                    -->
-                    <template>
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center"></div>
-                            <input class="search__suggestion__click" type="hidden">
-                        </div>
-                    </template>
-                    <div class="line--regular"></div>
-                </div>
-                <div id="via3-search" class="search">
-                    <label>
-                        <input type="text" name="search" id="via3__input" class="search__input padded-top-bottom" placeholder="Via">
-                    </label>
-                    <!--
-                    <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center">Keine Vorschläge</div>
-                            <input class="search__suggestion__click" type="hidden">
-                        </div>
-                    </div>
-                    -->
-                    <template>
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center"></div>
-                            <input class="search__suggestion__click" type="hidden">
-                        </div>
-                    </template>
-                    <div class="line--regular"></div>
-                </div>
-            </div>
-            <div>
-                <div id="to-search" class="search">
-                    <label>
-                        <input type="text" name="search" id="to__input" class="search__input padded-top-bottom" placeholder="Ziel">
-                    </label>
-                    <!--
-                    <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center">Keine Vorschläge</div>
-                            <input class="search__suggestion__click" type="hidden">
-                        </div>
-                    </div>
-                    -->
-                    <template>
-                        <div class="search__suggestion option flex-row padded-top-bottom">
-                            <div class="line--accent"></div>
-                            <div class="option__text center"></div>
-                            <input class="search__suggestion__click" type="hidden">
-                        </div>
-                    </template>
-                    <div class="line--regular"></div>
+                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion('', 4)" style="display: none">
+                        <svg width="17px" height="17px" viewBox="0 0 20 20">
+                            <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                                <line x1="4" y1="4" x2="16" y2="16"/>
+                                <line x1="4" y1="16" x2="16" y2="4"/>
+                            </g>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
-        <div class="setting-inputs flex-row-column padded-top-bottom">
+        <div class="setting-inputs flex-row-column">
             <div>
-                <div id="time-select" class="search">
-                    <label>
-                        <input type="datetime-local" name="search" id="time__input" class="search__input padded-top-bottom" placeholder="Ziel">
-                    </label>
-                    <div class="line--regular"></div>
+                <div class="search flex-row">
+                    <div class="search__icon search__icon--date flex-column">
+                        <div class="clock">
+                            <div class="line--vertical line--accent"></div>
+                        </div>
+                    </div>
+                    <div id="time-select" class="search__input-container">
+                        <label>
+                            <input type="datetime-local" name="search" id="time__input" class="search__input padded-top-bottom">
+                        </label>
+                        <div class="line--regular"></div>
+                    </div>
                 </div>
+
             </div>
             <div>
                 <div class="tab-row flex-row">
@@ -173,7 +219,7 @@
                         <span class="de">Abfahrt</span><span class="en">departure</span>
                     </button>
                     <button type="button" class="hoverable tab-row__tab" onclick="setDepArr(1)">
-                        <span class="de">Ankunft (erste Teilreise)</span><span class="en">arrival (first leg)</span>
+                        <span class="de">Ankunft (2. Bahnhof)</span><span class="en">arrival (first leg)</span>
                     </button>
                 </div>
                 <div class="tab-indicator-container indicator-line-container">
@@ -181,19 +227,32 @@
                 </div>
             </div>
             <div>
-                <button class="hoverable tab-row__tab" onclick="findConnections()">
-                    Los
+                <button class="hoverable tab-row__tab header flex-row" onclick="findConnections()">
+                    <svg class="arrow" width="35px" height="27px">
+                        <g stroke-width="4" stroke-linecap="round">
+                            <line x1="5" y1="14" x2="30" y2="14" stroke="var(--foreground-color)"/>
+                            <line x1="20" y1="4" x2="30" y2="14" stroke="var(--accent-color)"/>
+                            <line x1="20" y1="24" x2="30" y2="14" stroke="var(--accent-color)"/>
+                        </g>
+                    </svg>
                 </button>
             </div>
         </div>
     </section>
-    <section id="journeys" class="center">
-        <div id="station-names" class="flex-row padded-top-bottom">
+    <section id="journeys" class="center padded-top-bottom">
+        <div id="station-names-container" class="flex-column">
+            <div id="station-names" class="flex-row">
 
+            </div>
+            <div class="line--regular"></div>
         </div>
         <template id="station-template">
-            <div class="station-name">
+            <div class="station-name-container">
+                <div class="station-name">
 
+                </div>
+                <div class="station-circle--big"></div>
+                <div class="station-circle--small"></div>
             </div>
         </template>
 
@@ -242,14 +301,33 @@
 </div>
 <footer class="flex-row">
     <div id="settings-modal-indicator" class="selectable--horizontal">
-        <button class="hoverable selectable__text" onclick="showModal('settings')">
-            &#9881;
+        <button class="hoverable selectable__text flex-row" onclick="showModal('settings')">
+            <!--&#9881;-->
+            <svg width="26px" height="26px">
+                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                    <path d="M 13,24 C 13,21 19,19 21,21"></path>
+                    <path d="M 21,21 C 19,19 21,13 24,13"></path>
+                    <path d="M 24,13 C 21,13 19, 7 21, 5"></path>
+                    <path d="M 21, 5 C 19, 7 13, 5 13, 2"></path>
+                    <path d="M 13, 2 C 13, 5  7, 7  5, 5"></path>
+                    <path d="M  5, 5 C  7, 7  5,13  2,13"></path>
+                    <path d="M  2,13 C  5,13  7,19  5,21"></path>
+                    <path d="M  5,21 C  7,19 13,21 13,24"></path>
+                </g>
+                <circle cx="13" cy="13" r="3" stroke="var(--accent-color)" stroke-width="3" fill="none"/>
+            </svg>
         </button>
         <div class="line--accent"></div>
     </div>
     <div id="about-modal-indicator" class="selectable--horizontal">
-        <button class="hoverable selectable__text" onclick="showModal('about')">
-            &#128712;
+        <button class="hoverable selectable__text flex-row" onclick="showModal('about')">
+            <svg width="26px" height="26px">
+                <circle cx="13" cy="13" r="11" stroke="var(--foreground-color)" stroke-width="3" fill="none"/>
+                <g stroke="var(--accent-color)" stroke-width="4" fill="none" stroke-linecap="round">
+                    <line x1="13" y1="18" x2="13" y2="14"/>
+                    <line x1="13" y1="8" x2="13" y2="8"/>
+                </g>
+            </svg>
         </button>
         <div class="line--accent"></div>
     </div>
@@ -261,10 +339,21 @@
         <header class="flex-row">
             <span class="modal__title header padded-top-bottom"></span>
             <button class="modal__close modal__refresh header hoverable">
-                &#10227;
+                <svg width="17px" height="17px" viewBox="0 0 20 20">
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                        <path d="M 13 5 A 6 6 0 1 0 16 10"/>
+                        <line x1="13" y1="5" x2="10" y2="7"/>
+                        <line x1="13" y1="5" x2="11" y2="2"/>
+                    </g>
+                </svg>
             </button>
             <button class="modal__close header hoverable" onclick="hideConnectionModal()">
-                &times;
+                <svg width="17px" height="17px" viewBox="0 0 20 20">
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                        <line x1="4" y1="4" x2="16" y2="16"/>
+                        <line x1="4" y1="16" x2="16" y2="4"/>
+                    </g>
+                </svg>
             </button>
         </header>
         <div id="modal__connecion-infos" class="padded-top-bottom flex-column">
@@ -456,7 +545,12 @@
                 <span class="de">Einstellungen</span><span class="en">Settings</span>
             </span>
             <button class="modal__close header hoverable" onclick="hideModal('settings')">
-                &times;
+                <svg width="17px" height="17px" viewBox="0 0 20 20">
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                        <line x1="4" y1="4" x2="16" y2="16" stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="4" y1="16" x2="16" y2="4" stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round"/>
+                    </g>
+                </svg>
             </button>
         </header>
         <div id="settings" class="flex-column">
@@ -792,7 +886,12 @@
                 <span class="de">Über diese Seite</span><span class="en">About</span>
             </span>
             <button class="modal__close header hoverable" onclick="hideModal('about')">
-                &times;
+                <svg width="17px" height="17px" viewBox="0 0 20 20">
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                        <line x1="4" y1="4" x2="16" y2="16"/>
+                        <line x1="4" y1="16" x2="16" y2="4"/>
+                    </g>
+                </svg>
             </button>
         </header>
         <div>
@@ -800,12 +899,10 @@
                 <a href="https://github.com/dabund24/Zug">Github</a>
             </p>
             <p>
-                Daniel Bund
-            </p>
-            <p>
-                2023
+                Daniel Bund, 2023
             </p>
         </div>
+        <div class="line--accent"></div>
     </div>
 </div>
 

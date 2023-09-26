@@ -2,6 +2,20 @@ import {Journey, JourneysOptions} from "hafas-client";
 import {slideIndicator} from "./pageActions.js";
 import {Accessibility, Language, Product, WalkingSpeed} from "./types.js";
 
+let allowJourneySearch = true
+
+export function tryLockingJourneySearch() {
+    if (allowJourneySearch) {
+        allowJourneySearch = false
+        return true
+    }
+    return false
+}
+
+export function unlockJourneySearch() {
+    allowJourneySearch = true
+}
+
 let displayedJourneys: Journey[] = [];
 
 export let selectedJourney = -1;

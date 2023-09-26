@@ -5,7 +5,14 @@ import {
     setHTMLOfChildOfParent, timeToString,
     unixToHoursStringShort
 } from "./util.js";
-import {getJourney, resetJourneys, saveJourney, selectedJourney} from "./memorizer.js";
+import {
+    getJourney,
+    resetJourneys,
+    saveJourney,
+    selectedJourney,
+    tryLockingJourneySearch,
+    unlockJourneySearch
+} from "./memorizer.js";
 import {JourneyNode, JourneyTree, LoadFactor} from "./types.js";
 import {toast} from "./pageActions.js";
 
@@ -118,6 +125,10 @@ function setConnectionLines(legs: readonly Leg[], connectionToBeAdded: DocumentF
 let legCounter = 0;
 
 function displayJourneyModalFirstTime(index: number) {
+    if (!tryLockingJourneySearch()) {
+        toast("warning", "Bitte warten...", "Please wait...")
+        return
+    }
     document.documentElement.classList.add("no-scroll")
     document.getElementById("connection-line-selectable-" + index)!.classList.add("selectable--horizontal--active");
     const modal = document.getElementById("connection-modal")!;
@@ -125,6 +136,7 @@ function displayJourneyModalFirstTime(index: number) {
     (<HTMLButtonElement>modal.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken, index)};
     displayJourneyModal(journey)
     modal.style.setProperty("display", "flex")
+    unlockJourneySearch()
 }
 
 export function displayJourneyModal(journey: Journey) {
@@ -280,6 +292,10 @@ function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
     if (leg.stopovers?.[0]?.remarks !== undefined) {
         remarks = leg.stopovers[0].remarks.concat(remarks)
     }
+    const finalRemarks = leg.stopovers?.[leg.stopovers?.length - 1]?.remarks
+    if (finalRemarks !== undefined) {
+        remarks = remarks.concat(finalRemarks)
+    }
 
     const hints: (Hint | Status | Warning)[] = []
     const warnings: (Hint | Status | Warning)[] = []
@@ -297,14 +313,6 @@ function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
                 warnings.push(remark)
         }
     })
-/*
-    remarks.sort((a, b) => {
-        if (a.type === "hint" && b.type !== "hint") {
-            return 1
-        } else {
-            return -1
-        }
-    });*/
 
     if (hints.length !== 0) {
         (<HTMLElement>legToBeAdded.querySelector(".modal__trip-hints-button-container")).style.setProperty("display", "block")
