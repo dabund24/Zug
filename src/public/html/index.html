@@ -10,12 +10,16 @@
     <link href="/css/main.css" rel="stylesheet">
     <link href="/css/journeys.css" rel="stylesheet">
     <link href="/css/tooltips.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <link href="/css/map.css" rel="stylesheet">
 </head>
 <body ontouchstart="">
 <script type="module">
     import {setColor, setTheme, setBlurEffect} from "./ts/pageActions.js";
     import {findConnections} from "./ts/main.js";
-    import {hideConnectionModal, showModal, hideModal} from "./ts/display.js"
+    import {hideConnectionModal, showModal, hideModal, showLeafletModal, hideLeafletModal} from "./ts/display.js"
     import {setDepArr, setLanguage, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "./ts/memorizer.js";
     import {clickSuggestion} from "../ts/search.js";
 
@@ -28,6 +32,8 @@
     window.hideConnectionModal = hideConnectionModal;
     window.showModal = showModal;
     window.hideModal = hideModal;
+    window.showLeafletModal = showLeafletModal;
+    window.hideLeafletModal = hideLeafletModal;
 
     window.setDepArr = setDepArr;
     window.setLanguage = setLanguage;
@@ -40,6 +46,9 @@
 
     window.clickSuggestion = clickSuggestion;
 </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
 <div id="content">
     <div id="load-indicator" class="line--accent"></div>
     <section id="inputs">
@@ -61,11 +70,7 @@
                         <label for="from__input"></label>
                         <input type="text" name="search" id="from__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Start">
                         <div id="from__suggestions" class="search__suggestions options flex-column hoverable">
-                            <div class="search__suggestion option flex-row padded-top-bottom">
-                                <div class="line--accent"></div>
-                                <div class="option__text center">Keine Vorschläge</div>
-                                <input class="search__suggestion__click" type="hidden">
-                            </div>
+
                         </div>
                         <div class="line--regular"></div>
                     </div>
@@ -92,11 +97,7 @@
                             <input type="text" name="search" id="via1__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Via (optional)">
                         </label>
                         <div id="via1__suggestions" class="search__suggestions options flex-column hoverable">
-                            <div class="search__suggestion option flex-row padded-top-bottom">
-                                <div class="line--accent"></div>
-                                <div class="option__text center">Keine Vorschläge</div>
-                                <input class="search__suggestion__click" type="hidden">
-                            </div>
+
                         </div>
                         <div class="line--regular"></div>
                     </div>
@@ -120,11 +121,7 @@
                             <input type="text" name="search" id="via2__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Via (optional)">
                         </label>
                         <div id="via2__suggestions" class="search__suggestions options flex-column hoverable">
-                            <div class="search__suggestion option flex-row padded-top-bottom">
-                                <div class="line--accent"></div>
-                                <div class="option__text center">Keine Vorschläge</div>
-                                <input class="search__suggestion__click" type="hidden">
-                            </div>
+
                         </div>
                         <div class="line--regular"></div>
                     </div>
@@ -148,11 +145,7 @@
                             <input type="text" name="search" id="via3__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Via (optional)">
                         </label>
                         <div id="via3__suggestions" class="search__suggestions options flex-column hoverable">
-                            <div class="search__suggestion option flex-row padded-top-bottom">
-                                <div class="line--accent"></div>
-                                <div class="option__text center">Keine Vorschläge</div>
-                                <input class="search__suggestion__click" type="hidden">
-                            </div>
+
                         </div>
                         <div class="line--regular"></div>
                     </div>
@@ -177,11 +170,7 @@
                             <input type="text" name="search" id="to__input" class="search__input search--autocomplete padded-top-bottom" placeholder="Ziel">
                         </label>
                         <div id="to__suggestions" class="search__suggestions options flex-column hoverable">
-                            <div class="search__suggestion option flex-row padded-top-bottom">
-                                <div class="line--accent"></div>
-                                <div class="option__text center">Keine Vorschläge</div>
-                                <input class="search__suggestion__click" type="hidden">
-                            </div>
+
                         </div>
                         <div class="line--regular"></div>
                     </div>
@@ -346,6 +335,9 @@
                         <line x1="13" y1="5" x2="11" y2="2"/>
                     </g>
                 </svg>
+            </button>
+            <button class="modal__close modal__refresh header hoverable" onclick="showLeafletModal()">
+                Karte
             </button>
             <button class="modal__close header hoverable" onclick="hideConnectionModal()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
@@ -902,7 +894,34 @@
                 Daniel Bund, 2023
             </p>
         </div>
-        <div class="line--accent"></div>
+    </div>
+</div>
+<div id="leaflet-modal" class="modal--full-screen" style="display: none">
+    <div id="leaflet-modal__title" class="modal--full-screen__title header">
+        <div class="de">Lorem Ipsum dolor sit amet</div><span class="en">Map</span>
+    </div>
+    <div class="modal--full-screen__close-container flex-row">
+        <button id="leaflet-modal__refresh" class="modal--full-screen__close header">
+            <svg width="17px" height="17px" viewBox="0 0 20 20">
+                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                    <path d="M 13 5 A 6 6 0 1 0 16 10"/>
+                    <line x1="13" y1="5" x2="10" y2="7"/>
+                    <line x1="13" y1="5" x2="11" y2="2"/>
+                </g>
+            </svg>
+        </button>
+        <button class="modal--full-screen__close header" onclick="hideLeafletModal()">
+            <svg width="17px" height="17px" viewBox="0 0 20 20">
+                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                    <line x1="4" y1="4" x2="16" y2="16"/>
+                    <line x1="4" y1="16" x2="16" y2="4"/>
+                </g>
+            </svg>
+        </button>
+    </div>
+
+    <div id="map">
+
     </div>
 </div>
 

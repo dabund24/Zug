@@ -1,3 +1,5 @@
+import {Product} from "./types";
+
 /**
  * adds, if necessary, leading zeroes to a number to reach an amount of digits
  * @param {number} number - the number that needs leading zeroes
@@ -98,5 +100,21 @@ export function replaceNaClassOfChildOfParent(parent: Element | DocumentFragment
 export function setHTMLOfChildOfParent(parent: Element | DocumentFragment, childSelector: string, innerHTML: string | undefined): void {
     if (parent != null && innerHTML !== undefined) {
         parent.querySelector(childSelector)!.innerHTML = innerHTML;
+    }
+}
+
+export function getProductColor(product: Product | undefined): string {
+    switch (product) {
+        case "suburban": return "#408335"
+        case "subway": return "#1455C0"
+        case "tram": return "#A9455D"
+        case "bus": return "#814997"
+        case "ferry": return "#309FD1"
+        case "taxi": return "#FFD800"
+        case "regional": return "#EC0016"
+        case "regionalExpress": return "#F39200"
+        case "national": return "#646973"
+        case "nationalExpress": return "#000000"
+        case undefined: return "#000000"
     }
 }

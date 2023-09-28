@@ -211,7 +211,7 @@
 
 
 .modal__trip--subway, .connection-line--subway {
-    --product-color: var(--underground-color)
+    --product-color: var(--subway-color)
 }
 
 .modal__trip--tram, .connection-line--tram {
@@ -235,7 +235,7 @@
 }
 
 .modal__trip--regionalExpress, .connection-line--regionalExpress {
-    --product-color: var(--regional-express-color)
+    --product-color: var(--regionalExpress-color)
 }
 
 .modal__trip--national, .connection-line--national {
@@ -243,7 +243,11 @@
 }
 
 .modal__trip--nationalExpress, .connection-line--nationalExpress {
-    --product-color: var(--national-express-color)
+    --product-color: var(--nationalExpress-color)
+}
+
+.stroke--product {
+    stroke: var(--product-color);
 }
 
 .connection-line--walk {
@@ -266,6 +270,10 @@
     box-shadow: var(--background-color) 0 0 0 1px, var(--product-color) 0 0 0 var(--line-width);
     flex-shrink: 0;
     position: relative;
+}
+#map .station-circle--small {
+    background-color: white;
+    box-shadow: #ffffff 0 0 0 3px, var(--product-color) 0 0 0 12px;
 }
 
 .stopover .station-circle--small {
@@ -425,6 +433,17 @@
 
 .setting__name {
     padding-right: 2rem;
+}
+
+#map {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.map-tiles {
+    filter: var(--map-filter)
 }
 
 @media screen and (max-width: 1000px) {

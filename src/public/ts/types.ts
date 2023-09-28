@@ -18,6 +18,7 @@ export type Language = "en" | "de"
 export type Product =
     | "nationalExpress"
     | "national"
+    | "regionalExpress"
     | "regional"
     | "suburban"
     | "subway"

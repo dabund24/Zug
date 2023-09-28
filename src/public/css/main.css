@@ -50,6 +50,7 @@
 }
 
 :root {
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI Variable Text", "Segoe UI", "Oxygen", "Ubuntu", "Noto Sans", "Roboto", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Symbol", "Symbola";
     --background-color: #ffffff;
     --foreground-color: #000000;
     --background-color--opaque: #ffffffe0;
@@ -64,15 +65,15 @@
     --accent-gray: #586579;
 
     --suburban-color: #408335;
-    --underground-color: #1455C0;
+    --subway-color: #1455C0;
     --tram-color: #A9455D;
     --bus-color: #814997;
     --ferry-color: #309FD1;
     --taxi-color: #FFD800;
     --regional-color: #EC0016;
-    --regional-express-color: #F39200;
+    --regionalExpress-color: #F39200;
     --national-color: #646973;
-    --national-express-color: var(--foreground-color);
+    --nationalExpress-color: var(--foreground-color);
 
     --border-radius-large: .5rem;
     --border-radius-small: 2px;
@@ -82,6 +83,8 @@
     --line-length: 2rem;
     --line-length--vertical: 1.5rem;
     --connection-width: 30rem;
+
+    --map-filter: none;
 }
 
 [data-theme="dark"] {
@@ -100,14 +103,16 @@
     --accent-gray: #adbbc5;
 
     --suburban-color: #66A558;
-    --underground-color: #347DE0;
+    --subway-color: #347DE0;
     --tram-color: #C0687B;
     --bus-color: #9A6CA6;
     --ferry-color: #55B9E6;
     --taxi-color: #FFF000;
     --regional-color: #F75056;
-    --regional-express-color: #F8AB37;
+    --regionalExpress-color: #F8AB37;
     --national-color: #878C96;
+
+    --map-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
 }
 
 button:focus {
@@ -138,7 +143,7 @@ section {
 }
 
 body, input, button, .tooltip:after {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI Variable Text", "Segoe UI", "Oxygen", "Ubuntu", "Noto Sans", "Roboto", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Symbol", "Symbola";
+    font-family: var(--font-family);
     font-size: 1.25rem;
     color: var(--foreground-color);
     background-color: var(--background-color);
@@ -239,6 +244,7 @@ p {
     border-radius: var(--border-radius-small);
     height: 100%;
     width: var(--line-width);
+    max-width: var(--line-width);
 }
 
 .line--success {
@@ -302,6 +308,7 @@ p {
     height: var(--line-width);
     margin-top: calc(-1 * var(--line-width));
     animation: load-indication .7s ease-in-out 0s infinite alternate, load-indication--margin-right .7s ease-in-out 0s infinite alternate;
+    z-index: 1005;
 }
 
 .loading #load-indicator {
@@ -489,6 +496,48 @@ footer {
     z-index: 1000;
 }
 
+.modal--full-screen {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+}
+
+.modal--full-screen__title, .modal--full-screen__close {
+    border-radius: var(--border-radius-large);
+    border: var(--line-width) solid var(--foreground-color--opaque);
+    background-color: var(--background-color--opaque);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+}
+
+.modal--full-screen__title {
+    position: fixed;
+    z-index: 1002;
+    left: 1.5rem;
+    top: 1rem;
+    padding: .5rem 1rem;
+    font-size: 18px;
+}
+
+.modal--full-screen__close-container {
+    position: fixed;
+    top: .5rem;
+    right: .5rem;
+    z-index: 1002;
+    gap: .5rem;
+    :hover {
+        cursor: pointer;
+    }
+}
+
+.modal--full-screen__close {
+    display: flex;
+    padding: .5rem;
+
+}
+
 .modal-content {
     align-self: center;
     border: var(--line-width) solid var(--foreground-color--opaque);
@@ -497,6 +546,14 @@ footer {
     padding: 0 1.5rem 1rem;
     max-height: calc(100vh - 10rem);
     overflow-y: scroll;
+}
+
+.modal--full-screen .modal-content {
+    max-height: unset;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .modal header {
@@ -632,6 +689,13 @@ footer {
     .modal header {
         margin: 0 -1rem 0;
         padding: .5rem .5rem .5rem 1rem;
+    }
+
+    .modal--full-screen__title {
+        top: .5rem;
+        left: .5rem;
+        max-width: calc(100% - 9.5rem);
+        font-size: 16px;
     }
 
     .modal__close {

@@ -41,6 +41,7 @@ app.get("/api/journeys", (req, res) => {
 
 
     if (req.query.isArrival === "1") {
+        delete options.departure
         if (req.query.time !== undefined) {
             options.arrival = new Date(<string>req.query.time)
         } else {
@@ -51,7 +52,6 @@ app.get("/api/journeys", (req, res) => {
             options.departure = new Date(<string>req.query.time)
         }
     }
-    console.log(stops)
 
     getJourneys(stops, options, client).then(journeys => {
         //console.log(journeys[1][1].length + " afterw")
@@ -66,7 +66,7 @@ app.get("/api/stations", (req, res) => {
 })
 
 app.get("/api/refresh", (req, res) => {
-    client.refreshJourney?.(<string>req.query.token, {stopovers: true, language: <string>req.query.lang}).catch(() => {
+    client.refreshJourney?.(<string>req.query.token, {stopovers: true, language: <string>req.query.lang, polylines: true}).catch(() => {
         return null
     }).then(refreshed => res.send(refreshed))
 })

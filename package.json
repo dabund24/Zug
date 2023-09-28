@@ -24,7 +24,9 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@types/leaflet": "^1.9.6",
     "express": "^4.18.2",
-    "hafas-client": "^6.1.0"
+    "hafas-client": "^6.1.0",
+    "leaflet": "^1.9.4"
   }
 }

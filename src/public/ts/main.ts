@@ -1,9 +1,17 @@
 import {JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop} from "hafas-client";
 import {displayJourneyModal, displayJourneyTree} from "./display.js";
 import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
-import {isArrival, journeyOptions, setJourney, tryLockingJourneySearch, unlockJourneySearch} from "./memorizer.js";
+import {
+    getJourney,
+    isArrival,
+    journeyOptions,
+    setJourney,
+    tryLockingJourneySearch,
+    unlockJourneySearch
+} from "./memorizer.js";
 import {TreeMatrixPair, ZugErrorType, ZugResponse} from "./types.js";
 import {setupSearch} from "./search.js";
+import {initMap} from "./map.js";
 
 setColor([2, "green"])
 setTheme([1, 'dark'])
@@ -120,6 +128,11 @@ export async function findConnections() {
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + " connections")
     hideLoadSlider()
     unlockJourneySearch()
+}
+
+export async function refreshJourneyAndInitMap(token: string | undefined, index: number) {
+    await refreshJourney(token, index)
+    initMap(getJourney(index), false)
 }
 
 export async function refreshJourney(token: string | undefined, index: number) {

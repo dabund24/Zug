@@ -1,5 +1,5 @@
 import {Journey, Leg, Location, StopOver, Hint, Warning, Status} from "hafas-client";
-import {refreshJourney} from "./main.js";
+import {refreshJourney, refreshJourneyAndInitMap} from "./main.js";
 import {
     addClassToChildOfParent, dateDifference, dateToString, numberWithSign,
     setHTMLOfChildOfParent, timeToString,
@@ -15,6 +15,7 @@ import {
 } from "./memorizer.js";
 import {JourneyNode, JourneyTree, LoadFactor} from "./types.js";
 import {toast} from "./pageActions.js";
+import {initMap} from "./map.js";
 
 let journeyCounter: number;
 const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content
@@ -134,6 +135,7 @@ function displayJourneyModalFirstTime(index: number) {
     const modal = document.getElementById("connection-modal")!;
     const journey = getJourney(index);
     (<HTMLButtonElement>modal.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken, index)};
+    (<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken, index)};
     displayJourneyModal(journey)
     modal.style.setProperty("display", "flex")
     unlockJourneySearch()
@@ -143,6 +145,7 @@ export function displayJourneyModal(journey: Journey) {
     const modal = document.getElementById("connection-modal")!;
     legCounter = 0;
 
+    document.getElementById("leaflet-modal__title")!.innerText = journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name
     setHTMLOfChildOfParent(modal, ".modal__title", journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name)
     setHTMLOfChildOfParent(modal, ".modal__connection-date", dateToString(journey.legs[0].departure!))
     setHTMLOfChildOfParent(modal, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)));
@@ -346,18 +349,6 @@ function addLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
         setHTMLOfChildOfParent(toBeAdded, ".modal__trip-info", hint.text)
         hintsTarget.appendChild(toBeAdded)
     })
-/*
-    for (let i = 0; i < remarks.length; i++) {
-        const toBeAdded = document.importNode(infoTemplate, true)
-        let remark = remarks[i]
-        setHTMLOfChildOfParent(toBeAdded, ".modal__trip-info", remarks[i].text)
-        if (remark.type !== "hint") {
-            //addClassToChildOfParent(toBeAdded, ".modal__trip-info", "delayed")
-            warningsTarget.appendChild(toBeAdded)
-        } else {
-            hintsTarget.appendChild(toBeAdded)
-        }
-    }*/
 
 }
 
@@ -498,4 +489,13 @@ export function hideModal(name: string) {
     document.documentElement.classList.remove("no-scroll")
     document.getElementById(name + "-modal-indicator")!.classList.remove("selectable--horizontal--active")
     document.getElementById(name + "-modal")!.style.setProperty("display", "none")
+}
+
+export function showLeafletModal() {
+    document.getElementById("leaflet-modal")!.style.setProperty("display", "flex")
+    initMap(getJourney(selectedJourney), true)
+}
+
+export function hideLeafletModal() {
+    document.getElementById("leaflet-modal")!.style.setProperty("display", "none")
 }
