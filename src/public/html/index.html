@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="" data-color="" data-blur="true" data-vias="0">
+<html lang="de" data-theme="" data-color="" data-blur="false" data-vias="0">
 
 <head>
     <meta charset="UTF-8"/>
@@ -326,7 +326,7 @@
 <div id="connection-modal" class="modal" style="display: none">
     <div class="modal-content content-wrapper">
         <header class="flex-row">
-            <span class="modal__title header padded-top-bottom"></span>
+            <button class="modal__title modal__title--clickable header padded-top-bottom hoverable"></button>
             <button class="modal__close modal__refresh header hoverable">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
@@ -337,7 +337,13 @@
                 </svg>
             </button>
             <button class="modal__close modal__refresh header hoverable" onclick="showLeafletModal()">
-                Karte
+                <svg width="17px" height="17px" viewBox="0 0 20 20" xmlns='http://www.w3.org/2000/svg'>
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                        <path d="M 14.9 9.5 A 5.5 5.5 0 1 0  5.1 9.5"/>
+                        <line x1="14.9" y1="9.5" x2="10" y2="18.5"/>
+                        <line x1="5.1" y1="9.5" x2="10" y2="18.5"/>
+                    </g>
+                </svg>
             </button>
             <button class="modal__close header hoverable" onclick="hideConnectionModal()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
@@ -515,6 +521,7 @@
                     <i class="transfer-time">
 
                     </i>
+                    <div class="width-setter">00:00</div>
                 </div>
                 <div class="modal__trip__element modal__walk__l flex-column">
                     <div class="connection-line--horizontal connection-line--walk line--vertical">
@@ -630,7 +637,7 @@
                         </button>
                     </div>
                     <div class="tab-indicator-container indicator-line-container">
-                        <div class="line--accent indicator indicator__animation-to-right" id="blur-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                        <div class="line--accent indicator indicator__animation-to-right" id="blur-indicator" style="--animation--tab-indicator__start: 75%; --animation--tab-indicator__end: 75%"></div>
                     </div>
                 </div>
             </div>
@@ -897,9 +904,9 @@
     </div>
 </div>
 <div id="leaflet-modal" class="modal--full-screen" style="display: none">
-    <div id="leaflet-modal__title" class="modal--full-screen__title header">
-        <div class="de">Lorem Ipsum dolor sit amet</div><span class="en">Map</span>
-    </div>
+    <button id="leaflet-modal__title" class="modal--full-screen__title header">
+        <span class="de">Lorem Ipsum dolor sit amet</span><span class="en">Map</span>
+    </button>
     <div class="modal--full-screen__close-container flex-row">
         <button id="leaflet-modal__refresh" class="modal--full-screen__close header">
             <svg width="17px" height="17px" viewBox="0 0 20 20">

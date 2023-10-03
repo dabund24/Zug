@@ -1,5 +1,5 @@
 import {JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop} from "hafas-client";
-import {displayJourneyModal, displayJourneyTree} from "./display.js";
+import {displayJourneyModal, displayJourneyModalFirstTime, displayJourneyTree} from "./display.js";
 import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
 import {
     getJourney,
@@ -9,13 +9,38 @@ import {
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
-import {TreeMatrixPair, ZugErrorType, ZugResponse} from "./types.js";
+import {ZugErrorType, ZugResponse} from "./types.js";
 import {setupSearch} from "./search.js";
 import {initMap} from "./map.js";
 
 setColor([2, "green"])
-setTheme([1, 'dark'])
+setTheme([0, 'light'])
 setupSearch()
+const journeyParam = new URLSearchParams(window.location.search).get("journey")
+if (journeyParam !== null && tryLockingJourneySearch()) {
+    showLoadSlider()
+    toast("neutral", "Hole Verbindungsdaten", "Fetching connection data")
+    await fetch("/api/refresh?token=" + journeyParam + "&lang=" + journeyOptions.language)
+        .then(res => res.json())
+        .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
+            const refreshed = refreshedResponse[0]
+            if (refreshed === null) {
+                toast("error", "Token ist fehlerhaft", "token is incorrect")
+                hideLoadSlider()
+                return
+            }
+            setJourney(0, refreshed.journey)
+            const origin = <string>refreshed.journey.legs[0].origin?.name
+            const destination = <string>refreshed.journey.legs[refreshed.journey.legs.length - 1].destination?.name
+            displayJourneyTree({children: [{journey: refreshed.journey, children: null}]}, [origin, destination])
+            displayJourneyModalFirstTime(0, false)
+            toast("success", "Verbindung gefunden", "found connection")
+    }).catch(() => {
+        toast("error", "Netzwerkfehler", "network error")
+    })
+    hideLoadSlider()
+    unlockJourneySearch()
+}
 
 export async function findConnections() {
     if (!tryLockingJourneySearch()) {
@@ -118,7 +143,6 @@ export async function findConnections() {
         return
     }
 
-    //updatePageHistory(fromID, vias, toID)
     const journeyTree = treeResponse.content
 
     console.log(journeyTree)
@@ -147,7 +171,8 @@ export async function refreshJourney(token: string | undefined, index: number) {
         unlockJourneySearch()
         return
     }
-    await fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language).then(res => res.json()).then((refreshed: JourneyWithRealtimeData | null) => {
+    await fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language).then(res => res.json()).then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
+        const refreshed = refreshedResponse[0]
         if (refreshed === null) {
             toast("error", "Aktualisierung gescheitert (Hafas)", "refresh failed (Hafas)")
             hideLoadSlider()
@@ -183,12 +208,36 @@ function printErrorMessage(errorType: ZugErrorType, stationA: string, stationB: 
     }
 }
 
-function updatePageHistory(from: string, vias: string[], to: string) {
+export function setJourneyQuery(token: string) {
     const url = new URL(window.location.href)
-    url.searchParams.set("from", from)
-    url.searchParams.set("vias", JSON.stringify(vias))
-    url.searchParams.set("to", to)
-    history.pushState({}, from, url)
+    url.searchParams.set("journey", token)
+    history.pushState({}, "", url)
     console.log("hallo")
 }
 
+export function deleteJourneyQuery() {
+    const url = new URL(window.location.href)
+    url.searchParams.delete("journey")
+    history.pushState({}, "", url)
+}
+
+export function shareJourney(refreshToken: string | undefined) {
+    if (refreshToken === undefined) {
+        toast("error", "Verbindung kann nicht geteilt werden", "Connection cannot be shared")
+        return
+    }
+    console.log("hi")
+    const sharedText = new URL(window.location.href).toString()
+    if (navigator.share) {
+        navigator.share({
+            title: "geteilte Verbindung",
+            url: sharedText
+        }).then(() => {
+            toast("success", "Verbindung geteilt", "Shared connection")
+        })
+    } else {
+        navigator.clipboard.writeText(sharedText).then(() => {
+            toast("success", "Link in Zwischenablage gespeichert", "Saved link to clipboard")
+        })
+    }
+}

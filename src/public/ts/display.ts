@@ -1,5 +1,5 @@
 import {Journey, Leg, Location, StopOver, Hint, Warning, Status} from "hafas-client";
-import {refreshJourney, refreshJourneyAndInitMap} from "./main.js";
+import {deleteJourneyQuery, refreshJourney, refreshJourneyAndInitMap, setJourneyQuery, shareJourney} from "./main.js";
 import {
     addClassToChildOfParent, dateDifference, dateToString, numberWithSign,
     setHTMLOfChildOfParent, timeToString,
@@ -63,7 +63,7 @@ export function displayJourney(journey: Journey, connectionsTarget: HTMLElement 
 
     saveJourney(journey);
     let a = journeyCounter;
-    toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModalFirstTime(a)};
+    toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModalFirstTime(a, true)};
     toBeAdded.querySelector(".connection-line-selectable")!.setAttribute("id", "connection-line-selectable-" + a)
     journeyCounter++;
 
@@ -125,8 +125,8 @@ function setConnectionLines(legs: readonly Leg[], connectionToBeAdded: DocumentF
 
 let legCounter = 0;
 
-function displayJourneyModalFirstTime(index: number) {
-    if (!tryLockingJourneySearch()) {
+export function displayJourneyModalFirstTime(index: number, lockingNecessary: boolean) {
+    if (lockingNecessary && !tryLockingJourneySearch()) {
         toast("warning", "Bitte warten...", "Please wait...")
         return
     }
@@ -134,11 +134,18 @@ function displayJourneyModalFirstTime(index: number) {
     document.getElementById("connection-line-selectable-" + index)!.classList.add("selectable--horizontal--active");
     const modal = document.getElementById("connection-modal")!;
     const journey = getJourney(index);
+    (<HTMLButtonElement>modal.querySelector(".modal__title")).onclick = function () {shareJourney(journey.refreshToken)};
     (<HTMLButtonElement>modal.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken, index)};
+    (<HTMLButtonElement>document.getElementById("leaflet-modal__title")).onclick = function () {shareJourney(journey.refreshToken)};
     (<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken, index)};
     displayJourneyModal(journey)
     modal.style.setProperty("display", "flex")
-    unlockJourneySearch()
+    if (journey.refreshToken !== undefined) {
+        setJourneyQuery(journey.refreshToken)
+    }
+    if (lockingNecessary) {
+        unlockJourneySearch()
+    }
 }
 
 export function displayJourneyModal(journey: Journey) {
@@ -462,14 +469,14 @@ export function toggleLegHints(index: number) {
     }
 }
 
-function getPlatformHTML(platform: number | string | undefined) {
+export function getPlatformHTML(platform: number | string | undefined) {
     if (platform === undefined || platform === null) {
         return ""
     }
     return "<span class='de'>Gl.</span><span class='en'>Pl.</span> " + platform
 }
 
-function getWalkHTML(distance: number | undefined, time: string) {
+export function getWalkHTML(distance: number | undefined, time: string) {
     return distance + "m <span class='de'>Fußweg (ca.</span><span class='en'>by foot (approx.</span> " + time + ")"
 }
 
@@ -477,6 +484,7 @@ export function hideConnectionModal() {
     document.documentElement.classList.remove("no-scroll")
     document.getElementById("connection-modal")!.style.setProperty("display", "none")
     document.getElementById("connection-line-selectable-" + selectedJourney)!.classList.remove("selectable--horizontal--active")
+    deleteJourneyQuery()
 }
 
 export function showModal(name: string) {

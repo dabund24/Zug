@@ -112,11 +112,7 @@
     --regionalExpress-color: #F8AB37;
     --national-color: #878C96;
 
-    --map-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
-}
-
-button:focus {
-    /*outline: var(--accent-color) dotted 4px;*/
+    --map-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.5);
 }
 
 * {
@@ -217,6 +213,19 @@ p {
 .padded-top-bottom {
     padding-top: .5rem;
     padding-bottom: .5rem;
+}
+
+.show-whitespace {
+    white-space: pre;
+}
+
+.align-center {
+    align-self: center;
+}
+
+.align-bottom {
+    align-self: end;
+    margin-top: auto;
 }
 
 .content-wrapper {
@@ -519,6 +528,10 @@ footer {
     top: 1rem;
     padding: .5rem 1rem;
     font-size: 18px;
+    text-align: left;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .modal--full-screen__close-container {
@@ -535,7 +548,6 @@ footer {
 .modal--full-screen__close {
     display: flex;
     padding: .5rem;
-
 }
 
 .modal-content {
@@ -569,6 +581,12 @@ footer {
 
 .modal__title {
     margin-right: auto;
+}
+
+.modal__title--clickable {
+    padding: .5rem;
+    text-align: left;
+    margin-left: calc(-.5rem - var(--line-width));
 }
 
 .modal__close {
@@ -694,7 +712,7 @@ footer {
     .modal--full-screen__title {
         top: .5rem;
         left: .5rem;
-        max-width: calc(100% - 9.5rem);
+        max-width: calc(100% - 8rem);
         font-size: 16px;
     }
 

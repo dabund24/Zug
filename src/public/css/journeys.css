@@ -176,9 +176,12 @@
 
 .connection-line {
     display: block;
-    animation: grow-connection-line .5s ease-in-out 0s normal both;
     margin: auto;
     background-color: var(--product-color);
+}
+
+#journeys .connection-line {
+    animation: grow-connection-line .5s ease-in-out 0s normal both;
 }
 
 @keyframes grow-connection-line {
@@ -310,11 +313,22 @@
 }
 
 .modal__trip, .modal__walk {
-    margin-left: -.3rem;
+
+}
+
+.duration, .transfer-time {
+    display: block;
+    width: 0;
+    margin-left: auto;
+    direction: rtl;
+}
+
+.width-setter {
+    height: 0;
+    opacity: 0;
 }
 
 .modal__trip__ltl {
-    width: 3.5rem;
     text-align: right;
     flex-shrink: 0;
 }
@@ -348,7 +362,7 @@
 
 .platform {
     margin-left: auto;
-    padding-left: .5rem;
+    padding-left: 1rem;
     align-self: center;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;

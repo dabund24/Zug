@@ -30,7 +30,7 @@ app.get("/api/journeys", (req, res) => {
     const to = <string>req.query.to;
     const options: JourneysOptions = JSON.parse(<string>req.query.options)
 
-    let stops :string[] = [];
+    let stops: string[] = [];
     stops.push(from)
     stops = stops.concat(vias)
     stops.push(to)
@@ -66,9 +66,9 @@ app.get("/api/stations", (req, res) => {
 })
 
 app.get("/api/refresh", (req, res) => {
-    client.refreshJourney?.(<string>req.query.token, {stopovers: true, language: <string>req.query.lang, polylines: true}).catch(() => {
-        return null
-    }).then(refreshed => res.send(refreshed))
+    client.refreshJourney?.(<string>req.query.token, {stopovers: true, language: <string>req.query.lang, polylines: true})
+        .catch(() => null)
+        .then(refreshed => res.send([refreshed]))
 })
 
 app.listen(port)
