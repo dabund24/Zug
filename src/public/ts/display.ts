@@ -1,5 +1,11 @@
 import {Journey, Leg, Location, StopOver, Hint, Warning, Status} from "hafas-client";
-import {deleteJourneyQuery, refreshJourney, refreshJourneyAndInitMap, setJourneyQuery, shareJourney} from "./main.js";
+import {
+    deleteJourneyQuery,
+    refreshJourney,
+    refreshJourneyAndInitMap,
+    setJourneyQuery,
+    shareJourney
+} from "./main.js";
 import {
     addClassToChildOfParent, dateDifference, dateToString, numberWithSign,
     setHTMLOfChildOfParent, timeToString,
@@ -13,9 +19,10 @@ import {
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
-import {JourneyNode, JourneyTree, LoadFactor} from "./types.js";
+import {JourneyNode, JourneyTree, LoadFactor, PageState, PageStateString} from "./types.js";
 import {toast} from "./pageActions.js";
 import {initMap} from "./map.js";
+import {pushState} from "./routing.js";
 
 let journeyCounter: number;
 const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content
@@ -130,19 +137,19 @@ export function displayJourneyModalFirstTime(index: number, lockingNecessary: bo
         toast("warning", "Bitte warten...", "Please wait...")
         return
     }
-    document.documentElement.classList.add("no-scroll")
-    document.getElementById("connection-line-selectable-" + index)!.classList.add("selectable--horizontal--active");
-    const modal = document.getElementById("connection-modal")!;
+    //document.documentElement.classList.add("no-scroll")
+    document.documentElement.setAttribute("data-state", "journey")
+    document.getElementById("connection-line-selectable-" + index)!.classList.add("selectable--horizontal--active")
+    const modal = document.getElementById("connection-modal")!
     const journey = getJourney(index);
     (<HTMLButtonElement>modal.querySelector(".modal__title")).onclick = function () {shareJourney(journey.refreshToken)};
     (<HTMLButtonElement>modal.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken, index)};
     (<HTMLButtonElement>document.getElementById("leaflet-modal__title")).onclick = function () {shareJourney(journey.refreshToken)};
     (<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken, index)};
     displayJourneyModal(journey)
-    modal.style.setProperty("display", "flex")
-    if (journey.refreshToken !== undefined) {
-        setJourneyQuery(journey.refreshToken)
-    }
+    //modal.style.setProperty("display", "flex")
+    pushState("journey", journey.refreshToken)
+
     if (lockingNecessary) {
         unlockJourneySearch()
     }
@@ -481,29 +488,28 @@ export function getWalkHTML(distance: number | undefined, time: string) {
 }
 
 export function hideConnectionModal() {
-    document.documentElement.classList.remove("no-scroll")
-    document.getElementById("connection-modal")!.style.setProperty("display", "none")
+    document.documentElement.setAttribute("data-state", "")
     document.getElementById("connection-line-selectable-" + selectedJourney)!.classList.remove("selectable--horizontal--active")
-    deleteJourneyQuery()
 }
 
-export function showModal(name: string) {
-    document.documentElement.classList.add("no-scroll")
+export function showModal(name: PageStateString) {
+    document.documentElement.setAttribute("data-state", name)
+    pushState(name)
     document.getElementById(name + "-modal-indicator")!.classList.add("selectable--horizontal--active")
-    document.getElementById(name + "-modal")!.style.setProperty("display", "flex")
 }
 
-export function hideModal(name: string) {
-    document.documentElement.classList.remove("no-scroll")
+export function hideModal(name: PageStateString) {
+    document.documentElement.setAttribute("data-state", "")
     document.getElementById(name + "-modal-indicator")!.classList.remove("selectable--horizontal--active")
-    document.getElementById(name + "-modal")!.style.setProperty("display", "none")
 }
 
 export function showLeafletModal() {
-    document.getElementById("leaflet-modal")!.style.setProperty("display", "flex")
-    initMap(getJourney(selectedJourney), true)
+    document.documentElement.setAttribute("data-state", "journey/map")
+    const journey = getJourney(selectedJourney)
+    pushState("journey/map", journey.refreshToken)
+    initMap(journey, true)
 }
 
 export function hideLeafletModal() {
-    document.getElementById("leaflet-modal")!.style.setProperty("display", "none")
+    document.documentElement.setAttribute("data-state", "journey")
 }

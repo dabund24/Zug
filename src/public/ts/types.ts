@@ -1,5 +1,12 @@
 import {Journey} from "hafas-client";
 
+export type PageStateString = "" | "settings" | "about" | "journey" | "journey/map"
+
+export type PageState = {
+    state: PageStateString
+    journeyID?: string
+}
+
 export type Color =
     | [0, "red"]
     | [1, "yellow"]

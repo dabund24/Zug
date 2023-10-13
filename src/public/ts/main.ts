@@ -1,5 +1,11 @@
 import {JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop} from "hafas-client";
-import {displayJourneyModal, displayJourneyModalFirstTime, displayJourneyTree} from "./display.js";
+import {
+    displayJourneyModal,
+    displayJourneyModalFirstTime,
+    displayJourneyTree,
+    hideConnectionModal, hideLeafletModal,
+    hideModal
+} from "./display.js";
 import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
 import {
     getJourney,
@@ -9,13 +15,14 @@ import {
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
-import {ZugErrorType, ZugResponse} from "./types.js";
+import {PageState, PageStateString, ZugErrorType, ZugResponse} from "./types.js";
 import {setupSearch} from "./search.js";
 import {initMap} from "./map.js";
 
 setColor([2, "green"])
 setTheme([0, 'light'])
 setupSearch()
+/*
 const journeyParam = new URLSearchParams(window.location.search).get("journey")
 if (journeyParam !== null && tryLockingJourneySearch()) {
     showLoadSlider()
@@ -41,6 +48,7 @@ if (journeyParam !== null && tryLockingJourneySearch()) {
     hideLoadSlider()
     unlockJourneySearch()
 }
+ */
 
 export async function findConnections() {
     if (!tryLockingJourneySearch()) {
@@ -94,7 +102,6 @@ export async function findConnections() {
     const to: (Station | Stop)[] = await fetch("/api/stations?name=" + toStr).then(res => res.json())
 
     const fromID = from[0].id
-    //let viaID = via[0].id
     const toID = to[0].id
 
     if (fromID === undefined || toID === undefined) {

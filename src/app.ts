@@ -19,8 +19,7 @@ const userAgent = "github.com/dabund24/Zug"
 
 const client = createClient(dbProfile, userAgent)
 
-
-app.get("/", (req, res) => {
+app.get(["/", "/settings", "/about", "/journey", "/journey/map"], (req, res) => {
     res.sendFile(path.join(__dirname, '/public/html/index.html'));
 })
 

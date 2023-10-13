@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="" data-color="" data-blur="false" data-vias="0">
+<html lang="de" data-theme="" data-color="" data-blur="false" data-vias="0" data-state="">
 
 <head>
     <meta charset="UTF-8"/>
@@ -17,11 +17,11 @@
 </head>
 <body ontouchstart="">
 <script type="module">
-    import {setColor, setTheme, setBlurEffect} from "./ts/pageActions.js";
-    import {findConnections} from "./ts/main.js";
-    import {hideConnectionModal, showModal, hideModal, showLeafletModal, hideLeafletModal} from "./ts/display.js"
-    import {setDepArr, setLanguage, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "./ts/memorizer.js";
-    import {clickSuggestion} from "../ts/search.js";
+    import {setColor, setTheme, setBlurEffect} from "/ts/pageActions.js";
+    import {findConnections} from "/ts/main.js";
+    import {hideConnectionModal, showModal, hideModal, showLeafletModal, hideLeafletModal} from "/ts/display.js"
+    import {setDepArr, setLanguage, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "/ts/memorizer.js";
+    import {clickSuggestion} from "/ts/search.js";
 
     window.setColor = setColor;
     window.setTheme = setTheme;
@@ -323,7 +323,7 @@
 
 </footer>
 
-<div id="connection-modal" class="modal" style="display: none">
+<div id="connection-modal" class="modal">
     <div class="modal-content content-wrapper">
         <header class="flex-row">
             <button class="modal__title modal__title--clickable header padded-top-bottom hoverable"></button>
@@ -345,7 +345,7 @@
                     </g>
                 </svg>
             </button>
-            <button class="modal__close header hoverable" onclick="hideConnectionModal()">
+            <button class="modal__close header hoverable" onclick="history.back()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                         <line x1="4" y1="4" x2="16" y2="16"/>
@@ -537,13 +537,13 @@
 
 </div>
 
-<div id="settings-modal" class="modal" style="display: none">
+<div id="settings-modal" class="modal">
     <div class="modal-content content-wrapper">
         <header class="flex-row">
             <span class="modal__title header padded-top-bottom">
                 <span class="de">Einstellungen</span><span class="en">Settings</span>
             </span>
-            <button class="modal__close header hoverable" onclick="hideModal('settings')">
+            <button class="modal__close header hoverable" onclick="history.back()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                         <line x1="4" y1="4" x2="16" y2="16" stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round"/>
@@ -878,13 +878,13 @@
         </div>
     </div>
 </div>
-<div id="about-modal" class="modal" style="display:none">
+<div id="about-modal" class="modal">
     <div class="modal-content content-wrapper">
         <header class="flex-row">
             <span class="modal__title header padded-top-bottom">
                 <span class="de">Über diese Seite</span><span class="en">About</span>
             </span>
-            <button class="modal__close header hoverable" onclick="hideModal('about')">
+            <button class="modal__close header hoverable" onclick="history.back()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                         <line x1="4" y1="4" x2="16" y2="16"/>
@@ -903,9 +903,9 @@
         </div>
     </div>
 </div>
-<div id="leaflet-modal" class="modal--full-screen" style="display: none">
+<div id="leaflet-modal" class="modal modal--full-screen">
     <button id="leaflet-modal__title" class="modal--full-screen__title header">
-        <span class="de">Lorem Ipsum dolor sit amet</span><span class="en">Map</span>
+        <span class="de"></span><span class="en">Map</span>
     </button>
     <div class="modal--full-screen__close-container flex-row">
         <button id="leaflet-modal__refresh" class="modal--full-screen__close header">
@@ -917,7 +917,7 @@
                 </g>
             </svg>
         </button>
-        <button class="modal--full-screen__close header" onclick="hideLeafletModal()">
+        <button class="modal--full-screen__close header" onclick="history.back()">
             <svg width="17px" height="17px" viewBox="0 0 20 20">
                 <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                     <line x1="4" y1="4" x2="16" y2="16"/>

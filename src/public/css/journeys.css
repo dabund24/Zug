@@ -1,3 +1,25 @@
+.modal {
+    display: none;
+}
+
+[data-state="settings"] #settings-modal {
+    display: flex;
+}
+
+[data-state="about"] #about-modal {
+    display: flex;
+}
+
+[data-state="journey"] #connection-modal {
+    display: flex;
+}
+
+[data-state="journey/map"] {
+    #leaflet-modal, #connection-modal {
+        display: flex;
+    }
+}
+
 .search__icon {
     align-self: center;
     --product-color: var(--accent-color);
@@ -331,6 +353,7 @@
 .modal__trip__ltl {
     text-align: right;
     flex-shrink: 0;
+    direction: rtl;
 }
 
 .modal__trip__rtl {

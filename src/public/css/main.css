@@ -54,7 +54,7 @@
     --background-color: #ffffff;
     --foreground-color: #000000;
     --background-color--opaque: #ffffffe0;
-    --foreground-color--opaque: #00000011;
+    --foreground-color--opaque: #00000020;
     --accent-color: var(--accent-light);
     --accent-inverted: var(--accent-dark);
     --accent-red: #cb1a29;
@@ -92,7 +92,7 @@
     --background-color: #121212;
     --foreground-color: #ffffff;
     --background-color--opaque: #121212e0;
-    --foreground-color--opaque: #ffffff11;
+    --foreground-color--opaque: #ffffff14;
     --accent-color: var(--accent-dark);
     --accent-inverted: var(--accent-light);
     --accent-red: #eb6c68;
@@ -112,11 +112,10 @@
     --regionalExpress-color: #F8AB37;
     --national-color: #878C96;
 
-    --map-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.5);
+    --map-filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
 }
 
 * {
-    scrollbar-color: var(--foreground-color) transparent;
     scrollbar-width: thin;
 }
 
@@ -155,7 +154,7 @@ body, a, input, button, .modal *, .hoverable, footer, ::-webkit-scrollbar-track,
     transition: background .5s ease-in-out, color .5s ease-in-out, border .5s ease-in-out;
 }
 
-.no-scroll {
+:root:not([data-state=""]) {
     margin: 0;
     height: 100%;
     overflow: hidden;
@@ -510,6 +509,7 @@ footer {
     top: 0;
     width: 100%;
     height: 100%;
+    padding: 0;
     z-index: 1001;
 }
 

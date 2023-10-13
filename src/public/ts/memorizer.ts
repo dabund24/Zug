@@ -1,6 +1,6 @@
 import {Journey, JourneysOptions} from "hafas-client";
 import {slideIndicator} from "./pageActions.js";
-import {Accessibility, Language, Product, WalkingSpeed} from "./types.js";
+import {Accessibility, Language, PageState, PageStateString, Product, WalkingSpeed} from "./types.js";
 
 let allowJourneySearch = true
 
