@@ -33,7 +33,7 @@ switch (path) {
         }
 }
 
-window.onpopstate = (ev) => {
+window.onpopstate = () => {
     console.log(history.state)
     console.log(document.documentElement.getAttribute("data-state"))
     switch (<PageStateString>document.documentElement.getAttribute("data-state")) {
@@ -51,8 +51,13 @@ window.onpopstate = (ev) => {
             hideLeafletModal()
             break
     }
-
 }
+
+window.addEventListener("keydown", event => {
+    if (event.key === "Escape" && (<PageState>history.state).state !== "") {
+        history.back()
+    }
+})
 
 export function pushState(path: PageStateString, refreshToken?: string) {
     if (refreshToken !== undefined) {

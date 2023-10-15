@@ -1,5 +1,13 @@
-<svg width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+<!--svg width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
     <path d="M 0 8 A 8 8 0 0 1 16 8" fill="blue"/>
     <path d="M 0 8 A 8 8 0 0 0 16 8" fill="green"/>
     <circle cx="8" cy="8" r="3.5" fill="transparent" stroke="black" stroke-width="3"/>
+</svg-->
+
+<svg width="17px" height="17px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="red" stroke-width="3" stroke-linecap="round" fill="none">
+        <circle cx="10" cy="10" r="8.5"/>
+        <line x1="10" y1="12" x2="10" y2="14" stroke-width="4"/>
+        <line x1="10" y1="6.5" x2="10" y2="6.5" stroke-width="4"/>
+    </g>
 </svg>

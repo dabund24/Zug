@@ -29,7 +29,7 @@ export function initMap(journey: Journey, withRezoom: boolean) {
     layer.addTo(map)
     map.invalidateSize()
     if (withRezoom) {
-        map.fitBounds(bounds, {padding: [0, 50]})
+        map.fitBounds(bounds, {padding: [20, 50]})
     }
 }
 

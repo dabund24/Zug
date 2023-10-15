@@ -32,7 +32,7 @@
     width: fit-content;
 }
 
-.tooltip:hover:after {
+.tooltip:hover:after, .tooltip:active:after {
     font-size: 20px;
     border: 4px solid var(--foreground-color--opaque);
     padding: 0 .5rem;
@@ -50,13 +50,13 @@
         content: "gepl. Abfahrt";
     }
     &.time--departure--actual:after, &.time--stopover--departure.delayed, &.time--stopover--departure.on-time:after {
-        content: "vorr. Abfahrt";
+        content: "vorauss. Abfahrt";
     }
     &.time--arrival--scheduled:after, &.time--stopover--arrival:not(.delayed, .on-time):after {
         content: "gepl. Ankunft";
     }
     &.time--arrival--actual:after, &.time--stopover--arrival.delayed, &.time--stopover--arrival.on-time:after {
-        content: "vorr. Ankunft";
+        content: "vorauss. Ankunft";
     }
 
     &.modal__arrival-delay:after, &.stopover__delay:after {
@@ -68,10 +68,23 @@
 }
 
 [lang="en"] .tooltip {
-    &.time--departure--scheduled:after {
-        content: "planned dep.";
+    &.time--departure--scheduled:after, &.time--stopover--departure:not(.delayed, .on-time):after {
+        content: "sched. departure";
     }
-    &.time--departure--actual:after {
-        content: "vorr. Abfahrt";
+    &.time--departure--actual:after, &.time--stopover--departure.delayed, &.time--stopover--departure.on-time:after {
+        content: "est. departure";
+    }
+    &.time--arrival--scheduled:after, &.time--stopover--arrival:not(.delayed, .on-time):after {
+        content: "sched. arrival";
+    }
+    &.time--arrival--actual:after, &.time--stopover--arrival.delayed, &.time--stopover--arrival.on-time:after {
+        content: "est. arrival";
+    }
+
+    &.modal__arrival-delay:after, &.stopover__delay:after {
+        content: "delay (arrival)";
+    }
+    &.modal__departure-delay:after {
+        content: "delay (departure)";
     }
 }

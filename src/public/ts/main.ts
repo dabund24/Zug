@@ -22,33 +22,6 @@ import {initMap} from "./map.js";
 setColor([2, "green"])
 setTheme([0, 'light'])
 setupSearch()
-/*
-const journeyParam = new URLSearchParams(window.location.search).get("journey")
-if (journeyParam !== null && tryLockingJourneySearch()) {
-    showLoadSlider()
-    toast("neutral", "Hole Verbindungsdaten", "Fetching connection data")
-    await fetch("/api/refresh?token=" + journeyParam + "&lang=" + journeyOptions.language)
-        .then(res => res.json())
-        .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
-            const refreshed = refreshedResponse[0]
-            if (refreshed === null) {
-                toast("error", "Token ist fehlerhaft", "token is incorrect")
-                hideLoadSlider()
-                return
-            }
-            setJourney(0, refreshed.journey)
-            const origin = <string>refreshed.journey.legs[0].origin?.name
-            const destination = <string>refreshed.journey.legs[refreshed.journey.legs.length - 1].destination?.name
-            displayJourneyTree({children: [{journey: refreshed.journey, children: null}]}, [origin, destination])
-            displayJourneyModalFirstTime(0, false)
-            toast("success", "Verbindung gefunden", "found connection")
-    }).catch(() => {
-        toast("error", "Netzwerkfehler", "network error")
-    })
-    hideLoadSlider()
-    unlockJourneySearch()
-}
- */
 
 export async function findConnections() {
     if (!tryLockingJourneySearch()) {
@@ -213,19 +186,6 @@ function printErrorMessage(errorType: ZugErrorType, stationA: string, stationB: 
                 "Ein Fehler ist aufgetreten: " + errorType,
                 "An error occurred: " + errorType)
     }
-}
-
-export function setJourneyQuery(token: string) {
-    const url = new URL(window.location.href)
-    url.searchParams.set("journey", token)
-    history.pushState({}, "", url)
-    console.log("hallo")
-}
-
-export function deleteJourneyQuery() {
-    const url = new URL(window.location.href)
-    url.searchParams.delete("journey")
-    history.pushState({}, "", url)
 }
 
 export function shareJourney(refreshToken: string | undefined) {

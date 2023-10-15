@@ -1,9 +1,7 @@
 import {Journey, Leg, Location, StopOver, Hint, Warning, Status} from "hafas-client";
 import {
-    deleteJourneyQuery,
     refreshJourney,
     refreshJourneyAndInitMap,
-    setJourneyQuery,
     shareJourney
 } from "./main.js";
 import {

@@ -437,6 +437,11 @@
 .modal__trip-infos-buttons {
     margin-left: auto;
     width: fit-content;
+    gap: .5rem;
+    & button {
+        display: flex;
+        padding: .7rem;
+    }
 }
 
 .modal__trip-infos-container {

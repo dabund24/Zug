@@ -237,7 +237,7 @@
         </div>
         <template id="station-template">
             <div class="station-name-container">
-                <div class="station-name">
+                <div class="station-name header">
 
                 </div>
                 <div class="station-circle--big"></div>
@@ -457,7 +457,13 @@
                             <div class="flex-row modal__trip-infos-buttons">
                                 <div class="selectable--horizontal modal__trip-statuses-button-container" style="display: none">
                                     <button class="hoverable selectable__text modal__trip-statuses-button delayed">
-                                        &#128712;
+                                        <svg width="17px" height="17px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <g stroke="var(--accent-red)" stroke-width="3" stroke-linecap="round" fill="none">
+                                                <circle cx="10" cy="10" r="8.5"/>
+                                                <line x1="10" y1="12" x2="10" y2="14" stroke-width="4"/>
+                                                <line x1="10" y1="6.5" x2="10" y2="6.5" stroke-width="4"/>
+                                            </g>
+                                        </svg>
                                     </button>
                                     <div class="line--accent"></div>
                                 </div>
@@ -469,13 +475,29 @@
                                 </div>
                                 <div class="selectable--horizontal modal__trip-static-infos-button-container" style="display: none">
                                     <button class="hoverable selectable__text modal__trip-static-infos-button info">
-                                        &#128712;
+                                        <svg width="17px" height="17px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <g stroke="var(--accent-blue)" stroke-linecap="round" fill="none">
+                                                <circle cx="10" cy="10" r="8.5" stroke-width="3"/>
+                                                <g stroke-width="4">
+                                                    <line x1="10" y1="12" x2="10" y2="14" stroke-width="4"/>
+                                                    <line x1="10" y1="6.5" x2="10" y2="6.5" stroke-width="4"/>
+                                                </g>
+                                            </g>
+                                        </svg>
                                     </button>
                                     <div class="line--accent"></div>
                                 </div>
                                 <div class="selectable--horizontal modal__trip-hints-button-container" style="display: none">
                                     <button class="hoverable selectable__text modal__trip-hints-button">
-                                        &#128712;
+                                        <svg width="17px" height="17px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <g stroke="var(--foreground-color)" stroke-linecap="round" fill="none">
+                                                <circle cx="10" cy="10" r="8.5" stroke-width="3"/>
+                                                <g stroke-width="4">
+                                                    <line x1="10" y1="12" x2="10" y2="14" stroke-width="4"/>
+                                                    <line x1="10" y1="6.5" x2="10" y2="6.5" stroke-width="4"/>
+                                                </g>
+                                            </g>
+                                        </svg>
                                     </button>
                                     <div class="line--accent"></div>
                                 </div>

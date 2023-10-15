@@ -61,7 +61,7 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
             if (remainingJourneys !== undefined) {
                 journeysArray.push(journeysResponse.journeys.concat(remainingJourneys));
             } else {
-                respondHafasError("hafasServer", 0, 0)
+                return respondHafasError("hafasServer", 0, 0)
             }
         } else {
             journeysArray.push(journeysResponse.journeys.concat())
