@@ -16,25 +16,25 @@ export function unlockJourneySearch() {
     allowJourneySearch = true
 }
 
-let displayedJourneys: Journey[] = [];
+let displayedJourneys: Journey[][] = [];
 
-export let selectedJourney = -1;
+export let selectedJourney: [number, number] = [-1, -1];
 
-export function saveJourney(journey: Journey) {
-    displayedJourneys.push(journey);
+export function saveJourney(depth: number, journey: Journey) {
+    displayedJourneys[depth].push(journey);
 }
 
-export function getJourney(i: number) {
-    selectedJourney = i;
-    return displayedJourneys[i];
+export function getJourney(depth: number, idInDepth: number) {
+    selectedJourney = [depth, idInDepth];
+    return displayedJourneys[depth][idInDepth];
 }
 
-export function setJourney(i: number, journey: Journey) {
-    displayedJourneys[i] = journey
+export function setJourney(depth: number, idInDepth: number, journey: Journey) {
+    displayedJourneys[depth][idInDepth] = journey
 }
 
-export function resetJourneys() {
-    displayedJourneys.length = 0;
+export function resetJourneys(newLegCount: number) {
+    displayedJourneys = Array.from(Array(newLegCount), () => []);
 }
 
 export let isArrival = 0;

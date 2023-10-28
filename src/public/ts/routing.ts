@@ -7,7 +7,7 @@ import {
     hideModal, showLeafletModal,
     showModal
 } from "./display.js";
-import {journeyOptions, setJourney, tryLockingJourneySearch, unlockJourneySearch} from "./memorizer.js";
+import {journeyOptions, resetJourneys, setJourney, tryLockingJourneySearch, unlockJourneySearch} from "./memorizer.js";
 import {hideLoadSlider, showLoadSlider, toast} from "./pageActions.js";
 import {JourneyWithRealtimeData} from "hafas-client";
 
@@ -82,16 +82,18 @@ export async function displaySharedJourney(token: string, withMap: boolean) {
                 hideLoadSlider()
                 return
             }
-            setJourney(0, refreshed.journey)
+            resetJourneys(1)
+            setJourney(0, 0, refreshed.journey)
             const origin = <string>refreshed.journey.legs[0].origin?.name
             const destination = <string>refreshed.journey.legs[refreshed.journey.legs.length - 1].destination?.name
-            displayJourneyTree({children: [{journey: refreshed.journey, children: null}]}, [origin, destination])
-            displayJourneyModalFirstTime(0, false)
+            displayJourneyTree({children: [{depth: 0, idInDepth: 0, journey: refreshed.journey, children: null}]}, [origin, destination])
+            displayJourneyModalFirstTime(0, 0, false)
             toast("success", "Verbindung gefunden", "found connection")
             if (withMap) {
                 showLeafletModal()
             }
-        }).catch(() => {
+        }).catch((e) => {
+            console.log(e)
             toast("error", "Netzwerkfehler", "network error")
         })
 

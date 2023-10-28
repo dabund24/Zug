@@ -60,7 +60,6 @@ export async function findConnections() {
             viaNames.push(via[0].name!)
         }
     }
-    //const viaStr = (<HTMLInputElement>document.getElementById("via1__input")).value
     const toStr = (<HTMLInputElement>document.getElementById("to__input")).value
 
     const from: (Station | Stop)[] = await fetch("/api/stations?name=" + fromStr).then(res => res.json()).catch(() => {
@@ -134,12 +133,12 @@ export async function findConnections() {
     unlockJourneySearch()
 }
 
-export async function refreshJourneyAndInitMap(token: string | undefined, index: number) {
-    await refreshJourney(token, index)
-    initMap(getJourney(index), false)
+export async function refreshJourneyAndInitMap(token: string | undefined, depth: number, idInDepth: number) {
+    await refreshJourney(token, depth, idInDepth)
+    initMap(getJourney(depth, idInDepth), false)
 }
 
-export async function refreshJourney(token: string | undefined, index: number) {
+export async function refreshJourney(token: string | undefined, depth: number, idInDepth: number) {
     if (!tryLockingJourneySearch()) {
         toast("warning", "Bitte warten...", "Please wait...")
         return
@@ -151,14 +150,16 @@ export async function refreshJourney(token: string | undefined, index: number) {
         unlockJourneySearch()
         return
     }
-    await fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language).then(res => res.json()).then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
+    await fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language)
+        .then(res => res.json())
+        .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
         const refreshed = refreshedResponse[0]
         if (refreshed === null) {
             toast("error", "Aktualisierung gescheitert (Hafas)", "refresh failed (Hafas)")
             hideLoadSlider()
             return
         }
-        setJourney(index, refreshed.journey)
+        setJourney(depth, idInDepth, refreshed.journey)
         displayJourneyModal(refreshed.journey)
         toast("success", "Verbindungsdaten aktualisiert", "refreshed connection data")
     }).catch(() => {

@@ -42,6 +42,8 @@ export type JourneyTree = {
 }
 
 export type JourneyNode = {
+    depth: number,
+    idInDepth: number,
     journey: Journey,
     children: JourneyNode[] | null
 }

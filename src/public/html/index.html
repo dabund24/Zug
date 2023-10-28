@@ -326,7 +326,7 @@
 <div id="connection-modal" class="modal">
     <div class="modal-content content-wrapper">
         <header class="flex-row">
-            <button class="modal__title modal__title--clickable header padded-top-bottom hoverable"></button>
+            <button class="modal__title modal__title--clickable header padded-top-bottom hoverable" title="refresh journey data"></button>
             <button class="modal__close modal__refresh header hoverable">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
@@ -336,7 +336,7 @@
                     </g>
                 </svg>
             </button>
-            <button class="modal__close modal__refresh header hoverable" onclick="showLeafletModal()">
+            <button class="modal__close modal__refresh header hoverable" title="show map" onclick="showLeafletModal()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20" xmlns='http://www.w3.org/2000/svg'>
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
                         <path d="M 14.9 9.5 A 5.5 5.5 0 1 0  5.1 9.5"/>
@@ -345,7 +345,7 @@
                     </g>
                 </svg>
             </button>
-            <button class="modal__close header hoverable" onclick="history.back()">
+            <button class="modal__close header hoverable" title="close" onclick="history.back()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                         <line x1="4" y1="4" x2="16" y2="16"/>
@@ -456,7 +456,7 @@
                         <div class="modal__trip-infos-container" data-statuses="false" data-warnings="false" data-static-infos="false" data-hints="false">
                             <div class="flex-row modal__trip-infos-buttons">
                                 <div class="selectable--horizontal modal__trip-statuses-button-container" style="display: none">
-                                    <button class="hoverable selectable__text modal__trip-statuses-button delayed">
+                                    <button class="hoverable selectable__text modal__trip-statuses-button delayed" title="show/hide journey statuses">
                                         <svg width="17px" height="17px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <g stroke="var(--accent-red)" stroke-width="3" stroke-linecap="round" fill="none">
                                                 <circle cx="10" cy="10" r="8.5"/>
@@ -468,13 +468,13 @@
                                     <div class="line--accent"></div>
                                 </div>
                                 <div class="selectable--horizontal modal__trip-warnings-button-container" style="display: none">
-                                    <button class="hoverable selectable__text modal__trip-warnings-button warning">
+                                    <button class="hoverable selectable__text modal__trip-warnings-button warning" title="show/hide journey warnings">
                                         &#9888;
                                     </button>
                                     <div class="line--accent"></div>
                                 </div>
                                 <div class="selectable--horizontal modal__trip-static-infos-button-container" style="display: none">
-                                    <button class="hoverable selectable__text modal__trip-static-infos-button info">
+                                    <button class="hoverable selectable__text modal__trip-static-infos-button info" title="show/hide journey info">
                                         <svg width="17px" height="17px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <g stroke="var(--accent-blue)" stroke-linecap="round" fill="none">
                                                 <circle cx="10" cy="10" r="8.5" stroke-width="3"/>
@@ -488,7 +488,7 @@
                                     <div class="line--accent"></div>
                                 </div>
                                 <div class="selectable--horizontal modal__trip-hints-button-container" style="display: none">
-                                    <button class="hoverable selectable__text modal__trip-hints-button">
+                                    <button class="hoverable selectable__text modal__trip-hints-button" title="show/hide journey hints">
                                         <svg width="17px" height="17px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <g stroke="var(--foreground-color)" stroke-linecap="round" fill="none">
                                                 <circle cx="10" cy="10" r="8.5" stroke-width="3"/>
@@ -565,7 +565,7 @@
             <span class="modal__title header padded-top-bottom">
                 <span class="de">Einstellungen</span><span class="en">Settings</span>
             </span>
-            <button class="modal__close header hoverable" onclick="history.back()">
+            <button class="modal__close header hoverable" title="close" onclick="history.back()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                         <line x1="4" y1="4" x2="16" y2="16" stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round"/>
@@ -906,7 +906,7 @@
             <span class="modal__title header padded-top-bottom">
                 <span class="de">Über diese Seite</span><span class="en">About</span>
             </span>
-            <button class="modal__close header hoverable" onclick="history.back()">
+            <button class="modal__close header hoverable" title="close" onclick="history.back()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                         <line x1="4" y1="4" x2="16" y2="16"/>

@@ -119,7 +119,10 @@ function getEarliestArrivalFromJourney(journeys: readonly Journey[] | Journey[])
     return firstJourney.legs[firstJourney.legs.length - 1].arrival
 }
 
+let idInDepthCounters: number[];
+
 function journeyMatrixToJourneyTree(matrix: Journey[][]): JourneyTree {
+    idInDepthCounters = Array.from(Array(matrix.length), () => 0)
     return {
         children: getNodesFromMatrix(matrix, new Date(8640000000000000), 0)!
     }
@@ -148,10 +151,13 @@ function getNodesFromMatrix(matrix: Journey[][], nextDeparture: Date, depth: num
             nextArrival = new Date(nextChild.legs[nextChild.legs.length - 1].arrival!)
         }
         const childNode: JourneyNode = {
+            depth: depth,
+            idInDepth: idInDepthCounters[depth],
             journey: children[i],
             children: getNodesFromMatrix(matrix, nextArrival, depth + 1)
         }
         childNodes.push(childNode)
+        idInDepthCounters[depth]++
     }
     return childNodes
 }
