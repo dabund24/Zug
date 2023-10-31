@@ -229,19 +229,42 @@
         </div>
     </section>
     <section id="journeys" class="center padded-top-bottom">
-        <div id="station-names-container" class="flex-column">
-            <div id="station-names" class="flex-row">
+        <div id="station-names" class="flex-row padded-top-bottom">
 
-            </div>
-            <div class="line--regular"></div>
         </div>
-        <template id="station-template">
-            <div class="station-name-container">
-                <div class="station-name header">
-
+        <template id="station-name-template">
+            <div class="station-name-container flex-column">
+                <div class="station-name__name header">
+                    Freising
                 </div>
-                <div class="station-circle--big"></div>
-                <div class="station-circle--small"></div>
+                <div class="station-name__line flex-row">
+                    <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                        <circle cx='8' cy='8' r='6.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                        <circle cx='8' cy='8' r='2' fill='var(--product-color)'/>
+                    </svg>
+                    <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                        <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                    </svg>
+                    <div class="line--regular"></div>
+                </div>
+                <div class="station-name__durations flex-row">
+                    <div class="station-name__durations__wait-container flex-row">
+                        <i class="station-name__durations__wait">20min</i>
+                    </div>
+                    <div class="station-name__durations__leg-container flex-row">
+                        <i class="station-name__durations__leg">20min</i>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template id="station-names__durations-template">
+            <div class="station-names__durations flex-row">
+                <div class="station-names__durations__wait-container flex-row">
+                    <i class="station-names__durations__wait">20min</i>
+                </div>
+                <div class="station-names__durations__leg-container flex-row">
+                    <i class="station-names__durations__leg">20min</i>
+                </div>
             </div>
         </template>
 
@@ -289,38 +312,79 @@
     </section>
 </div>
 <footer class="flex-row">
-    <div id="settings-modal-indicator" class="selectable--horizontal">
-        <button class="hoverable selectable__text flex-row" onclick="showModal('settings')">
-            <!--&#9881;-->
-            <svg width="26px" height="26px">
-                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
-                    <path d="M 13,24 C 13,21 19,19 21,21"></path>
-                    <path d="M 21,21 C 19,19 21,13 24,13"></path>
-                    <path d="M 24,13 C 21,13 19, 7 21, 5"></path>
-                    <path d="M 21, 5 C 19, 7 13, 5 13, 2"></path>
-                    <path d="M 13, 2 C 13, 5  7, 7  5, 5"></path>
-                    <path d="M  5, 5 C  7, 7  5,13  2,13"></path>
-                    <path d="M  2,13 C  5,13  7,19  5,21"></path>
-                    <path d="M  5,21 C  7,19 13,21 13,24"></path>
-                </g>
-                <circle cx="13" cy="13" r="3" stroke="var(--accent-color)" stroke-width="3" fill="none"/>
-            </svg>
-        </button>
-        <div class="line--accent"></div>
+    <div class="footer__static-buttons flex-row">
+        <div id="settings-modal-indicator" class="selectable--horizontal">
+            <button class="hoverable selectable__text flex-row" onclick="showModal('settings')" title="settings">
+                <svg width="26px" height="26px">
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                        <path d="M 13,24 C 13,21 19,19 21,21"></path>
+                        <path d="M 21,21 C 19,19 21,13 24,13"></path>
+                        <path d="M 24,13 C 21,13 19, 7 21, 5"></path>
+                        <path d="M 21, 5 C 19, 7 13, 5 13, 2"></path>
+                        <path d="M 13, 2 C 13, 5  7, 7  5, 5"></path>
+                        <path d="M  5, 5 C  7, 7  5,13  2,13"></path>
+                        <path d="M  2,13 C  5,13  7,19  5,21"></path>
+                        <path d="M  5,21 C  7,19 13,21 13,24"></path>
+                    </g>
+                    <circle cx="13" cy="13" r="3" stroke="var(--accent-color)" stroke-width="3" fill="none"/>
+                </svg>
+            </button>
+            <div class="line--accent"></div>
+        </div>
+        <div id="about-modal-indicator" class="selectable--horizontal">
+            <button class="hoverable selectable__text flex-row" onclick="showModal('about')" title="about">
+                <svg width="26px" height="26px">
+                    <circle cx="13" cy="13" r="11" stroke="var(--foreground-color)" stroke-width="3" fill="none"/>
+                    <g stroke="var(--accent-color)" stroke-width="4" fill="none" stroke-linecap="round">
+                        <line x1="13" y1="18" x2="13" y2="14"/>
+                        <line x1="13" y1="8" x2="13" y2="8"/>
+                    </g>
+                </svg>
+            </button>
+            <div class="line--accent"></div>
+        </div>
     </div>
-    <div id="about-modal-indicator" class="selectable--horizontal">
-        <button class="hoverable selectable__text flex-row" onclick="showModal('about')">
-            <svg width="26px" height="26px">
-                <circle cx="13" cy="13" r="11" stroke="var(--foreground-color)" stroke-width="3" fill="none"/>
-                <g stroke="var(--accent-color)" stroke-width="4" fill="none" stroke-linecap="round">
-                    <line x1="13" y1="18" x2="13" y2="14"/>
-                    <line x1="13" y1="8" x2="13" y2="8"/>
-                </g>
-            </svg>
-        </button>
-        <div class="line--accent"></div>
+    <div class="footer__info-panel">
+        <div class="flex-row">
+            <span id="footer__info-panel__origin">Freising</span>
+            <span class="show-whitespace"> — </span>
+            <span id="footer__info-panel__destination">Garching Forschungszentrum</span>
+        </div>
+        <i id="footer__info-panel__duration">30min</i>
     </div>
-
+    <div class="footer__journey-buttons flex-row">
+        <div id="share-indicator" class="selectable--horizontal">
+            <button class="hoverable selectable__text flex-row" onclick="" title="share">
+                <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke-width="4" stroke="var(--foreground-color)">
+                        <line x1="21" y1="21" x2="5" y2="13"/>
+                        <line x1="21" y1="5" x2="5" y2="13"/>
+                    </g>
+                    <g stroke-width="3" stroke="var(--accent-color)" fill="var(--background-color)">
+                        <circle cx="20.5" cy="20.5" r="4"/>
+                        <circle cx="5.5" cy="13" r="4"/>
+                        <circle cx="20.5" cy="5.5" r="4"/>
+                    </g>
+                </svg>
+            </button>
+            <div class="line--accent"></div>
+        </div>
+        <div id="connection-modal-indicator" class="selectable--horizontal">
+            <button class="hoverable selectable__text flex-row" onclick="" title="details">
+                <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke-width="4" stroke="var(--accent-color)" stroke-linecap="round">
+                        <line x1="5" y1="5" x2="5" y2="21"/>
+                    </g>
+                    <g stroke-width="3" stroke="var(--foreground-color)" stroke-linecap="round">
+                        <line x1="12" y1="5" x2="22" y2="5"/>
+                        <line x1="12" y1="13" x2="22" y2="13"/>
+                        <line x1="12" y1="21" x2="22" y2="21"/>
+                    </g>
+                </svg>
+            </button>
+            <div class="line--accent"></div>
+        </div>
+    </div>
 </footer>
 
 <div id="connection-modal" class="modal">

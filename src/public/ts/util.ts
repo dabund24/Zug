@@ -46,14 +46,20 @@ export function dateDifference(sooner: string | number | Date, later: string | n
     let dateA = new Date(sooner).getTime()
     let dateB = new Date(later).getTime()
     const difference = dateB - dateA;
-    return [(difference / 60000) % 60, Math.floor(difference / 3600000)]
+    let [minutes, hours] = [(difference / 60000) % 60, Math.floor(difference / 3600000)]
+    if (hours < 0) {
+        hours = hours + 1
+    }
+    return [minutes, hours]
 }
 
 export function timeToString(time: [number, number]) {
     if (time[1] === 0) {
         return time[0] + "min"
     } else {
-        return time[1] + "h " + time[0] + "min"
+        return time[1] + "h "
+            + (time[0] < 0 ? -time[0] : time[0])
+            + "min"
     }
 }
 

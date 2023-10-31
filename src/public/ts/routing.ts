@@ -1,4 +1,4 @@
-import {PageState, PageStateString} from "./types";
+import {JourneyNode, JourneyTree, PageState, PageStateString} from "./types";
 import {
     displayJourneyModalFirstTime,
     displayJourneyTree,
@@ -7,9 +7,17 @@ import {
     hideModal, showLeafletModal,
     showModal
 } from "./display.js";
-import {journeyOptions, resetJourneys, setJourney, tryLockingJourneySearch, unlockJourneySearch} from "./memorizer.js";
+import {
+    journeyOptions,
+    resetJourneys,
+    selectedJourneys,
+    setJourney,
+    tryLockingJourneySearch,
+    unlockJourneySearch
+} from "./memorizer.js";
 import {hideLoadSlider, showLoadSlider, toast} from "./pageActions.js";
-import {JourneyWithRealtimeData} from "hafas-client";
+import {Journey, JourneyWithRealtimeData} from "hafas-client";
+import {selectJourney} from "./journeyMerge.js";
 
 const path = <PageStateString>window.location.pathname.substring(1)
 const journeyQuery = new URLSearchParams(window.location.search).get("journey")
@@ -34,8 +42,6 @@ switch (path) {
 }
 
 window.onpopstate = () => {
-    console.log(history.state)
-    console.log(document.documentElement.getAttribute("data-state"))
     switch (<PageStateString>document.documentElement.getAttribute("data-state")) {
         case "": return
         case "settings":
@@ -61,42 +67,103 @@ window.addEventListener("keydown", event => {
 
 export function pushState(path: PageStateString, refreshToken?: string) {
     if (refreshToken !== undefined) {
+        refreshToken = btoa(refreshToken)
         window.history.pushState(<PageState>{state: path}, "", path + "?journey=" + refreshToken)
     } else {
         window.history.pushState(<PageState>{state: path}, "", path)
     }
 }
 
-export async function displaySharedJourney(token: string, withMap: boolean) {
+export async function displaySharedJourney(tokenString: string, withMap: boolean) {
     if (!tryLockingJourneySearch()) {
         return
     }
     showLoadSlider()
     toast("neutral", "Hole Verbindungsdaten", "Fetching connection data")
-    await fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language)
-        .then(res => res.json())
-        .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
-            const refreshed = refreshedResponse[0]
-            if (refreshed === null) {
-                toast("error", "Token ist fehlerhaft", "token is incorrect")
-                hideLoadSlider()
-                return
+
+    try {
+        tokenString = atob(tokenString)
+    } catch (e) {
+        hideLoadSlider()
+        unlockJourneySearch()
+        toast("error", "Ungültiges Token", "invalid token")
+        return
+    }
+    const tokens: string[] = JSON.parse(tokenString)
+    const journeyPromises: Promise<Journey | null>[] = []
+    // fetch journeys for all tokens
+    tokens.forEach(token => {
+        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language)
+            .then(res => res.json())
+            .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
+                const refreshed = refreshedResponse[0]
+                if (refreshed === null) {
+                    toast("error", "Ungültiges Token", "invalid token")
+                    hideLoadSlider()
+                    unlockJourneySearch()
+                    return null
+                }
+                return refreshed.journey;
+            }).catch((e) => {
+                console.log(e)
+                toast("error", "Netzwerkfehler", "network error")
+                return null
+            })
+        journeyPromises.push(journeyPromise)
+    })
+
+    // await promises
+    const journeys: Array<Journey | null> = []
+    for (const journeyPromise of journeyPromises) {
+        journeys.push(await journeyPromise)
+    }
+
+    // write journeys
+    const stationNames: string[] = []
+    resetJourneys(journeys.length)
+    for (let i = 0; i < journeys.length; i++) {
+        const journey = journeys[i]
+        if (journey !== null) {
+            setJourney(i, selectedJourneys[i], journey)
+            stationNames.push(<string>journey.legs[0].origin?.name)
+            if (i === journeys.length - 1) {
+                stationNames.push(<string>journey.legs[journey.legs.length - 1].destination?.name)
             }
-            resetJourneys(1)
-            setJourney(0, 0, refreshed.journey)
-            const origin = <string>refreshed.journey.legs[0].origin?.name
-            const destination = <string>refreshed.journey.legs[refreshed.journey.legs.length - 1].destination?.name
-            displayJourneyTree({children: [{depth: 0, idInDepth: 0, journey: refreshed.journey, children: null}]}, [origin, destination])
-            displayJourneyModalFirstTime(0, 0, false)
-            toast("success", "Verbindung gefunden", "found connection")
-            if (withMap) {
-                showLeafletModal()
-            }
-        }).catch((e) => {
-            console.log(e)
-            toast("error", "Netzwerkfehler", "network error")
-        })
+        } else {
+            hideLoadSlider()
+            unlockJourneySearch()
+            return
+        }
+    }
+
+    displayJourneyTree(getSimpleJourneyTree(<Journey[]>journeys), stationNames)
+    for (let i = 0; i < journeys.length; i++) {
+        selectJourney(i, 0)
+    }
+    displayJourneyModalFirstTime([0, journeys.length - 1], false)
+    toast("success", "Verbindung gefunden", "found connection")
+    if (withMap) {
+        showLeafletModal()
+    }
 
     hideLoadSlider()
     unlockJourneySearch()
+}
+
+function getSimpleJourneyTree(journeys: Journey[]): JourneyTree {
+    return  {
+        children: getSimpleJourneyNode(journeys, 0)!
+    }
+}
+
+function getSimpleJourneyNode(journeys: Journey[], depth: number): JourneyNode[] | null {
+    if (journeys.length === 0) {
+        return null
+    }
+    return [{
+        depth: depth,
+        idInDepth: 0,
+        journey: journeys[0],
+        children: getSimpleJourneyNode(journeys.slice(1), depth + 1)
+    }]
 }

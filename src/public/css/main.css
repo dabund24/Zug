@@ -50,6 +50,7 @@
     --foreground-color: #000000;
     --background-color--opaque: #ffffffe0;
     --foreground-color--opaque: #00000020;
+    --product-color: var(--foreground-color);
     --accent-color: var(--accent-light);
     --accent-inverted: var(--accent-dark);
     --accent-red: #cb1a29;
@@ -476,15 +477,43 @@ footer {
     -webkit-backdrop-filter: var(--blur);
     background-color: var(--background-color--opaque);
     border-top: var(--line-width) solid var(--foreground-color--opaque);
-    border-right: var(--line-width) solid var(--foreground-color--opaque);
-    border-top-right-radius: var(--border-radius-large);
-    width: fit-content;
     position: sticky;
     bottom: 0;
     padding: .5rem;
     z-index: 100;
     overflow-y: clip;
     text-align: center;
+    align-items: center;
+    min-width: 0;
+}
+
+.footer__static-buttons, .footer__journey-buttons {
+    width: fit-content;
+}
+
+.footer__info-panel {
+    flex: 1 1 auto;
+    min-width: 0;
+    #footer__info-panel__origin, #footer__info-panel__destination {
+        flex-basis: 50%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #footer__info-panel__origin {
+        text-align: right;
+    }
+    #footer__info-panel__destination {
+        text-align: left;
+    }
+}
+
+.footer__journey-buttons > :first-child {
+    margin-left: auto;
+}
+
+footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .footer__journey-buttons {
+    visibility: hidden;
 }
 
 .modal {
@@ -601,6 +630,10 @@ footer {
     bottom: 0;
 }
 
+[data-state=""] #toasts {
+    bottom: 4.5rem;
+}
+
 .toast {
     margin: 1rem auto;
     max-width: calc(100vw - 2rem);
@@ -672,11 +705,11 @@ footer {
 @media screen and (max-width: 1300px) {
 
     :root {
-        font-size: 1rem;
+        font-size: .8rem;
     }
 
     body, input, button, .tooltip:after {
-        font-size: 18px;
+        font-size: 16px;
     }
 }
 
@@ -714,6 +747,11 @@ footer {
 
     .modal__close {
         margin-top: 0;
+    }
+
+
+    footer .selectable__text {
+        padding: .5rem;
     }
 }
 

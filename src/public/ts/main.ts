@@ -1,4 +1,4 @@
-import {JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop} from "hafas-client";
+import {Journey, JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop} from "hafas-client";
 import {
     displayJourneyModal,
     displayJourneyModalFirstTime,
@@ -10,7 +10,7 @@ import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageA
 import {
     getJourney,
     isArrival,
-    journeyOptions,
+    journeyOptions, saveJourney, selectedJourney, selectedJourneys,
     setJourney,
     tryLockingJourneySearch,
     unlockJourneySearch
@@ -18,6 +18,7 @@ import {
 import {PageState, PageStateString, ZugErrorType, ZugResponse} from "./types.js";
 import {setupSearch} from "./search.js";
 import {initMap} from "./map.js";
+import {mergeSelectedJourneys} from "./journeyMerge.js";
 
 setColor([2, "green"])
 setTheme([0, 'light'])
@@ -133,38 +134,66 @@ export async function findConnections() {
     unlockJourneySearch()
 }
 
-export async function refreshJourneyAndInitMap(token: string | undefined, depth: number, idInDepth: number) {
-    await refreshJourney(token, depth, idInDepth)
-    initMap(getJourney(depth, idInDepth), false)
+export async function refreshJourneyAndInitMap(tokenString: string | undefined, journeyBounds: [number, number]) {
+    await refreshJourney(tokenString, journeyBounds)
+    initMap(selectedJourney, false)
 }
 
-export async function refreshJourney(token: string | undefined, depth: number, idInDepth: number) {
+export async function refreshJourney(tokenString: string | undefined, journeyBounds: [number, number]) {
     if (!tryLockingJourneySearch()) {
         toast("warning", "Bitte warten...", "Please wait...")
         return
     }
     showLoadSlider()
-    if (token === undefined) {
+    if (tokenString === undefined) {
         toast("error", "Aktualisierung gescheitert (fehlendes Token)", "refresh failed (missing token)")
         hideLoadSlider()
         unlockJourneySearch()
         return
     }
-    await fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language)
-        .then(res => res.json())
-        .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
-        const refreshed = refreshedResponse[0]
-        if (refreshed === null) {
-            toast("error", "Aktualisierung gescheitert (Hafas)", "refresh failed (Hafas)")
-            hideLoadSlider()
-            return
-        }
-        setJourney(depth, idInDepth, refreshed.journey)
-        displayJourneyModal(refreshed.journey)
-        toast("success", "Verbindungsdaten aktualisiert", "refreshed connection data")
-    }).catch(() => {
-        toast("error", "Netzwerkfehler", "network error")
+    const tokens: string[] = JSON.parse(tokenString)
+    const journeyPromises: Promise<Journey | null>[] = []
+    // fetch journeys for all tokens
+    tokens.forEach(token => {
+        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language)
+            .then(res => res.json())
+            .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
+                const refreshed = refreshedResponse[0]
+                if (refreshed === null) {
+                    toast("error", "Aktualisierung gescheitert (Hafas)", "refresh failed (Hafas)")
+                    hideLoadSlider()
+                    return null
+                }
+                return refreshed.journey
+            }).catch(() => {
+                toast("error", "Netzwerkfehler", "network error")
+                return null
+        })
+        journeyPromises.push(journeyPromise)
     })
+
+    // await promises
+    const journeys: Array<Journey | null> = []
+    for (const journeyPromise of journeyPromises) {
+        journeys.push(await journeyPromise)
+    }
+    // write journeys
+    for (let i = 0; i < journeys.length; i++) {
+        const journey = journeys[i]
+        if (journey !== null) {
+            setJourney(journeyBounds[0] + i, selectedJourneys[journeyBounds[0] + i], journey)
+        } else {
+            toast("warning",
+                "Teilabschnitt " + (i + 1) + " konnte nicht aktualisiert werden.",
+                "Journey leg " + (i + 1) + "  could not be refreshed.")
+        }
+    }
+
+    mergeSelectedJourneys(journeyBounds)
+    displayJourneyModal(selectedJourney)
+    toast("success", "Verbindungsdaten aktualisiert", "refreshed connection data")
+
+
     hideLoadSlider()
     unlockJourneySearch()
 }
@@ -189,13 +218,15 @@ function printErrorMessage(errorType: ZugErrorType, stationA: string, stationB: 
     }
 }
 
-export function shareJourney(refreshToken: string | undefined) {
-    if (refreshToken === undefined) {
-        toast("error", "Verbindung kann nicht geteilt werden", "Connection cannot be shared")
-        return
+export function shareJourney(journeyBounds?: [number, number]) {
+    let sharedText: string
+    if (journeyBounds === undefined) {
+        sharedText = new URL(window.location.href).toString()
+    } else {
+        mergeSelectedJourneys(journeyBounds)
+        sharedText = new URL("/journey?journey=" + btoa(<string>selectedJourney.refreshToken), window.location.href).toString()
     }
-    console.log("hi")
-    const sharedText = new URL(window.location.href).toString()
+
     if (navigator.share) {
         navigator.share({
             title: "geteilte Verbindung",

@@ -33,6 +33,7 @@
 
 .search__icon:last-child {
     width: 2.5rem;
+    height: 2.5rem;
     margin-left: -2.5rem;
     padding: .5rem;
 }
@@ -80,20 +81,16 @@
     background-color: var(--accent-color);
 }
 
-#station-names-container {
-    min-width: fit-content;
-}
-
 #station-names, .station-inputs {
     align-items: end;
 }
 
 .station-name-container {
-    width: calc(var(--connection-width) - 2rem);
+    width: var(--connection-width);
+    margin-top: auto;
     flex-shrink: 0;
-    padding: 0 1rem;
     text-align: center;
-    --product-color: var(--accent-color);
+    --product-color: var(--foreground-color);
     .station-circle--small {
         margin: .5rem auto -4px;
     }
@@ -102,44 +99,110 @@
     }
 }
 
+.station--selected, .station--selected + .station-name-container {
+    --product-color: var(--accent-color);
+}
+
 .station-name {
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+.station-name__name {
+    width: 100%;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.station-name__line {
+    height: 16px;
+    margin: 0 calc(var(--connection-width) / -2) 0 calc(var(--connection-width) / 2);
+    .line--regular {
+        align-self: center;
+        margin-left: -8px;
+    }
+    .station-icon {
+        margin-left: -8px;
+        z-index: 1;
+    }
+    .station-icon--major {
+        display: none;
+    }
+}
+
+.station--selected .line--regular {
+    background-color: var(--accent-color);
+}
+
+.station-name__durations {
+    margin: 0 calc(var(--connection-width) / -2) 0 calc(var(--connection-width) / 2);
+    z-index: 1;
+}
+
+.station-name__durations i {
+    margin: auto;
+}
+
+.station-name__durations__wait-container {
+    margin-left: -4rem;
+    width: 8rem;
+    flex-shrink: 0;
+    visibility: hidden;
+}
+
+.station-name__durations__leg-container {
+    margin-right: 4rem;
+    width: 100%;
+    visibility: hidden;
+}
+
+.station--selected .station-name__durations__leg-container, .station--selected + .station--selected .station-name__durations__wait-container {
+    visibility: visible;
+}
+
 .station-name-container:first-child {
-    margin: 0 auto 0 0;
-    padding: 0;
     width: calc(var(--connection-width) / 2);
     text-align: left;
 
-    .station-circle--big {
+    .station-icon--major {
         display: block;
-        margin: .5rem auto -4px calc(2rem - var(--line-width) / 2);
     }
-    .station-circle--small {
+    .station-icon--minor {
         display: none;
     }
+    .station-name__line {
+        margin: 0 calc(var(--connection-width) / -2) 0 2rem;
+    }
+    .station-name__durations {
+        margin: 0 calc(var(--connection-width) / -2) 0 0;
+    }
+}
+
+.station-name-container:nth-last-child(2) .station-name__line {
+    margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 calc(var(--connection-width) / 2);
 }
 
 .station-name-container:last-child {
-    margin: 0 0 0 auto;
-    padding: 0;
     width: calc(var(--connection-width) / 2);
     text-align: right;
 
-    .station-circle--big {
+    .station-icon--major {
         display: block;
-        margin: .5rem calc(2rem - var(--line-width) / 2) -4px auto;
     }
-    .station-circle--small {
+    .station-icon--minor, .line--regular {
         display: none;
+    }
+    .station-name__line {
+        margin: 0 calc(2rem - 8px) 0 auto;
+    }
+    .station-name__durations {
+        margin: 0;
+        width: 0;
     }
 }
 
-#station-names+.line--regular {
-    max-width: calc(100% - 4rem);
-    margin: 0 auto 1rem;
+.station-name-container:first-child:nth-last-child(2) .station-name__line {
+    margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 2rem;
 }
 
 #journeys {

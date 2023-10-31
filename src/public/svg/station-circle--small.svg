@@ -4,10 +4,16 @@
     <circle cx="8" cy="8" r="3.5" fill="transparent" stroke="black" stroke-width="3"/>
 </svg-->
 
-<svg width="17px" height="17px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-    <g stroke="red" stroke-width="3" stroke-linecap="round" fill="none">
-        <circle cx="10" cy="10" r="8.5"/>
-        <line x1="10" y1="12" x2="10" y2="14" stroke-width="4"/>
-        <line x1="10" y1="6.5" x2="10" y2="6.5" stroke-width="4"/>
+<svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
+    <g stroke-width="4" stroke="red" stroke-linecap="round">
+        <line x1="7" y1="7" x2="7" y2="19"/>
+    </g>
+    <g stroke-width="3" stroke="black" fill="white" stroke-linecap="round">
+        <line x1="13" y1="8" x2="19" y2="8"/>
+        <line x1="13" y1="18" x2="19" y2="18"/>
+        <line x1="1.5" y1="1.5" x2="24.5" y2="1.5"/>
+        <line x1="1.5" y1="1.5" x2="1.5" y2="24.5"/>
+        <line x1="24.5" y1="24.5" x2="24.5" y2="1.5"/>
+        <line x1="24.5" y1="24.5" x2="1.5" y2="24.5"/>
     </g>
 </svg>

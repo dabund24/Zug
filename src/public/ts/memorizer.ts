@@ -18,14 +18,16 @@ export function unlockJourneySearch() {
 
 let displayedJourneys: Journey[][] = [];
 
-export let selectedJourney: [number, number] = [-1, -1];
+export let selectedJourneys: number[] = [];
+
+export let selectedJourney: Journey;
 
 export function saveJourney(depth: number, journey: Journey) {
     displayedJourneys[depth].push(journey);
 }
 
 export function getJourney(depth: number, idInDepth: number) {
-    selectedJourney = [depth, idInDepth];
+    /*selectedJourneys = [depth, idInDepth];*/
     return displayedJourneys[depth][idInDepth];
 }
 
@@ -34,7 +36,12 @@ export function setJourney(depth: number, idInDepth: number, journey: Journey) {
 }
 
 export function resetJourneys(newLegCount: number) {
+    selectedJourneys = Array.from(Array(newLegCount), () => -1)
     displayedJourneys = Array.from(Array(newLegCount), () => []);
+}
+
+export function setSelectedJourney(journey: Journey) {
+    selectedJourney = journey
 }
 
 export let isArrival = 0;

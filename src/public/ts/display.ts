@@ -12,8 +12,8 @@ import {
 import {
     getJourney,
     resetJourneys,
-    saveJourney,
-    selectedJourney,
+    saveJourney, selectedJourney,
+    selectedJourneys,
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
@@ -21,6 +21,7 @@ import {JourneyNode, JourneyTree, LoadFactor, PageState, PageStateString} from "
 import {toast} from "./pageActions.js";
 import {initMap} from "./map.js";
 import {pushState} from "./routing.js";
+import {mergeSelectedJourneys, selectJourney} from "./journeyMerge.js";
 
 let journeyCounter: number;
 const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content
@@ -52,12 +53,12 @@ function addStationNames(stations: string[]) {
     console.log(stations)
     const target = document.getElementById("station-names")!
     target.replaceChildren()
-    const template = (<HTMLTemplateElement>document.getElementById("station-template")).content
+    const template = (<HTMLTemplateElement>document.getElementById("station-name-template")).content
     let toBeAdded;
 
     for (let i = 0; i < stations.length; i++) {
         toBeAdded = document.importNode(template, true)
-        setHTMLOfChildOfParent(toBeAdded, ".station-name", stations[i])
+        setHTMLOfChildOfParent(toBeAdded, ".station-name__name", stations[i])
         target.append(toBeAdded)
     }
 }
@@ -65,12 +66,15 @@ function addStationNames(stations: string[]) {
 export function displayJourney(journeyNode: JourneyNode, connectionsTarget: HTMLElement | DocumentFragment): HTMLElement {
 
     const journey = journeyNode.journey
+    const depth = journeyNode.depth
+    const idInDepth = journeyNode.idInDepth
     let toBeAdded = document.importNode(connectionTemplate, true)
 
-    saveJourney(journeyNode.depth, journey);
+    saveJourney(depth, journey);
     let a = journeyCounter;
-    toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModalFirstTime(journeyNode.depth, journeyNode.idInDepth, true)};
-    toBeAdded.querySelector(".connection-line-selectable")!.setAttribute("id", "connection-line-selectable-" + journeyNode.depth + "-" + journeyNode.idInDepth)
+    //toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModalFirstTime(journeyNode.depth, journeyNode.idInDepth, true)};
+    toBeAdded.querySelector("button")!.onclick = function(){selectJourney(depth, idInDepth)};
+    toBeAdded.querySelector(".connection-line-selectable")!.setAttribute("id", "connection-line-selectable-" + depth + "-" + idInDepth)
     journeyCounter++;
 
     const firstLeg = journey.legs[0];
@@ -131,22 +135,21 @@ function setConnectionLines(legs: readonly Leg[], connectionToBeAdded: DocumentF
 
 let legCounter = 0;
 
-export function displayJourneyModalFirstTime(depth: number, idInDepth: number, lockingNecessary: boolean) {
+export function displayJourneyModalFirstTime(journeyBounds: [number, number], lockingNecessary: boolean) {
     if (lockingNecessary && !tryLockingJourneySearch()) {
         toast("warning", "Bitte warten...", "Please wait...")
         return
     }
-    //document.documentElement.classList.add("no-scroll")
     document.documentElement.setAttribute("data-state", "journey")
-    document.getElementById("connection-line-selectable-" + depth + "-" + idInDepth)!.classList.add("selectable--horizontal--active")
+    document.getElementById("connection-modal-indicator")!.classList.add("selectable--horizontal--active")
     const modal = document.getElementById("connection-modal")!
-    const journey = getJourney(depth, idInDepth);
-    (<HTMLButtonElement>modal.querySelector(".modal__title")).onclick = function () {shareJourney(journey.refreshToken)};
-    (<HTMLButtonElement>modal.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken, depth, idInDepth)};
-    (<HTMLButtonElement>document.getElementById("leaflet-modal__title")).onclick = function () {shareJourney(journey.refreshToken)};
-    (<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken, depth, idInDepth)};
+    mergeSelectedJourneys(journeyBounds)
+    const journey = selectedJourney;
+    (<HTMLButtonElement>modal.querySelector(".modal__title")).onclick = function () {shareJourney()};
+    (<HTMLButtonElement>modal.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken, journeyBounds)};
+    (<HTMLButtonElement>document.getElementById("leaflet-modal__title")).onclick = function () {shareJourney()};
+    (<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken, journeyBounds)};
     displayJourneyModal(journey)
-    //modal.style.setProperty("display", "flex")
     pushState("journey", journey.refreshToken)
 
     if (lockingNecessary) {
@@ -488,7 +491,7 @@ export function getWalkHTML(distance: number | undefined, time: string) {
 
 export function hideConnectionModal() {
     document.documentElement.setAttribute("data-state", "")
-    document.getElementById("connection-line-selectable-" + selectedJourney[0] + "-" + selectedJourney[1])!.classList.remove("selectable--horizontal--active")
+    document.getElementById("connection-modal-indicator")!.classList.remove("selectable--horizontal--active")
 }
 
 export function showModal(name: PageStateString) {
@@ -504,7 +507,7 @@ export function hideModal(name: PageStateString) {
 
 export function showLeafletModal() {
     document.documentElement.setAttribute("data-state", "journey/map")
-    const journey = getJourney(selectedJourney[0], selectedJourney[1])
+    const journey = selectedJourney
     pushState("journey/map", journey.refreshToken)
     initMap(journey, true)
 }
