@@ -1,6 +1,7 @@
 import {Journey, JourneysOptions} from "hafas-client";
 import {slideIndicator} from "./pageActions.js";
 import {Accessibility, Language, PageState, PageStateString, Product, WalkingSpeed} from "./types.js";
+import {getJourneyBounds} from "./journeyMerge.js";
 
 let allowJourneySearch = true
 
@@ -37,7 +38,8 @@ export function setJourney(depth: number, idInDepth: number, journey: Journey) {
 
 export function resetJourneys(newLegCount: number) {
     selectedJourneys = Array.from(Array(newLegCount), () => -1)
-    displayedJourneys = Array.from(Array(newLegCount), () => []);
+    displayedJourneys = Array.from(Array(newLegCount), () => [])
+    getJourneyBounds()
 }
 
 export function setSelectedJourney(journey: Journey) {

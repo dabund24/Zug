@@ -128,7 +128,6 @@ export async function findConnections() {
     console.log(journeyTree)
 
     const connectionCount = displayJourneyTree(journeyTree, [<string> from[0].name, viaNames, <string> to[0].name].flat())
-    document.documentElement.setAttribute("data-vias", (vias.length).toString())
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + " connections")
     hideLoadSlider()
     unlockJourneySearch()

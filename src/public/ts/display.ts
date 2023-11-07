@@ -21,7 +21,7 @@ import {JourneyNode, JourneyTree, LoadFactor, PageState, PageStateString} from "
 import {toast} from "./pageActions.js";
 import {initMap} from "./map.js";
 import {pushState} from "./routing.js";
-import {mergeSelectedJourneys, selectJourney} from "./journeyMerge.js";
+import {getJourneyBounds, mergeSelectedJourneys, selectJourney} from "./journeyMerge.js";
 
 let journeyCounter: number;
 const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content
@@ -37,6 +37,7 @@ export function displayJourneyTree(tree: JourneyTree, stations: string[]) {
     tree.children.forEach(node => {
         addJourneyNode(node, connectionsRootContainer)
     })
+    document.documentElement.setAttribute("data-vias", (stations.length - 2).toString())
     return journeyCounter
 }
 

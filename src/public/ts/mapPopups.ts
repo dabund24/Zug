@@ -69,7 +69,7 @@ export function getStopoverPopupHTML(product: Product | undefined, stopover: Sto
         "       <div class='popup__icon popup__icon--small connection-line--" + product + " flex-column'>" +
         "           <div class='connection-line line--vertical'></div>" +
         "           <div class='popup__icon__middle'>" +
-        "               <svg width='12px' height='12px' xmlns='http://www.w3.org/2000/svg'>\n" +
+        "               <svg width='16px' height='16px' viewBox='-2 -2 16 16' xmlns='http://www.w3.org/2000/svg'>\n" +
         "                   <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>\n" +
         "               </svg>" +
         "           </div>" +

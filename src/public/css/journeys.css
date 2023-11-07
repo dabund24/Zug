@@ -117,9 +117,11 @@
 .station-name__line {
     height: 16px;
     margin: 0 calc(var(--connection-width) / -2) 0 calc(var(--connection-width) / 2);
-    .line--regular {
+    .line--accent {
         align-self: center;
         margin-left: -8px;
+        height: 4px;
+        width: 0;
     }
     .station-icon {
         margin-left: -8px;
@@ -130,8 +132,8 @@
     }
 }
 
-.station--selected .line--regular {
-    background-color: var(--accent-color);
+.station--selected .line--accent {
+    width: 100%;
 }
 
 .station-name__durations {
@@ -154,6 +156,18 @@
     margin-right: 4rem;
     width: 100%;
     visibility: hidden;
+}
+
+.station--selected {
+    .station-name__durations__leg-container {
+        visibility: visible;
+    }
+}
+
+.station--selected + .station--selected {
+    .station-name__durations__wait-container {
+        visibility: visible;
+    }
 }
 
 .station--selected .station-name__durations__leg-container, .station--selected + .station--selected .station-name__durations__wait-container {
@@ -179,7 +193,7 @@
 }
 
 .station-name-container:nth-last-child(2) .station-name__line {
-    margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 calc(var(--connection-width) / 2);
+    margin: 0 calc(var(--connection-width) / -2 + 2rem - 8px) 0 calc(var(--connection-width) / 2);
 }
 
 .station-name-container:last-child {
@@ -202,7 +216,7 @@
 }
 
 .station-name-container:first-child:nth-last-child(2) .station-name__line {
-    margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 2rem;
+    margin: 0 calc(var(--connection-width) / -2 + 2rem - 8px) 0 2rem;
 }
 
 #journeys {

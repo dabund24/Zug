@@ -68,7 +68,7 @@ export function selectJourney(depth: number, idInDepth: number) {
     document.getElementsByClassName("station-name-container")[depth].classList.add("station--selected")
 }
 
-function getJourneyBounds(): [number, number] {
+export function getJourneyBounds(): [number, number] {
     let start = -1
     let end = -1
     console.log("len: " + selectedJourneys.length)
