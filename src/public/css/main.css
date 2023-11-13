@@ -116,12 +116,18 @@
 }
 
 body {
-    min-height: 100vh;
+    min-height: calc(100vh - (100vh - 100%));
     margin: 0;
     padding: 0;
     display: grid;
     grid-template-rows: 1fr auto;
-    overflow-x: clip;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+        width: 1rem;
+    }
+    &::-webkit-scrollbar-track {
+        background: orange;        /* color of the tracking area */
+    }
 }
 
 section {
@@ -129,9 +135,9 @@ section {
 }
 
 #content {
-    width: calc(100vw - 1rem);
-    padding: 0 .5rem;
+
 }
+
 
 body, input, button, .tooltip:after {
     font-family: var(--font-family);
@@ -402,12 +408,12 @@ p {
 }
 
 .search__input {
-    width: calc(100% - 5rem);
+    width: calc(100% - 64px);
     text-align: center;
     border: none;
     outline: none;
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
+    padding-left: 32px;
+    padding-right: 32px;
 }
 
 .search .line--regular {
@@ -477,14 +483,16 @@ footer {
     -webkit-backdrop-filter: var(--blur);
     background-color: var(--background-color--opaque);
     border-top: var(--line-width) solid var(--foreground-color--opaque);
-    position: sticky;
+    position: fixed;
     bottom: 0;
-    padding: .5rem;
+    padding: .5rem 1rem;
     z-index: 100;
     overflow-y: clip;
     text-align: center;
     align-items: center;
     min-width: 0;
+    width: 100vw;
+    box-sizing: border-box;
 }
 
 .footer__static-buttons, .footer__journey-buttons {
@@ -595,9 +603,10 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
 
 .modal header {
     position: sticky;
-    z-index: 1;
+    z-index: 2;
     top: 0;
-    background-color: var(--background-color);
+    background-color: var(--background-color--opaque);
+    backdrop-filter: var(--blur);
     margin: 0 -1.5rem 0;
     padding: 1rem .5rem .5rem 1.5rem;
     align-items: center;
@@ -686,19 +695,21 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
 }
 
 @media screen and (min-width: 1301px) {
-    ::-webkit-scrollbar {
-        background-color: transparent;
-        width: var(--line-width);
-        height: var(--line-width);
-    }
+    .modal {
+        ::-webkit-scrollbar {
+            background-color: transparent;
+            width: var(--line-width);
+            height: var(--line-width);
+        }
 
-    ::-webkit-scrollbar-thumb {
-        border-radius: var(--border-radius-small);
-        background-color: var(--foreground-color);
-    }
+        ::-webkit-scrollbar-thumb {
+            border-radius: var(--border-radius-small);
+            background-color: var(--foreground-color);
+        }
 
-    ::-webkit-scrollbar-track {
-        background-color: transparent;
+        ::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
     }
 }
 
@@ -729,7 +740,6 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
     }
 
     .modal-content {
-        padding: 0 1rem .5rem;
         margin: auto;
         width: 30rem;
     }

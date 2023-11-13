@@ -1,6 +1,10 @@
-# Usage
+# Zug
 
-Prerequisite: ```node.js```
+readme is wip
+
+## Usage
+
+Prerequisite: `node.js`
 
 To run the application, execute these commands:
 

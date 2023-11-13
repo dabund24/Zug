@@ -4,7 +4,7 @@ import {
     selectedJourneys,
     setSelectedJourney
 } from "./memorizer.js";
-import {dateDifference, numberWithSign, timeToString} from "./util.js";
+import {dateDifference, numberWithSign, timeToString, unixToHoursStringShort} from "./util.js";
 import {Journey} from "hafas-client";
 import {displayJourney, displayJourneyModalFirstTime} from "./display.js";
 import {shareJourney} from "./main.js";
@@ -12,8 +12,10 @@ import {shareJourney} from "./main.js";
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)
     console.log("id: " + idInDepth)
+    const stationNameContainer = document.getElementsByClassName("station-name-container")[depth]
+    const stationNameContainerNext = document.getElementsByClassName("station-name-container")[depth + 1]
     if (idInDepth === selectedJourneys[depth]) {
-        document.getElementsByClassName("station-name-container")[depth].classList.remove("station--selected")
+        stationNameContainer.classList.remove("station--selected")
         document.getElementById("connection-line-selectable-" + depth + "-" + idInDepth)!.classList.remove("selectable--horizontal--active")
         selectedJourneys[depth] = -1
         const bounds = getJourneyBounds()
@@ -27,17 +29,18 @@ export function selectJourney(depth: number, idInDepth: number) {
     }
     selectedJourneys[depth] = idInDepth
     const journey = getJourney(depth, idInDepth)
-    document.getElementsByClassName("station-name-container")[depth]
+    stationNameContainer
         .querySelector(".station-name__durations__leg")!
         .innerHTML = timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!))
 
-    // transfer time before journey
-    if (depth > 0 && selectedJourneys[depth - 1] !== -1) {
+    const thisJourneyFirstLegDeparture = journey.legs[0].departure
+
+    if (depth > 0 && selectedJourneys[depth - 1] !== -1) { // transfer time before journey
         const priorJourney = getJourney(depth - 1, selectedJourneys[depth - 1])
         const priorJourneyLastLegArrival = priorJourney.legs[priorJourney.legs.length - 1].arrival
-        if (priorJourneyLastLegArrival !== undefined && journey.legs[0].departure !== undefined) {
-            const transferTime = timeToString(dateDifference(priorJourneyLastLegArrival, journey.legs[0].departure))
-            const transferTimeTarget = document.getElementsByClassName("station-name-container")[depth]
+        if (priorJourneyLastLegArrival !== undefined && thisJourneyFirstLegDeparture !== undefined) { // transfer time
+            const transferTime = timeToString(dateDifference(priorJourneyLastLegArrival, thisJourneyFirstLegDeparture))
+            const transferTimeTarget = stationNameContainer
                 .querySelector(".station-name__durations__wait")!
             transferTimeTarget.innerHTML = transferTime
             if (transferTime.startsWith("-")) {
@@ -47,12 +50,18 @@ export function selectJourney(depth: number, idInDepth: number) {
             }
         }
     }
-    // transfer time after journey
-    if (depth < selectedJourneys.length - 1 && selectedJourneys[depth + 1] !== -1) {
+    if (thisJourneyFirstLegDeparture !== undefined) { // departure of journey
+        const departure = unixToHoursStringShort(thisJourneyFirstLegDeparture)
+        const departureTarget = stationNameContainer.querySelector(".station-name__durations__departure")!
+        departureTarget.innerHTML = departure
+    }
+
+    const thisJourneyLastLegArrival = journey.legs[journey.legs.length - 1].arrival
+    if (depth < selectedJourneys.length - 1 && selectedJourneys[depth + 1] !== -1) { // transfer time after journey
         const nextJourney = getJourney(depth + 1, selectedJourneys[depth + 1])
         const nextJourneyFirstLegDeparture = nextJourney.legs[0].departure
-        if (journey.legs[journey.legs.length - 1].arrival !== undefined && nextJourneyFirstLegDeparture !== undefined) {
-            const transferTime = timeToString(dateDifference(journey.legs[journey.legs.length - 1].arrival!, nextJourneyFirstLegDeparture))
+        if (thisJourneyLastLegArrival !== undefined && nextJourneyFirstLegDeparture !== undefined) {
+            const transferTime = timeToString(dateDifference(thisJourneyLastLegArrival, nextJourneyFirstLegDeparture))
             const transferTimeTarget = document.getElementsByClassName("station-name-container")[depth + 1]
                 .querySelector(".station-name__durations__wait")!
             transferTimeTarget.innerHTML = transferTime
@@ -63,9 +72,14 @@ export function selectJourney(depth: number, idInDepth: number) {
             }
         }
     }
+    if (thisJourneyLastLegArrival !== undefined) { // arrival of journey
+        const arrival = unixToHoursStringShort(thisJourneyLastLegArrival)
+        const arrivalTarget = stationNameContainerNext.querySelector(".station-name__durations__arrival")!
+        arrivalTarget.innerHTML = arrival
+    }
 
     const bounds = getJourneyBounds()
-    document.getElementsByClassName("station-name-container")[depth].classList.add("station--selected")
+    stationNameContainer.classList.add("station--selected")
 }
 
 export function getJourneyBounds(): [number, number] {

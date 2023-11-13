@@ -20,6 +20,17 @@
     }
 }
 
+#inputs {
+    position: sticky;
+    left: 1.5rem;
+    z-index: 50;
+    width: calc(100vw - 3rem);
+}
+
+.station-inputs {
+    align-items: center;
+}
+
 .search__icon {
     align-self: center;
     --product-color: var(--accent-color);
@@ -27,8 +38,8 @@
 }
 
 .search__icon:first-child {
-    width: 2rem;
-    margin-right: -2rem;
+    width: 32px;
+    margin-right: -32px;
 }
 
 .search__icon:last-child {
@@ -50,39 +61,14 @@
     margin: auto;
 }
 
-.search__icon--go {
-    width: 3rem;
-    align-items: center;
-    display: block;
-    > :nth-child(1) {
-        width: 3rem;
-    }
-    > :nth-child(2) {
-        width: 1rem;
-        rotate: 45deg;
-    }
-    > :nth-child(3) {
-        width: 1rem;
-        rotate: -45deg;
-    }
-}
-
-.clock {
-    margin: auto;
-    border-radius: .5rem;
-    width: 1rem;
-    height: 1rem;
-    box-shadow: var(--foreground-color) 0 0 0 var(--line-width--small); ;
-}
-
-.clock .line--vertical {
-    margin: 2px auto auto;
-    height: .5rem;
-    background-color: var(--accent-color);
-}
-
-#station-names, .station-inputs {
+#station-names {
     align-items: end;
+    position: sticky;
+    top: 0;
+    background-color: var(--background-color--opaque);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    z-index: 1;
 }
 
 .station-name-container {
@@ -141,7 +127,7 @@
     z-index: 1;
 }
 
-.station-name__durations i {
+.station-name__durations i, .station-name__durations span {
     margin: auto;
 }
 
@@ -149,7 +135,9 @@
     margin-left: -4rem;
     width: 8rem;
     flex-shrink: 0;
-    visibility: hidden;
+    > * {
+        display: none;
+    }
 }
 
 .station-name__durations__leg-container {
@@ -160,24 +148,33 @@
 
 .station--selected {
     .station-name__durations__leg-container {
-        visibility: visible;
+        display: inline;
     }
 }
 
 .station--selected + .station--selected {
-    .station-name__durations__wait-container {
-        visibility: visible;
+    .station-name__durations__wait {
+        display: inline;
     }
 }
 
-.station--selected .station-name__durations__leg-container, .station--selected + .station--selected .station-name__durations__wait-container {
+:not(.station--selected) + .station--selected .station-name__durations__departure, .station--selected:first-child .station-name__durations__departure {
+    display: inline;
+}
+
+.station--selected + :not(.station--selected) .station-name__durations__arrival {
+    display: inline;
+}
+
+.station--selected .station-name__durations__leg-container {
     visibility: visible;
 }
 
 .station-name-container:first-child {
     width: calc(var(--connection-width) / 2);
-    text-align: left;
-
+    .station-name__name {
+        text-align: left;
+    }
     .station-icon--major {
         display: block;
     }
@@ -190,6 +187,10 @@
     .station-name__durations {
         margin: 0 calc(var(--connection-width) / -2) 0 0;
     }
+    .station-name__durations__wait-container {
+        margin-left: 0;
+        width: 4rem;
+    }
 }
 
 .station-name-container:nth-last-child(2) .station-name__line {
@@ -198,8 +199,9 @@
 
 .station-name-container:last-child {
     width: calc(var(--connection-width) / 2);
-    text-align: right;
-
+    .station-name__name {
+        text-align: right;
+    }
     .station-icon--major {
         display: block;
     }
@@ -207,11 +209,19 @@
         display: none;
     }
     .station-name__line {
-        margin: 0 calc(2rem - 8px) 0 auto;
+        margin: 0 2rem 0 auto;
     }
     .station-name__durations {
         margin: 0;
+    }
+    .station-name__durations__wait-container {
+        margin-left: auto;
+        width: 4rem;
+    }
+    .station-name__durations__leg-container {
+        margin: 0;
         width: 0;
+        overflow-x: clip;
     }
 }
 
@@ -220,8 +230,8 @@
 }
 
 #journeys {
-    overflow-x: scroll;
-    margin-top: 1rem;
+    margin: 1.5rem auto 5rem;
+    padding: .5rem;
 }
 
 .connections-container {
@@ -443,7 +453,11 @@
 }
 
 .modal__trip__l {
-    padding: calc(1.75rem - var(--border-radius-small)) 1.25rem;
+    padding: 1.75rem 1rem;
+    .station-icon {
+        margin: -8px 0;
+        z-index: 1;
+    }
 }
 
 .modal__walk__l {
@@ -470,7 +484,6 @@
 
 .modal__trip__element__middle-child {
     margin: auto 0;
-    align-items: center;
     gap: .5rem;
 }
 
@@ -491,12 +504,15 @@
 
 .stopover {
     align-items: center;
-    margin: 0 auto 0 calc(-7rem + 4px);
-}
-
-.stopover .time {
-    margin: 0;
-    text-align: right;
+    margin: 0 auto 0 calc(-6rem - 16px);
+    .station-icon {
+        margin: 0 1rem;
+        flex-shrink: 0;
+    }
+    .time {
+        margin: 0;
+        text-align: right;
+    }
 }
 
 .stopover__middle {
