@@ -298,6 +298,9 @@ function addStopoversToModal(stopovers: readonly StopOver[], legToBeAdded: Docum
         if (stopover.arrivalPlatform !== stopover.plannedArrivalPlatform) {
             addClassToChildOfParent(stopoverToBeAdded, ".stopover__platform", "delayed")
         }
+        if (stopover.cancelled === true) {
+            addClassToChildOfParent(stopoverToBeAdded, ".stopover__name", "cancelled")
+        }
         stopoverTarget.append(stopoverToBeAdded)
     }
 }

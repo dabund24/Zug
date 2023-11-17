@@ -261,6 +261,11 @@
     color: var(--accent-green);
 }
 
+.cancelled {
+    color: var(--accent-red);
+    text-decoration: line-through;
+}
+
 .delayed {
     color: var(--accent-red);
 }

@@ -75,6 +75,7 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
 
     let matrixCopy = []
     for (let i = 0; i < journeysArray.length; i++) {
+        journeysArray[i] = journeysArray[i].filter(journey => journey.legs.every(leg => leg.cancelled !== true))
         matrixCopy.push(journeysArray[i].slice())
     }
 
