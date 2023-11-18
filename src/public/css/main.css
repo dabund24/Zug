@@ -311,6 +311,11 @@ p {
     width: 100%;
 }
 
+.background-transtion--vertical {
+    height: 1.5rem;
+    background-image: linear-gradient(var(--background-color--opaque), transparent);
+}
+
 #load-indicator {
     display: none;
     position: sticky;

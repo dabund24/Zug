@@ -86,7 +86,6 @@
                         </svg>
                     </button>
                 </div>
-
             </div>
             <div>
                 <div class="search flex-row">
@@ -244,15 +243,20 @@
         </div>
     </section>
     <section id="journeys" class="center padded-top-bottom">
-        <div id="station-names" class="flex-row">
+        <div id="station-names-container">
+            <div id="station-names" class="flex-row">
 
+            </div>
+            <div class="background-transtion--vertical">
+
+            </div>
         </div>
         <template id="station-name-template">
             <div class="station-name-container flex-column">
                 <div class="station-name__name header">
                     Freising
                 </div>
-                <div class="station-name__line flex-row">
+                <div class="station-name__line-container flex-row">
                     <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
                         <circle cx='8' cy='8' r='6.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
                         <circle cx='8' cy='8' r='2' fill='var(--product-color)'/>
@@ -260,7 +264,28 @@
                     <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
                         <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
                     </svg>
-                    <div class="line--accent"></div>
+                    <div class="station-name__connector flex-row">
+                        <div class="station-name__connector__stopover flex-row">
+                            <svg class="station-icon station-icon--stopover" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                                <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                            </svg>
+                            <div class="line--accent"></div>
+                        </div>
+                        <div class="station-name__connector__stopover flex-row">
+                            <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                                <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                            </svg>
+                            <div class="line--accent"></div>
+                        </div>
+                        <div class="station-name__connector__stopover flex-row">
+                            <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                                <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                            </svg>
+                            <div class="station-name__connector__line-container">
+                                <div class="line--accent"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="station-name__durations flex-row">
                     <div class="station-name__durations__wait-container flex-row">
@@ -271,6 +296,18 @@
                     <div class="station-name__durations__leg-container flex-row">
                         <i class="station-name__durations__leg">0min</i>
                     </div>
+                </div>
+            </div>
+        </template>
+        <template id="station-name__line__stopover-template">
+            <div class="station-name__connector__stopover flex-row">
+                <div class="station-icon--stopover-container tooltip tooltip--attribute">
+                    <svg class="station-icon station-icon--stopover" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                        <circle cx='6' cy='6' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
+                    </svg>
+                </div>
+                <div class="station-name__connector__line-container tooltip tooltip--down tooltip--attribute">
+                    <div class="line--regular connection-line"></div>
                 </div>
             </div>
         </template>

@@ -4,10 +4,12 @@ import {
     selectedJourneys,
     setSelectedJourney
 } from "./memorizer.js";
-import {dateDifference, numberWithSign, timeToString, unixToHoursStringShort} from "./util.js";
+import {addClassToChildOfParent, dateDifference, numberWithSign, timeToString, unixToHoursStringShort} from "./util.js";
 import {Journey} from "hafas-client";
 import {displayJourney, displayJourneyModalFirstTime} from "./display.js";
 import {shareJourney} from "./main.js";
+import {Util} from "leaflet";
+import template = Util.template;
 
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)
@@ -79,7 +81,24 @@ export function selectJourney(depth: number, idInDepth: number) {
     }
 
     const bounds = getJourneyBounds()
+    addStopoversToStationNames(stationNameContainer.querySelector(".station-name__connector")!, journey)
     stationNameContainer.classList.add("station--selected")
+}
+
+function addStopoversToStationNames(target: HTMLElement, journey: Journey) {
+    target.replaceChildren()
+    const template = (<HTMLTemplateElement> document.getElementById("station-name__line__stopover-template")).content
+    journey.legs.forEach(leg => {
+        if (leg.walking === true) {
+            return;
+        }
+        const toBeAdded = document.importNode(template, true)
+        const productClass = "connection-line--" + leg.line?.product!;
+        addClassToChildOfParent(toBeAdded, ".connection-line", productClass)
+        toBeAdded.querySelector(".station-icon--stopover-container")!.setAttribute("data-tooltip-content", <string> leg.origin?.name)
+        toBeAdded.querySelector(".station-name__connector__line-container")!.setAttribute("data-tooltip-content", <string> leg.line?.name)
+        target.append(toBeAdded)
+    })
 }
 
 export function getJourneyBounds(): [number, number] {
