@@ -1,7 +1,7 @@
 import {Feature, FeatureCollection, Journey, StopOver, Location, Line, Leg, Stop} from "hafas-client";
 import {Position, MultiLineString, LineString, MultiPoint, Point} from "geojson"
 import {FeatureGroup, featureGroup, GeoJSON, LatLngBounds, LayerGroup} from "leaflet";
-import {dateDifference, getProductColor, timeToString} from "./util.js";
+import {dateDifference, timeToString} from "./util.js";
 import {Product} from "./types.js";
 import {
     getFirstLastStationPopupHTML,
@@ -29,7 +29,7 @@ export function initMap(journey: Journey, withRezoom: boolean) {
     layer.addTo(map)
     map.invalidateSize()
     if (withRezoom) {
-        map.fitBounds(bounds, {padding: [20, 50]})
+        map.fitBounds(bounds, {paddingTopLeft: [20, 50], paddingBottomRight: [20, 100]})
     }
 }
 

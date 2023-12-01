@@ -122,12 +122,6 @@ body {
     display: grid;
     grid-template-rows: 1fr auto;
     overflow-x: scroll;
-    &::-webkit-scrollbar {
-        width: 1rem;
-    }
-    &::-webkit-scrollbar-track {
-        background: orange;        /* color of the tracking area */
-    }
 }
 
 section {
@@ -152,7 +146,7 @@ body {
     background-attachment: fixed;
 }
 */
-body, a, input, button, .modal *, .hoverable, footer, ::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb {
+body, a, input, button, .modal, .hoverable, footer {
     transition: background .5s ease-in-out, color .5s ease-in-out, border .5s ease-in-out;
 }
 
@@ -230,7 +224,7 @@ p {
 }
 
 .content-wrapper {
-    margin: 0 auto;
+    margin: 0 auto auto;
     width: 60rem;
 }
 
@@ -290,6 +284,7 @@ p {
 }
 
 .selectable__text {
+    display: flex;
     padding: .5rem 1rem;
     white-space: nowrap;
 }
@@ -311,9 +306,15 @@ p {
     width: 100%;
 }
 
-.background-transtion--vertical {
+.background-transition--horizontal {
     height: 1.5rem;
     background-image: linear-gradient(var(--background-color--opaque), transparent);
+}
+
+.background-transition--vertical {
+    width: 1.5rem;
+    background-image: linear-gradient(to right, var(--background-color--opaque), transparent);
+    margin-right: -1.5rem;
 }
 
 #load-indicator {
@@ -490,7 +491,7 @@ footer {
     border-top: var(--line-width) solid var(--foreground-color--opaque);
     position: fixed;
     bottom: 0;
-    padding: .5rem 1rem;
+    padding: .5rem 1.5rem;
     z-index: 100;
     overflow-y: clip;
     text-align: center;
@@ -500,8 +501,16 @@ footer {
     box-sizing: border-box;
 }
 
-.footer__static-buttons, .footer__journey-buttons {
-    width: fit-content;
+.footer__buttons {
+    width: 27rem;
+}
+
+footer .selectable__text {
+    width: 100%;
+}
+
+footer svg {
+    margin: auto;
 }
 
 .footer__info-panel {
@@ -525,7 +534,7 @@ footer {
     margin-left: auto;
 }
 
-footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .footer__journey-buttons {
+footer:not(.valid-journey) .valid-only {
     visibility: hidden;
 }
 
@@ -533,13 +542,11 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
     display: flex;
     position: fixed;
     top: 0;
-    width: calc(100% - 1rem);
+    width: 100%;
     height: 100%;
-    padding: 0 .5rem;
-    background-color: var(--background-color--opaque);
-    backdrop-filter: var(--blur);
-    -webkit-backdrop-filter: var(--blur);
-    z-index: 1000;
+    background-color: var(--background-color);
+    z-index: 50;
+    overflow-y: scroll;
 }
 
 .modal--full-screen {
@@ -548,7 +555,6 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
     width: 100%;
     height: 100%;
     padding: 0;
-    z-index: 1001;
 }
 
 .modal--full-screen__title, .modal--full-screen__close {
@@ -589,13 +595,7 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
 }
 
 .modal-content {
-    align-self: center;
-    border: var(--line-width) solid var(--foreground-color--opaque);
-    border-radius: var(--border-radius-large);
-    background-color: var(--background-color);
-    padding: 0 1.5rem 1rem;
-    max-height: calc(100vh - 10rem);
-    overflow-y: scroll;
+    padding: 0 1.5rem 5rem;
 }
 
 .modal--full-screen .modal-content {
@@ -628,7 +628,7 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
     margin-left: calc(-.5rem - var(--line-width));
 }
 
-.modal__close {
+.subpage__button {
     padding: .5rem;
     line-height: 0;
     flex-shrink: 0;
@@ -641,10 +641,6 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
     position: fixed;
     z-index: 1001;
     left: calc(50% - 15rem);
-    bottom: 0;
-}
-
-[data-state=""] #toasts {
     bottom: 4.5rem;
 }
 
@@ -750,7 +746,7 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
     }
     .modal header {
         margin: 0 -1rem 0;
-        padding: .5rem .5rem .5rem 1rem;
+        padding: .5rem 0 .5rem 1rem;
     }
 
     .modal--full-screen__title {
@@ -760,13 +756,12 @@ footer:not(.valid-journey) .footer__info-panel, footer:not(.valid-journey) .foot
         font-size: 16px;
     }
 
-    .modal__close {
+    .subpage__button {
         margin-top: 0;
     }
 
-
-    footer .selectable__text {
-        padding: .5rem;
+    .footer__buttons {
+        width: 100%;
     }
 }
 

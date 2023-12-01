@@ -2,22 +2,20 @@ import {JourneyNode, JourneyTree, PageState, PageStateString} from "./types";
 import {
     displayJourneyModalFirstTime,
     displayJourneyTree,
-    hideConnectionModal,
-    hideLeafletModal,
-    hideModal, showLeafletModal,
-    showModal
+    showLeafletModal,
+    showSubpage
 } from "./display.js";
 import {
     journeyOptions,
-    resetJourneys,
+    resetJourneys, selectedJourney,
     selectedJourneys,
     setJourney,
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
-import {hideLoadSlider, showLoadSlider, toast} from "./pageActions.js";
+import {hideLoadSlider, showLoadSlider, slideIndicator, toast} from "./pageActions.js";
 import {Journey, JourneyWithRealtimeData} from "hafas-client";
-import {selectJourney} from "./journeyMerge.js";
+import {calculateJourneyBounds, mergeSelectedJourneys, selectJourney} from "./journeyMerge.js";
 
 const path = <PageStateString>window.location.pathname.substring(1)
 const journeyQuery = new URLSearchParams(window.location.search).get("journey")
@@ -28,7 +26,7 @@ switch (path) {
         break
     case "settings":
     case "about":
-        showModal(path)
+        showSubpage(path)
         break
     case "journey":
         if (journeyQuery !== null) {
@@ -42,7 +40,17 @@ switch (path) {
 }
 
 window.onpopstate = () => {
-    switch (<PageStateString>document.documentElement.getAttribute("data-state")) {
+    const oldState = <PageStateString>document.documentElement.getAttribute("data-state")
+    const newState = (<PageState>history.state).state
+    if (newState === oldState) {
+        return
+    }
+    document.documentElement.setAttribute("data-state", newState)
+    const [desktopStart, mobileStart] = pageStateStringToID(oldState)
+    const [desktopEnd, mobileEnd] = pageStateStringToID(newState)
+    slideIndicator("subpage-indicator--desktop", 4, desktopStart, desktopEnd)
+    slideIndicator("subpage-indicator--mobile", 5, mobileStart, mobileEnd)
+    /*switch (<PageStateString>document.documentElement.getAttribute("data-state")) {
         case "": return
         case "settings":
             hideModal("settings")
@@ -56,7 +64,8 @@ window.onpopstate = () => {
         case "journey/map":
             hideLeafletModal()
             break
-    }
+    }*/
+
 }
 
 window.addEventListener("keydown", event => {
@@ -65,13 +74,25 @@ window.addEventListener("keydown", event => {
     }
 })
 
-export function pushState(path: PageStateString, refreshToken?: string) {
+export function pushState(newState: PageStateString, refreshToken?: string) {
+    const oldState = <PageStateString>document.documentElement.getAttribute("data-state")
+    if (newState === oldState) {
+        return
+    }
+    const baseURL = new URL(window.location.href).origin
     if (refreshToken !== undefined) {
         refreshToken = btoa(refreshToken)
-        window.history.pushState(<PageState>{state: path}, "", path + "?journey=" + refreshToken)
+        const url = new URL(`${newState}?journey=${refreshToken}`, baseURL)
+        window.history.pushState(<PageState>{state: newState}, "", url)
     } else {
-        window.history.pushState(<PageState>{state: path}, "", path)
+        const url = new URL(newState, baseURL)
+        window.history.pushState(<PageState>{state: newState}, "", url)
     }
+    document.documentElement.setAttribute("data-state", newState)
+    const [desktopStart, mobileStart] = pageStateStringToID(oldState)
+    const [desktopEnd, mobileEnd] = pageStateStringToID(newState)
+    slideIndicator("subpage-indicator--desktop", 4, desktopStart, desktopEnd)
+    slideIndicator("subpage-indicator--mobile", 5, mobileStart, mobileEnd)
 }
 
 export async function displaySharedJourney(tokenString: string, withMap: boolean) {
@@ -140,14 +161,15 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
     for (let i = 0; i < journeys.length; i++) {
         selectJourney(i, 0)
     }
-    displayJourneyModalFirstTime([0, journeys.length - 1], false)
+    calculateJourneyBounds()
+    mergeSelectedJourneys()
+
     toast("success", "Verbindung gefunden", "found connection")
-    if (withMap) {
-        showLeafletModal()
-    }
 
     hideLoadSlider()
     unlockJourneySearch()
+
+    showSubpage(withMap ? "journey/map" : "journey")
 }
 
 function getSimpleJourneyTree(journeys: Journey[]): JourneyTree {
@@ -166,4 +188,19 @@ function getSimpleJourneyNode(journeys: Journey[], depth: number): JourneyNode[]
         journey: journeys[0],
         children: getSimpleJourneyNode(journeys.slice(1), depth + 1)
     }]
+}
+
+/**
+ * get ID of subpage
+ * @param pageStateString
+ * @returns [desktop id, mobile id]
+ */
+export function pageStateStringToID(pageStateString: PageStateString): [number, number] {
+    return <[number, number]>({
+        "": [0, 0],
+        "journey/map": [1, 1],
+        "journey": [1, 2],
+        "settings": [2, 3],
+        "about": [3, 4]
+    })[pageStateString]
 }

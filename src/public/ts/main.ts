@@ -3,13 +3,11 @@ import {
     displayJourneyModal,
     displayJourneyModalFirstTime,
     displayJourneyTree,
-    hideConnectionModal, hideLeafletModal,
-    hideModal
 } from "./display.js";
 import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
 import {
     getJourney,
-    isArrival,
+    isArrival, journeyBounds,
     journeyOptions, saveJourney, selectedJourney, selectedJourneys,
     setJourney,
     tryLockingJourneySearch,
@@ -133,12 +131,12 @@ export async function findConnections() {
     unlockJourneySearch()
 }
 
-export async function refreshJourneyAndInitMap(tokenString: string | undefined, journeyBounds: [number, number]) {
-    await refreshJourney(tokenString, journeyBounds)
+export async function refreshJourneyAndInitMap(tokenString: string | undefined) {
+    await refreshJourney(tokenString)
     initMap(selectedJourney, false)
 }
 
-export async function refreshJourney(tokenString: string | undefined, journeyBounds: [number, number]) {
+export async function refreshJourney(tokenString: string | undefined) {
     if (!tryLockingJourneySearch()) {
         toast("warning", "Bitte warten...", "Please wait...")
         return
@@ -188,7 +186,7 @@ export async function refreshJourney(tokenString: string | undefined, journeyBou
         }
     }
 
-    mergeSelectedJourneys(journeyBounds)
+    mergeSelectedJourneys()
     displayJourneyModal(selectedJourney)
     toast("success", "Verbindungsdaten aktualisiert", "refreshed connection data")
 
@@ -217,12 +215,12 @@ function printErrorMessage(errorType: ZugErrorType, stationA: string, stationB: 
     }
 }
 
-export function shareJourney(journeyBounds?: [number, number]) {
+export function shareJourney() {
     let sharedText: string
     if (journeyBounds === undefined) {
         sharedText = new URL(window.location.href).toString()
     } else {
-        mergeSelectedJourneys(journeyBounds)
+        mergeSelectedJourneys()
         sharedText = new URL("/journey?journey=" + btoa(<string>selectedJourney.refreshToken), window.location.href).toString()
     }
 

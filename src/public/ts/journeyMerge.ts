@@ -1,15 +1,11 @@
 import {
-    getJourney,
+    getJourney, journeyBounds,
     selectedJourney,
-    selectedJourneys,
+    selectedJourneys, setJourneyBounds,
     setSelectedJourney
 } from "./memorizer.js";
-import {addClassToChildOfParent, dateDifference, numberWithSign, timeToString, unixToHoursStringShort} from "./util.js";
+import {addClassToChildOfParent, dateDifference, timeToString, unixToHoursStringShort} from "./util.js";
 import {Journey} from "hafas-client";
-import {displayJourney, displayJourneyModalFirstTime} from "./display.js";
-import {shareJourney} from "./main.js";
-import {Util} from "leaflet";
-import template = Util.template;
 
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)
@@ -20,7 +16,8 @@ export function selectJourney(depth: number, idInDepth: number) {
         stationNameContainer.classList.remove("station--selected")
         document.getElementById("connection-line-selectable-" + depth + "-" + idInDepth)!.classList.remove("selectable--horizontal--active")
         selectedJourneys[depth] = -1
-        const bounds = getJourneyBounds()
+        const bounds = calculateJourneyBounds()
+        mergeSelectedJourneys()
         console.log(bounds)
         return
     }
@@ -80,9 +77,10 @@ export function selectJourney(depth: number, idInDepth: number) {
         arrivalTarget.innerHTML = arrival
     }
 
-    const bounds = getJourneyBounds()
+    calculateJourneyBounds()
     addStopoversToStationNames(stationNameContainer.querySelector(".station-name__connector")!, journey)
     stationNameContainer.classList.add("station--selected")
+    mergeSelectedJourneys()
 }
 
 function addStopoversToStationNames(target: HTMLElement, journey: Journey) {
@@ -101,7 +99,7 @@ function addStopoversToStationNames(target: HTMLElement, journey: Journey) {
     })
 }
 
-export function getJourneyBounds(): [number, number] {
+export function calculateJourneyBounds(): [number, number] {
     let start = -1
     let end = -1
     console.log("len: " + selectedJourneys.length)
@@ -122,28 +120,27 @@ export function getJourneyBounds(): [number, number] {
     }
 
     const shareButton = document.getElementById("share-indicator")!
-    const modalButton = document.getElementById("connection-modal-indicator")!
-    console.log(start)
+    const modalButton = <HTMLButtonElement>document.getElementById("connection-subpage-button")!
+    const connectionLeafletButton = <HTMLButtonElement>document.getElementById("connection-leaflet-subpage-button")!
     if (start === -1) { // invalid bounds
         document.querySelector("footer")!.classList.remove("valid-journey")
     } else {
+        setJourneyBounds([start, end])
         document.querySelector("footer")!.classList.add("valid-journey")
-        shareButton.querySelector("button")!.onclick = () => shareJourney([start, end])
-        modalButton.querySelector("button")!.onclick = () => {
-            displayJourneyModalFirstTime([start, end], true)
-        }
+        //shareButton.querySelector("button")!.onclick = () => shareJourney([start, end])
     }
     displayFooterInfoPanel([start, end])
     return [start, end]
 }
 
-export function mergeSelectedJourneys(journeyBounds: [number, number]) {
+export function mergeSelectedJourneys() {
+    const bounds = journeyBounds
     const mergedJourney: Journey = {
         type: "journey",
         legs: []
     }
     const refreshTokens: string[] = []
-    for (let i = journeyBounds[0]; i <= journeyBounds[1]; i++) {
+    for (let i = bounds[0]; i <= bounds[1]; i++) {
         const journey = getJourney(i, selectedJourneys[i])
         mergedJourney.legs = mergedJourney.legs.concat(journey.legs)
         if (journey.refreshToken !== undefined) {
@@ -151,7 +148,7 @@ export function mergeSelectedJourneys(journeyBounds: [number, number]) {
         }
     }
     mergedJourney.refreshToken = JSON.stringify(refreshTokens)
-    console.log(mergedJourney)
+    console.log("merged")
     setSelectedJourney(mergedJourney)
 }
 

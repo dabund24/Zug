@@ -85,19 +85,6 @@ export function addClassToChildOfParent(parent: HTMLElement | DocumentFragment, 
 }
 
 /**
- * replaces the class `wi-na` of a child of a parent
- * @param {HTMLElement} parent - the parent
- * @param {string} childSelector - a selector of the child
- * @param {string} newClass - the class that should replace `wi-na`
- */
-export function replaceNaClassOfChildOfParent(parent: Element | DocumentFragment, childSelector: string, newClass: string | undefined): void {
-    if (newClass === undefined) {
-        return;
-    }
-    parent.querySelector(childSelector)!.classList.replace("wi-na", newClass);
-}
-
-/**
  * sets the innerHTML of a child of a parent
  * @param {HTMLElement} parent - the parent
  * @param {string} childSelector - a selector of the child

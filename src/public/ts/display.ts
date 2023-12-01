@@ -1,27 +1,26 @@
-import {Journey, Leg, Location, StopOver, Hint, Warning, Status} from "hafas-client";
+import {Hint, Journey, Leg, Location, Status, StopOver, Warning} from "hafas-client";
+import {refreshJourney, refreshJourneyAndInitMap, shareJourney} from "./main.js";
 import {
-    refreshJourney,
-    refreshJourneyAndInitMap,
-    shareJourney
-} from "./main.js";
-import {
-    addClassToChildOfParent, dateDifference, dateToString, numberWithSign,
-    setHTMLOfChildOfParent, timeToString,
+    addClassToChildOfParent,
+    dateDifference,
+    dateToString,
+    numberWithSign,
+    setHTMLOfChildOfParent,
+    timeToString,
     unixToHoursStringShort
 } from "./util.js";
 import {
-    getJourney,
     resetJourneys,
-    saveJourney, selectedJourney,
-    selectedJourneys,
+    saveJourney,
+    selectedJourney,
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
-import {JourneyNode, JourneyTree, LoadFactor, PageState, PageStateString} from "./types.js";
+import {JourneyNode, JourneyTree, LoadFactor, PageStateString} from "./types.js";
 import {toast} from "./pageActions.js";
 import {initMap} from "./map.js";
 import {pushState} from "./routing.js";
-import {getJourneyBounds, mergeSelectedJourneys, selectJourney} from "./journeyMerge.js";
+import {selectJourney} from "./journeyMerge.js";
 
 let journeyCounter: number;
 const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content
@@ -136,22 +135,18 @@ function setConnectionLines(legs: readonly Leg[], connectionToBeAdded: DocumentF
 
 let legCounter = 0;
 
-export function displayJourneyModalFirstTime(journeyBounds: [number, number], lockingNecessary: boolean) {
+export function displayJourneyModalFirstTime(lockingNecessary: boolean) {
     if (lockingNecessary && !tryLockingJourneySearch()) {
         toast("warning", "Bitte warten...", "Please wait...")
         return
     }
-    document.documentElement.setAttribute("data-state", "journey")
-    document.getElementById("connection-modal-indicator")!.classList.add("selectable--horizontal--active")
-    const modal = document.getElementById("connection-modal")!
-    mergeSelectedJourneys(journeyBounds)
+    const subpage = document.getElementById("connection-leaflet-subpage")!
     const journey = selectedJourney;
-    (<HTMLButtonElement>modal.querySelector(".modal__title")).onclick = function () {shareJourney()};
-    (<HTMLButtonElement>modal.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken, journeyBounds)};
+    //(<HTMLButtonElement>subpage.querySelector(".modal__title")).onclick = function () {shareJourney()};
+    (<HTMLButtonElement>subpage.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken)};
     (<HTMLButtonElement>document.getElementById("leaflet-modal__title")).onclick = function () {shareJourney()};
-    (<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken, journeyBounds)};
+    (<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken)};
     displayJourneyModal(journey)
-    pushState("journey", journey.refreshToken)
 
     if (lockingNecessary) {
         unlockJourneySearch()
@@ -159,13 +154,13 @@ export function displayJourneyModalFirstTime(journeyBounds: [number, number], lo
 }
 
 export function displayJourneyModal(journey: Journey) {
-    const modal = document.getElementById("connection-modal")!;
+    const subpage = document.getElementById("connection-subpage")!;
     legCounter = 0;
 
     document.getElementById("leaflet-modal__title")!.innerText = journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name
-    setHTMLOfChildOfParent(modal, ".modal__title", journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name)
-    setHTMLOfChildOfParent(modal, ".modal__connection-date", dateToString(journey.legs[0].departure!))
-    setHTMLOfChildOfParent(modal, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)));
+    setHTMLOfChildOfParent(subpage, ".modal__title", journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name)
+    setHTMLOfChildOfParent(subpage, ".modal__connection-date", dateToString(journey.legs[0].departure!))
+    setHTMLOfChildOfParent(subpage, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)));
 
     const legsTarget = document.getElementById("modal__trips")!;
     legsTarget.replaceChildren()
@@ -493,29 +488,32 @@ export function getWalkHTML(distance: number | undefined, time: string) {
     return distance + "m <span class='de'>Fußweg (ca.</span><span class='en'>by foot (approx.</span> " + time + ")"
 }
 
-export function hideConnectionModal() {
-    document.documentElement.setAttribute("data-state", "")
-    document.getElementById("connection-modal-indicator")!.classList.remove("selectable--horizontal--active")
+export function showSubpage(newState: PageStateString) {
+    if (newState !== "journey" && newState !== "journey/map") {
+        pushState(newState)
+        return
+    }
+
+    if (newState === "journey" || screen.width > 1000) {
+        displayJourneyModalFirstTime(true);
+    }
+
+    pushState(newState, selectedJourney.refreshToken)
+
+    if (newState === "journey/map" || screen.width > 1000) {
+        showLeafletModal(true)
+    }
 }
 
-export function showModal(name: PageStateString) {
-    document.documentElement.setAttribute("data-state", name)
-    pushState(name)
-    document.getElementById(name + "-modal-indicator")!.classList.add("selectable--horizontal--active")
-}
+export function showLeafletModal(lockingNecessary: boolean) {
+    if (lockingNecessary && !tryLockingJourneySearch()) {
+        toast("warning", "Bitte warten...", "Please wait...")
+        return
+    }
 
-export function hideModal(name: PageStateString) {
-    document.documentElement.setAttribute("data-state", "")
-    document.getElementById(name + "-modal-indicator")!.classList.remove("selectable--horizontal--active")
-}
+    initMap(selectedJourney, true)
 
-export function showLeafletModal() {
-    document.documentElement.setAttribute("data-state", "journey/map")
-    const journey = selectedJourney
-    pushState("journey/map", journey.refreshToken)
-    initMap(journey, true)
-}
-
-export function hideLeafletModal() {
-    document.documentElement.setAttribute("data-state", "journey")
+    if (lockingNecessary) {
+        unlockJourneySearch()
+    }
 }

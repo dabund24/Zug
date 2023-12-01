@@ -10,14 +10,12 @@
     display: flex;
 }
 
-[data-state="journey"] #connection-modal {
-    display: flex;
+[data-state="journey"] #connection-leaflet-subpage {
+    display: grid;
 }
 
-[data-state="journey/map"] {
-    #leaflet-modal, #connection-modal {
-        display: flex;
-    }
+[data-state="journey/map"] #connection-leaflet-subpage {
+    display: grid;
 }
 
 #inputs {
@@ -230,8 +228,14 @@
     }
 }
 
-.station-name-container:nth-last-child(2) .station-name__line-container {
-    margin: 0 calc(var(--connection-width) / -2 + 2rem - 8px) 0 calc(var(--connection-width) / 2);
+.station-name-container:nth-last-child(2) {
+    .station-name__line-container {
+        margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 calc(var(--connection-width) / 2);
+    }
+}
+
+.station-name-container:first-child:nth-last-child(2) .station-name__line-container {
+    margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 2rem;
 }
 
 .station-name-container:last-child {
@@ -257,10 +261,6 @@
         width: 0;
         overflow-x: clip;
     }
-}
-
-.station-name-container:first-child:nth-last-child(2) .station-name__line-container {
-    margin: 0 calc(var(--connection-width) / -2 + 2rem - 8px) 0 2rem;
 }
 
 #journeys {
@@ -500,7 +500,7 @@
 }
 
 .modal__walk__l {
-    padding: 0 1.25rem;
+    padding: 0 calc(1rem + 6px);
 }
 
 .modal__trip__element__first-last-child {
@@ -567,17 +567,11 @@
 }
 
 .modal__trip-infos-buttons {
-    margin-left: auto;
-    width: fit-content;
     gap: .5rem;
     & button {
         display: flex;
         padding: .7rem;
     }
-}
-
-.modal__trip-infos-container {
-    text-align: right;
 }
 
 [data-statuses="false"] .modal__trip-statuses {
@@ -609,9 +603,18 @@
     padding-right: 2rem;
 }
 
+#connection-subpage {
+    overflow-y: scroll;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#connection-leaflet-subpage {
+    overflow-y: auto;
+    grid-template-columns: 30rem 1fr;
+}
+
 #map {
-    position: fixed;
-    top: 0;
     height: 100%;
     width: 100%;
 }
@@ -621,6 +624,26 @@
 }
 
 @media screen and (max-width: 1000px) {
+    #connection-leaflet-subpage {
+        grid-template-columns: 100%;
+    }
+
+    #connection-subpage {
+        overflow-y: unset;
+    }
+
+    [data-state="journey"] {
+        #leaflet-subpage {
+            display: none;
+        }
+    }
+
+    [data-state="journey/map"] {
+        #connection-subpage {
+            display: none;
+        }
+    }
+
     :root:not([data-vias="0"]) .connection-line-name {
         display: none;
     }
@@ -630,13 +653,6 @@
 
     [data-vias="0"] {
         --connection-width: calc(100vw - 2rem);
-    }
-
-    .modal__trip-infos-buttons {
-        margin-left: 0;
-    }
-    .modal__trip-infos-container {
-        text-align: left;
     }
 
     .setting__name {
