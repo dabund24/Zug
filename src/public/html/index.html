@@ -5,8 +5,10 @@
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0 minimum-scale=1"/>
-    <!-- <link rel="icon" type="image/x-icon" href=""> -->
-    <title>🚂</title>
+    <meta name="theme-color" content="var(--accent-color)"/>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.svg">
+    <title>Zug</title>
+    <link href="manifest.json" rel="manifest">
     <link href="/css/main.css" rel="stylesheet">
     <link href="/css/journeys.css" rel="stylesheet">
     <link href="/css/tooltips.css" rel="stylesheet">
@@ -309,10 +311,10 @@
 
                         </button>
                         <template>
-                        <span class="connection-line-container">
-                            <span class="connection-line-name"></span>
-                            <span class="line--regular connection-line"></span>
-                        </span>
+                            <span class="connection-line-container">
+                                <span class="connection-line-name"></span>
+                                <span class="line--regular connection-line"></span>
+                            </span>
                         </template>
                         <div class="line--accent"></div>
                     </div>
@@ -338,28 +340,27 @@
         <div class="tab-row flex-row">
             <button type="button" class="hoverable selectable__text" onclick="showSubpage('')" title="home">
                 <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
-                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
-                        <line x1="6" y1="22" x2="6" y2="11"/>
-                        <line x1="3" y1="14" x2="13" y2="4"/>
-                        <line x1="20" y1="22" x2="20" y2="11"/>
-                        <line x1="23" y1="14" x2="13" y2="4"/>
-                        <line x1="18" y1="9" x2="18" y2="4"/>
+                    <mask id="line-mask">
+                        <g stroke="white" stroke-width="4" stroke-linecap="round">
+                            <line x1="2" y1="6" x2="24" y2="6"/>
+                            <line x1="2" y1="13" x2="24" y2="13"/>
+                            <line x1="2" y1="20" x2="24" y2="20"/>
+                        </g>
+                        <line stroke="black" stroke-width="8" stroke-linecap="round" x1="11" y1="13" x2="6" y2="6"/>
+                    </mask>
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" mask="url(#line-mask)">
+                        <line x1="2" y1="6" x2="24" y2="6"/>
+                        <line x1="2" y1="13" x2="24" y2="13"/>
+                        <line x1="2" y1="20" x2="24" y2="20"/>
                     </g>
-                    <line stroke="var(--accent-color)" stroke-width="4" stroke-linecap="round" x1="12" y1="21.5" x2="12" y2="18"/>
+                    <g stroke="var(--accent-color)" stroke-width="4" stroke-linecap="round">
+                        <line x1="2" y1="6" x2="6" y2="6"/>
+                        <line x1="11" y1="13" x2="6" y2="6"/>
+                        <line x1="11" y1="13" x2="24" y2="13"/>
+                    </g>
                 </svg>
             </button>
             <button id="connection-leaflet-subpage-button" type="button" class="hoverable selectable__text desktop-only valid-only" onclick="showSubpage('journey')" title="details">
-                <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
-                    <g stroke-width="4" stroke="var(--foreground-color)">
-                        <line x1="21" y1="21" x2="5" y2="13"/>
-                        <line x1="21" y1="5" x2="5" y2="13"/>
-                    </g>
-                    <g stroke-width="3" stroke="var(--accent-color)" fill="var(--background-color)">
-                        <circle cx="20.5" cy="20.5" r="4"/>
-                        <circle cx="5.5" cy="13" r="4"/>
-                        <circle cx="20.5" cy="5.5" r="4"/>
-                    </g>
-                </svg>
                 <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
                     <g stroke-width="4" stroke="var(--accent-color)" stroke-linecap="round">
                         <line x1="5" y1="5" x2="5" y2="21"/>
@@ -369,6 +370,14 @@
                         <line x1="12" y1="13" x2="22" y2="13"/>
                         <line x1="12" y1="21" x2="22" y2="21"/>
                     </g>
+                </svg>
+                <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                        <path d="M 6 14 A 8 8 0 1 1 20 14"/>
+                        <line x1="6" y1="14" x2="13" y2="24"/>
+                        <line x1="20" y1="14" x2="13" y2="24"/>
+                    </g>
+                    <circle cx="13" cy="10" r="3" fill="var(--accent-color)"/>
                 </svg>
             </button>
             <button id="leaflet-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only" onclick="showSubpage('journey/map')" title="map">

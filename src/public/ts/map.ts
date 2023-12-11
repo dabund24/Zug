@@ -22,6 +22,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let layer: LayerGroup = L.layerGroup();
 layer.addTo(map)
 
+map.attributionControl.setPosition("topright")
+
 export function initMap(journey: Journey, withRezoom: boolean) {
     layer.removeFrom(map)
     const [featureGr, bounds] = journeyToGeoJSON(journey)

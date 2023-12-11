@@ -13,10 +13,6 @@ npm install
 ```
 
 ```
-npm run copy-files
-```
-
-```
 npm run build
 ```
 
@@ -25,3 +21,8 @@ npm start
 ```
 
 Then, open `http://localhost:8081` in your browser.
+
+## Great projects
+
+- [hafas-client](https://github.com/public-transport/hafas-client)
+- [Leaflet](https://github.com/Leaflet/Leaflet)

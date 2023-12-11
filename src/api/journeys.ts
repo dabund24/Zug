@@ -15,6 +15,7 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
     try {
         firstJourneysResponse = await hafasClient.journeys(stops[0], stops[1], opt)
     } catch (err) {
+        console.error(err)
         return respondHafasError(err, 0, 1)
     }
 
@@ -48,6 +49,7 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
         try {
             journeysResponse = await hafasClient.journeys(stops[i], stops[i + 1], opt)
         } catch (err) {
+            console.error(err)
             return respondHafasError(err, i, i + 1)
         }
         if (journeysResponse.journeys === undefined || journeysResponse.journeys.length === 0) {
@@ -61,6 +63,7 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
             if (remainingJourneys !== undefined) {
                 journeysArray.push(journeysResponse.journeys.concat(remainingJourneys));
             } else {
+                console.error("remaining journeys is undefined")
                 return respondHafasError("hafasServer", 0, 0)
             }
         } else {

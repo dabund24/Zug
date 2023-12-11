@@ -296,6 +296,10 @@ function addStopoversToModal(stopovers: readonly StopOver[], legToBeAdded: Docum
         if (stopover.cancelled === true) {
             addClassToChildOfParent(stopoverToBeAdded, ".stopover__name", "cancelled")
         }
+        // @ts-ignore
+        if (stopover.additional === true) {
+            addClassToChildOfParent(stopoverToBeAdded, ".stopover__name", "info")
+        }
         stopoverTarget.append(stopoverToBeAdded)
     }
 }

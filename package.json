@@ -5,10 +5,8 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf dist",
-    "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.css src/**/*.eot src/**/*.svg src/**/*.ttf src/**/*.woff src/**/*.woff2 dist/",
-    "build": "tsc",
-    "start": "node dist/app.js",
-    "copy-build-start": "npm run copy-files && npm run build && npm start"
+    "build": "tsc && copyfiles -u 1 src/**/*.json src/**/*.html src/**/*.css src/**/*.svg src/**/*.png src/**/*.jpg dist/",
+    "start": "node dist/app.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +25,7 @@
   "dependencies": {
     "@types/leaflet": "^1.9.6",
     "express": "^4.18.2",
-    "hafas-client": "^6.1.0",
+    "hafas-client": "^6.2.0",
     "leaflet": "^1.9.4"
   }
 }

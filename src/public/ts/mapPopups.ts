@@ -45,8 +45,10 @@ export function getCurrentLocationPopupHTML(product: Product | undefined, name: 
 }
 
 export function getStopoverPopupHTML(product: Product | undefined, stopover: StopOver) {
-    const arrival = stopover.arrival !== undefined ? unixToHoursStringShort(stopover.arrival) : ""
-    const departure = stopover.departure !== undefined ? unixToHoursStringShort(stopover.departure) : ""
+    const arrival = stopover.arrival !== null ? unixToHoursStringShort(stopover.arrival) : ""
+    const departure = stopover.departure !== null ? unixToHoursStringShort(stopover.departure) : ""
+    // @ts-ignore
+    const stopoverTextClass = stopover.cancelled ? "cancelled" : (stopover.additional ? "info" : "");
     let arrivalDelayClass = ""
     let arrivalDelay = ""
     if (stopover.arrivalDelay !== undefined && stopover.arrivalPrognosisType !== undefined && stopover.arrivalDelay !== null) {
@@ -74,7 +76,7 @@ export function getStopoverPopupHTML(product: Product | undefined, stopover: Sto
         "               </svg>" +
         "           </div>" +
         "       </div>" +
-        "       <div class='popup__text flex-row'><div>" +  stopover.stop?.name + arrivalDelay + "</div>" + platform + "</div>\n" +
+        "       <div class='popup__text flex-row " + stopoverTextClass + "'><div>" +  stopover.stop?.name + arrivalDelay + "</div>" + platform + "</div>\n" +
         "   </div>"
 }
 
@@ -85,8 +87,10 @@ export function getFirstLastStationPopupHTML(product: Product, stopover: StopOve
     let arrivalDepartureDelayClass = ""
     let platform = ""
     let platformClass: string;
+    // @ts-ignore
+    const stopoverTextClass = stopover.cancelled ? "cancelled" : (stopover.additional ? "info" : "");
     if (isFirstStation) {
-        arrivalDepartureScheduled = stopover.plannedDeparture !== undefined ? unixToHoursStringShort(stopover.plannedDeparture) : ""
+        arrivalDepartureScheduled = stopover.plannedDeparture !== null ? unixToHoursStringShort(stopover.plannedDeparture) : ""
         if (stopover.departureDelay !== undefined && stopover.departurePrognosisType !== undefined && stopover.departureDelay !== null) {
             arrivalDepartureActual = unixToHoursStringShort(stopover.departure)
             arrivalDepartureDelayClass = stopover.departureDelay <= 300 ? "on-time" : "delayed"
@@ -97,7 +101,7 @@ export function getFirstLastStationPopupHTML(product: Product, stopover: StopOve
             platform = "<div class='platform " + platformClass + "'>" + getPlatformHTML(stopover.departurePlatform) + "</div>"
         }
     } else {
-        arrivalDepartureScheduled = stopover.plannedArrival !== undefined ? unixToHoursStringShort(stopover.plannedArrival) : ""
+        arrivalDepartureScheduled = stopover.plannedArrival !== null ? unixToHoursStringShort(stopover.plannedArrival) : ""
         if (stopover.arrivalDelay !== undefined && stopover.arrivalPrognosisType !== undefined && stopover.arrivalDelay !== null) {
             arrivalDepartureActual = unixToHoursStringShort(stopover.arrival)
             arrivalDepartureDelayClass = stopover.arrivalDelay <= 300 ? "on-time" : "delayed"
@@ -122,7 +126,7 @@ export function getFirstLastStationPopupHTML(product: Product, stopover: StopOve
         "               </svg>" +
         "           </div>" +
         "       </div>" +
-        "       <div class='popup__text flex-row'><div>" +  stopover.stop?.name + arrivalDepartureDelay + "</div>" + platform + "</div>\n" +
+        "       <div class='popup__text flex-row " + stopoverTextClass + "'><div>" +  stopover.stop?.name + arrivalDepartureDelay + "</div>" + platform + "</div>\n" +
         "   </div>"
 }
 
