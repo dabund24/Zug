@@ -16,9 +16,9 @@ This app can...
 
 - merge sub-journeys to a new journey
 
-- show details and live data of journey
+- show details and live data of journeys
 
-- show a journey on a map
+- show journeys on a map
 
 - create links for journeys so they can be shared
 
@@ -55,38 +55,38 @@ Assume we want to travel from `A` to `D` and know that on our journey we will ha
 
 *Journeys from `A` to `B`*
 
-| ID    | Departure | Arrival |
-| -----:|:---------:|:-------:|
-| `AB1` | 10.00     | 12.00   |
-| `AB2` | 11.00     | 13.30   |
-| `AB3` | 12.00     | 14.00   |
+|    ID | Departure | Arrival |
+|------:|:---------:|:-------:|
+| `AB1` |   10.00   |  12.00  |
+| `AB2` |   11.00   |  13.30  |
+| `AB3` |   12.00   |  14.00  |
 
 *Journeys from `B` to `C`*
 
-| ID    | Departure | Arrival |
-| -----:|:---------:|:-------:|
-| `BC1` | 12.10     | 12.30   |
-| `BC2` | 12.40     | 13.00   |
-| `BC3` | 13.10     | 13.30   |
-| `BC4` | 13.40     | 14.00   |
-| `BC5` | 14.10     | 14.30   |
-| `BC6` | 14.40     | 15.00   |
+|    ID | Departure | Arrival |
+|------:|:---------:|:-------:|
+| `BC1` |   12.10   |  12.30  |
+| `BC2` |   12.40   |  13.00  |
+| `BC3` |   13.10   |  13.30  |
+| `BC4` |   13.40   |  14.00  |
+| `BC5` |   14.10   |  14.30  |
+| `BC6` |   14.40   |  15.00  |
 
 *Journeys from `C` to `D`*
 
-| ID    | Departure | Arrival |
-| -----:|:---------:|:-------:|
-| `CD1` | 13.20     | 14.00   |
-| `CD2` | 13.40     | 14.30   |
-| `CD3` | 13.50     | 14.45   |
-| `CD4` | 14.40     | 15.30   |
-| `CD5` | 14.50     | 15.45   |
+|    ID | Departure | Arrival |
+|------:|:---------:|:-------:|
+| `CD1` |   13.20   |  14.00  |
+| `CD2` |   13.40   |  14.30  |
+| `CD3` |   13.50   |  14.45  |
+| `CD4` |   14.40   |  15.30  |
+| `CD5` |   14.50   |  15.45  |
 
 Note that a journey can be a direct connection, but as opposed to TSTP doesn't have to be.
 
 ### 2. Arrange journeys in tree
 
-In order to create the diagram we want, we first need to arrange the found journeys in a tree-linke structure. Apart from the root, which has no semantic meaning, each level represents a section of our journey. In our example, level 1 contains all journeys found from `A` to `B`, level 2 those from `B` to `C` and level 3 those from `C` to `D`. We construct our tree with these rules:
+In order to create the diagram we want, we first need to arrange the found journeys in a tree-like structure. Apart from the root, which has no semantic meaning, each level represents a section of our journey. In our example, level 1 contains all journeys found from `A` to `B`, level 2 all journeys from `B` to `C` and level 3 those from `C` to `D`. We construct our tree with these rules:
 
 - In each level, journeys are sorted by their departure time in ascending order
 
@@ -97,6 +97,7 @@ In order to create the diagram we want, we first need to arrange the found journ
   *i.e. the earliest journey one can reach from another journey is its first child*
 
 From the rules above, we can derive this more general rule:
+
 *All children of a journey and all children of all right siblings of a journey are "reachable" from it, but all children of all left siblings are not.*
 
 This results in this tree:
@@ -126,4 +127,4 @@ When given a tree as the one seen above, the frontend displays it such that all 
 
 ![tree displayed in application](media/tree_showcase.png)
 
-Notice how the first child of each journey can be found directly to the right of that journey, whereas all "unreachable" connections are above it. This is a consequence of the rule we constructed the tree with. So to read this diagram, we can follow this simple and intuitive rule: You can only travel rightwards and downwards, but never leftwards or upwards.
+Notice how the first child of each journey can be found directly to the right of that journey, whereas all "unreachable" connections are above it. This is a consequence of the rules we constructed the tree with. So to read this diagram, we can use this simple and intuitive rule: You can only travel rightwards and downwards, but never leftwards or upwards.
