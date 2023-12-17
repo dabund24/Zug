@@ -72,7 +72,6 @@ export function displayJourney(journeyNode: JourneyNode, connectionsTarget: HTML
 
     saveJourney(depth, journey);
     let a = journeyCounter;
-    //toBeAdded.querySelector("button")!.onclick = function(){displayJourneyModalFirstTime(journeyNode.depth, journeyNode.idInDepth, true)};
     toBeAdded.querySelector("button")!.onclick = function(){selectJourney(depth, idInDepth)};
     toBeAdded.querySelector(".connection-line-selectable")!.setAttribute("id", "connection-line-selectable-" + depth + "-" + idInDepth)
     journeyCounter++;
@@ -143,9 +142,8 @@ export function displayJourneyModalFirstTime(lockingNecessary: boolean) {
     const subpage = document.getElementById("connection-leaflet-subpage")!
     const journey = selectedJourney;
     //(<HTMLButtonElement>subpage.querySelector(".modal__title")).onclick = function () {shareJourney()};
-    (<HTMLButtonElement>subpage.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken)};
-    (<HTMLButtonElement>document.getElementById("leaflet-modal__title")).onclick = function () {shareJourney()};
-    (<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken)};
+    //(<HTMLButtonElement>subpage.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken)};
+    //(<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken)};
     displayJourneyModal(journey)
 
     if (lockingNecessary) {
@@ -157,7 +155,6 @@ export function displayJourneyModal(journey: Journey) {
     const subpage = document.getElementById("connection-subpage")!;
     legCounter = 0;
 
-    document.getElementById("leaflet-modal__title")!.innerText = journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name
     setHTMLOfChildOfParent(subpage, ".modal__title", journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name)
     setHTMLOfChildOfParent(subpage, ".modal__connection-date", dateToString(journey.legs[0].departure!))
     setHTMLOfChildOfParent(subpage, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)));
@@ -514,6 +511,8 @@ export function showLeafletModal(lockingNecessary: boolean) {
         toast("warning", "Bitte warten...", "Please wait...")
         return
     }
+
+    document.getElementById("leaflet-modal__title")!.innerText = selectedJourney.legs[0].origin!.name + " — " + selectedJourney.legs.at(-1)!.destination!.name
 
     initMap(selectedJourney, true)
 

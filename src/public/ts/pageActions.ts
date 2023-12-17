@@ -1,4 +1,4 @@
-import {Color, Theme, ToasterType} from "./types.js";
+import {Color, Language, Theme, ToasterType} from "./types.js";
 import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util.js";
 
 export function slideIndicator(indicatorID: string, selectableCount: number, start: number, end: number): void {
@@ -53,13 +53,18 @@ export function setBlurEffect(blur: boolean) {
     if ("" + blur === document.documentElement.getAttribute("data-blur")) {
         return
     }
-    if (blur) {
-        document.documentElement.setAttribute("data-blur", "true")
-        slideIndicator("blur-indicator", 2, 1, 0)
-    } else {
-        document.documentElement.setAttribute("data-blur", "false")
-        slideIndicator("blur-indicator", 2, 0, 1)
+
+    document.documentElement.setAttribute("data-blur", "" + blur)
+    slideIndicator("blur-indicator", 2, blur ? 1 : 0, blur ? 0 : 1)
+}
+
+export function setORMLayerAppearance(show: boolean) {
+    if ("" + show === document.getElementById("map")!.getAttribute("data-orm")) {
+        return
     }
+
+    slideIndicator("orm-indicator", 2, show ? 0 : 1, show ? 1 : 0)
+    document.getElementById("map")!.setAttribute("data-orm", "" + show)
 }
 
 export function toast(type: ToasterType, messageDe: string, messageEn: string) {

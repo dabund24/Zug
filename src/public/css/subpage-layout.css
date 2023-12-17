@@ -1,0 +1,131 @@
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-color);
+    z-index: 50;
+    overflow-y: scroll;
+}
+
+[data-state="settings"] #settings-modal {
+    display: flex;
+}
+
+[data-state="about"] #about-modal {
+    display: flex;
+}
+
+[data-state="journey"] #connection-leaflet-subpage {
+    display: grid;
+}
+
+[data-state="journey/map"] #connection-leaflet-subpage {
+    display: grid;
+}
+
+.modal--full-screen {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+.modal--full-screen__title, .modal--full-screen__action {
+    border-radius: var(--border-radius-large);
+    border: var(--line-width) solid var(--foreground-color--opaque);
+    background-color: var(--background-color--opaque);
+    padding: .5rem;
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+}
+
+.modal--full-screen__title, .modal--full-screen__actions-container {
+    position: fixed;
+    z-index: 1002;
+    top: calc(1rem - var(--line-width));
+}
+
+.modal--full-screen__title {
+    text-align: left;
+    max-width: calc(100% - 11rem);
+    left: calc(1rem - var(--line-width));
+}
+
+.modal--full-screen__actions-container {
+    right: calc(1rem - var(--line-width));
+    gap: .5rem;
+    :hover {
+        cursor: pointer;
+    }
+}
+
+.modal-content {
+    padding: 0 1.5rem 5rem;
+}
+
+.modal--full-screen .modal-content {
+    max-height: unset;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.modal header {
+    position: sticky;
+    z-index: 2;
+    top: 0;
+    background-color: var(--background-color--opaque);
+    backdrop-filter: var(--blur);
+    margin: 0 -1.5rem 0;
+    padding: 1rem .5rem .5rem 1.5rem;
+    align-items: start;
+    gap: .5rem;
+}
+
+.modal__title {
+    margin-right: auto;
+}
+
+.subpage__button {
+    padding: .5rem;
+    margin-top: calc(-1 * var(--line-width));
+    line-height: 0;
+    flex-shrink: 0;
+    &:last-child {
+        margin-right: calc(-1 * var(--line-width));
+    }
+}
+/*
+@media screen and (min-width: 1301px) {
+    .modal {
+        ::-webkit-scrollbar {
+            background-color: transparent;
+            width: var(--line-width);
+            height: var(--line-width);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: var(--border-radius-small);
+            background-color: var(--foreground-color);
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+    }
+}*/
+
+@media screen and (max-width: 1000px) {
+    .modal header {
+        margin: 0 -1rem 0;
+        padding: 1rem .5rem .5rem 1rem;
+    }
+
+    .subpage__button {
+        margin-top: calc(-1 * var(--line-width));
+    }
+}

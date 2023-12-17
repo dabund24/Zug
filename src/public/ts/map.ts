@@ -16,8 +16,14 @@ const map = L.map("map", {
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    className: "map-tiles"
+    className: "osm-tiles"
 }).addTo(map)
+
+const ormLayer = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
+    className: "orm-tiles"
+})
 
 let layer: LayerGroup = L.layerGroup();
 layer.addTo(map)
@@ -25,6 +31,11 @@ layer.addTo(map)
 map.attributionControl.setPosition("topright")
 
 export function initMap(journey: Journey, withRezoom: boolean) {
+    if (document.getElementById("map")!.getAttribute("data-orm") === "true") {
+        ormLayer.addTo(map)
+    } else {
+        ormLayer.removeFrom(map)
+    }
     layer.removeFrom(map)
     const [featureGr, bounds] = journeyToGeoJSON(journey)
     layer = featureGr

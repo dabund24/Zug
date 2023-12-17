@@ -1,268 +1,3 @@
-.modal {
-    display: none;
-}
-
-[data-state="settings"] #settings-modal {
-    display: flex;
-}
-
-[data-state="about"] #about-modal {
-    display: flex;
-}
-
-[data-state="journey"] #connection-leaflet-subpage {
-    display: grid;
-}
-
-[data-state="journey/map"] #connection-leaflet-subpage {
-    display: grid;
-}
-
-#inputs {
-    position: sticky;
-    left: 1.5rem;
-    z-index: 50;
-    width: calc(100vw - 3rem);
-}
-
-.station-inputs {
-    align-items: center;
-}
-
-.search__icon {
-    align-self: center;
-    --product-color: var(--accent-color);
-    text-align: center;
-}
-
-.search__icon:first-child {
-    width: 32px;
-    margin-right: -32px;
-}
-
-.search__icon:last-child {
-    width: 2.5rem;
-    height: 2.5rem;
-    margin-left: -2.5rem;
-    padding: .5rem;
-}
-
-.search__icon--from .station-circle--big {
-    margin-left: 6px;
-}
-
-.search__icon--to .station-circle--big {
-    margin-right: 6px;
-}
-
-.arrow {
-    margin: auto;
-}
-
-#station-names-container {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-#station-names {
-    align-items: end;
-    background-color: var(--background-color--opaque);
-    backdrop-filter: var(--blur);
-    -webkit-backdrop-filter: var(--blur);
-}
-
-.station-name-container {
-    width: var(--connection-width);
-    margin-top: auto;
-    flex-shrink: 0;
-    text-align: center;
-    --product-color: var(--foreground-color);
-    .station-circle--small {
-        margin: .5rem auto -4px;
-    }
-    .station-circle--big {
-        display: none;
-    }
-}
-
-.station--selected, .station--selected + .station-name-container {
-    --product-color: var(--accent-color);
-}
-
-.station-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.station-name__name {
-    width: 100%;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-}
-
-.station-name__line-container {
-    height: 16px;
-    margin: 0 calc(var(--connection-width) / -2) 0 calc(var(--connection-width) / 2);
-    .station-name__connector {
-        width: 100%;
-        margin-left: -8px;
-        visibility: hidden;
-    }
-    .station-name__connector__stopover {
-        width: 100%;
-    }
-    .station-name__connector__stopover:first-child .station-icon--stopover-container {
-        visibility: hidden;
-    }
-    .station-name__connector__line-container {
-        align-self: center;
-        margin-left: -8px;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        align-items: center;
-    }
-    .station-icon--stopover-container {
-        margin-left: -8px;
-        display: flex;
-    }
-    .station-icon {
-        z-index: 1;
-    }
-    .station-icon--major, .station-icon--minor {
-        margin-left: -8px;
-        display: none;
-    }
-}
-
-.station--selected {
-    .line--accent {
-        width: 100%;
-    }
-    .station-icon--minor {
-        display: block;
-    }
-}
-
-.station-name__durations {
-    margin: 0 calc(var(--connection-width) / -2) 0 calc(var(--connection-width) / 2);
-    z-index: 1;
-}
-
-.station-name__durations i, .station-name__durations span {
-    margin: auto;
-}
-
-.station-name__durations__wait-container {
-    margin-left: -4rem;
-    width: 8rem;
-    flex-shrink: 0;
-    > * {
-        display: none;
-    }
-}
-
-.station-name__durations__leg-container {
-    margin-right: 4rem;
-    width: 100%;
-    visibility: hidden;
-}
-
-.station--selected {
-    .station-name__durations__leg-container {
-        display: inline;
-    }
-}
-
-.station--selected + .station--selected {
-    .station-name__durations__wait {
-        display: inline;
-    }
-}
-
-:not(.station--selected) + .station--selected, .station--selected + :not(.station--selected) {
-    .station-icon--major {
-        display: block;
-    }
-    .station-icon--minor {
-        display: none;
-    }
-}
-
-.station--selected:first-child {
-    .station-icon--major {
-        display: block;
-    }
-    .station-icon--minor {
-        display: none;
-    }
-}
-
-:not(.station--selected) + .station--selected .station-name__durations__departure, .station--selected:first-child .station-name__durations__departure {
-    display: inline;
-}
-
-.station--selected + :not(.station--selected) .station-name__durations__arrival {
-    display: inline;
-}
-
-.station--selected .station-name__durations__leg-container, .station--selected .station-name__connector {
-    visibility: visible;
-}
-
-.station-name-container:first-child {
-    width: calc(var(--connection-width) / 2);
-    .station-name__name {
-        text-align: left;
-    }
-    .station-name__line-container {
-        margin: 0 calc(var(--connection-width) / -2) 0 2rem;
-    }
-    .station-name__durations {
-        margin: 0 calc(var(--connection-width) / -2) 0 0;
-    }
-    .station-name__durations__wait-container {
-        margin-left: 0;
-        width: 4rem;
-    }
-}
-
-.station-name-container:nth-last-child(2) {
-    .station-name__line-container {
-        margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 calc(var(--connection-width) / 2);
-    }
-}
-
-.station-name-container:first-child:nth-last-child(2) .station-name__line-container {
-    margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 2rem;
-}
-
-.station-name-container:last-child {
-    width: calc(var(--connection-width) / 2);
-    .station-name__name {
-        text-align: right;
-    }
-    .station-name__connector {
-        display: none;
-    }
-    .station-name__line-container {
-        margin: 0 calc(2rem - 8px) 0 auto;
-    }
-    .station-name__durations {
-        margin: 0;
-    }
-    .station-name__durations__wait-container {
-        margin-left: auto;
-        width: 4rem;
-    }
-    .station-name__durations__leg-container {
-        margin: 0;
-        width: 0;
-        overflow-x: clip;
-    }
-}
-
 #journeys {
     margin: 1.5rem auto 5rem;
     padding: .5rem;
@@ -614,15 +349,6 @@
     grid-template-columns: 30rem 1fr;
 }
 
-#map {
-    height: 100%;
-    width: 100%;
-}
-
-.map-tiles {
-    filter: var(--map-filter)
-}
-
 @media screen and (max-width: 1000px) {
     #connection-leaflet-subpage {
         grid-template-columns: 100%;
@@ -658,5 +384,29 @@
     .setting__name {
         padding: 1rem 0 .5rem;
         width: inherit;
+    }
+}
+
+@media screen and (min-width: 35rem) {
+    [data-vias="0"] body {
+        overflow-x: hidden;
+    }
+}
+
+@media screen and (min-width: 65rem) {
+    [data-vias="1"] body {
+        overflow-x: hidden;
+    }
+}
+
+@media screen and (min-width: 95rem) {
+    [data-vias="2"] body {
+        overflow-x: hidden;
+    }
+}
+
+@media screen and (min-width: 125rem) {
+    [data-vias="3"] body {
+        overflow-x: hidden;
     }
 }

@@ -2,9 +2,9 @@
 
 A web application assisting users of public transport in Germany on planning longer journeys with transfers.
 
-Users can investigate their transfer possibilities in a very detailled way in order to prepare for possible delays/cancellations in advance and/or incorporate longer stays into their journey. This is achieved by fetching journeys between all selected stopovers from [`Hafas`](https://de.wikipedia.org/wiki/HAFAS) and visualizing how they relate to each otther in an interactive diagram.
+Users can investigate possible transfers in a very detailed way in order to prepare for delays/cancellations in advance and/or incorporate longer stays into their journey. This is achieved by fetching journeys between all selected stopovers from [`Hafas`](https://de.wikipedia.org/wiki/HAFAS) and visualizing how they relate to each other in an interactive diagram.
 
-This app is intended as a hybrid between [DB Navigator](https://bahn.de) and [Time-Space Train Planner (TSTP)](https://github.com/traines-source/time-space-train-planner)
+This app is intended to be some sort of hybrid between [DB Navigator](https://bahn.de) and [Time-Space Train Planner (TSTP)](https://github.com/traines-source/time-space-train-planner)
 
 ## Features
 
@@ -45,7 +45,9 @@ Then, open `http://localhost:8081` in your browser.
 ## Great projects this app relies on
 
 - [hafas-client](https://github.com/public-transport/hafas-client)
-- [Leaflet](https://github.com/Leaflet/Leaflet)
+- [Leaflet](https://leafletjs.com)
+- [OpenStreetMap](https://www.openstreetmap.org)
+- [OpenRailwayMap](https://www.openrailwaymap.org)
 
 ## How it works
 
@@ -86,7 +88,7 @@ Note that a journey can be a direct connection, but as opposed to TSTP doesn't h
 
 ### 2. Arrange journeys in tree
 
-In order to create the diagram we want, we first need to arrange the found journeys in a tree-like structure. Apart from the root, which has no semantic meaning, each level represents a section of our journey. In our example, level 1 contains all journeys found from `A` to `B`, level 2 all journeys from `B` to `C` and level 3 those from `C` to `D`. We construct our tree with these rules:
+In order to create the diagram we want, we first need to arrange the found journeys in a tree-like structure. Apart from the root, which has no semantic meaning, each level represents a section of the full journey. In our example, level 1 contains all journeys found from `A` to `B`, level 2 all journeys from `B` to `C` and level 3 those from `C` to `D`. We construct our tree with these rules:
 
 - In each level, journeys are sorted by their departure time in ascending order
 
@@ -123,7 +125,7 @@ graph TD;
 
 ### 3. Reflect tree structure in HTML
 
-When given a tree as the one seen above, the frontend displays it such that all child-parent relationships from the constructed tree also exist in the DOM, which results in this diagram:
+When given a tree as the one seen above from the server, the frontend displays it such that all parent child relationships from the constructed tree also exist in the DOM, which results in this diagram:
 
 ![tree displayed in application](media/tree_showcase.png)
 

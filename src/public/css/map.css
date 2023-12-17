@@ -1,3 +1,16 @@
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.osm-tiles {
+    filter: var(--map-filter)
+}
+
+[data-orm="false"] .orm-tiles {
+    display: none;
+}
+
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
     background-color: var(--background-color--opaque);
     color: var(--foreground-color);
@@ -78,6 +91,23 @@
 
 .popup__text {
     align-self: center;
+}
+
+.leaflet-top.leaflet-right {
+    transform: rotate(-90deg);
+    text-align: center;
+    transform-origin: bottom right;
+    top: 3.5rem;
+    width: 100vh;
+}
+
+.leaflet-container .leaflet-control-attribution {
+    background: var(--background-color--opaque);
+    color: var(--foreground-color);
+    > a {
+        color: var(--foreground-color);
+        text-decoration: underline;
+    }
 }
 
 @media screen and (max-width: 1300px) {

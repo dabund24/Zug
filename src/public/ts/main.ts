@@ -142,6 +142,7 @@ export async function refreshJourney(tokenString: string | undefined) {
         return
     }
     showLoadSlider()
+    tokenString = selectedJourney.refreshToken
     if (tokenString === undefined) {
         toast("error", "Aktualisierung gescheitert (fehlendes Token)", "refresh failed (missing token)")
         hideLoadSlider()

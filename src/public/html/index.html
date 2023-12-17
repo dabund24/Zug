@@ -10,6 +10,10 @@
     <title>Zug</title>
     <link href="manifest.json" rel="manifest">
     <link href="/css/main.css" rel="stylesheet">
+    <link href="/css/subpage-layout.css" rel="stylesheet">
+    <link href="/css/footer.css" rel="stylesheet">
+    <link href="/css/search.css" rel="stylesheet">
+    <link href="/css/station-names.css" rel="stylesheet">
     <link href="/css/journeys.css" rel="stylesheet">
     <link href="/css/tooltips.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -19,8 +23,8 @@
 </head>
 <body>
 <script type="module">
-    import {setColor, setTheme, setBlurEffect} from "/ts/pageActions.js";
-    import {findConnections, shareJourney} from "/ts/main.js";
+    import {setColor, setTheme, setBlurEffect, setORMLayerAppearance} from "/ts/pageActions.js";
+    import {findConnections, shareJourney, refreshJourneyAndInitMap, refreshJourney} from "/ts/main.js";
     import {showSubpage, showLeafletModal, displayJourneyModalFirstTime} from "/ts/display.js"
     import {setDepArr, setLanguage, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "/ts/memorizer.js";
     import {clickSuggestion} from "/ts/search.js";
@@ -28,9 +32,12 @@
     window.setColor = setColor;
     window.setTheme = setTheme;
     window.setBlurEffect = setBlurEffect;
+    window.setORMLayerAppearance = setORMLayerAppearance;
 
     window.findConnections = findConnections;
     window.shareJourney = shareJourney;
+    window.refreshJourney = refreshJourney;
+    window.refreshJourneyAndInitMap = refreshJourneyAndInitMap;
 
     window.showSubpage = showSubpage;
     window.showLeafletModal = showLeafletModal;
@@ -432,13 +439,35 @@
             <div class="line--accent indicator indicator__animation-to-right mobile-only" id="subpage-indicator--mobile" style="--animation--tab-indicator__start: 10%; --animation--tab-indicator__end: 10%"></div>
         </div>
     </div>
-    <div class="footer__info-panel desktop-only">
-        <div class="flex-row header">
-            <span id="footer__info-panel__origin">Start</span>
-            <span class="show-whitespace"> — </span>
-            <span id="footer__info-panel__destination">Ziel</span>
+    <div class="footer__info-panel flex-row valid-only desktop-only">
+        <div class="flex-column header">
+            <div id="footer__info-panel__origin">Start</div>
+            <div id="footer__info-panel__destination">Ziel</div>
         </div>
-        <i id="footer__info-panel__duration">30min</i>
+        <div class="line--vertical connection-line"></div>
+        <i id="footer__info-panel__duration" class="align-center">30min</i>
+        <button id="share-button--desktop" class="subpage__button modal__share header hoverable" title="show map" onclick="shareJourney()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26px" height="26px">
+                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                    <line y2="13" x1="20" y1="6" x2="6"></line>
+                    <line y1="13" x2="20" y2="20" x1="6"></line>
+                </g>
+                <g fill="var(--foreground-color)">
+                    <circle r="4" cx="20" cy="6"></circle>
+                    <circle cy="13" r="4" cx="6"></circle>
+                    <circle r="4" cx="20" cy="20"></circle>
+                </g>
+            </svg>
+        </button>
+        <button class="subpage__button modal__refresh header hoverable" onclick="refreshJourneyAndInitMap()">
+            <svg width="26px" height="26px">
+                <g stroke="var(--foreground-color)" stroke-linecap="round" fill="none" stroke-width="3">
+                    <path d="M 17 6 A 8 8 0 1 0 21 13" stroke-width="3"></path>
+                    <line y2="2" x1="17" y1="6" x2="15"></line>
+                    <line x1="17" y1="6" x2="13.5" y2="9"></line>
+                </g>
+            </svg>
+        </button>
     </div>
 </footer>
 
@@ -459,7 +488,7 @@
                     </g>
                 </svg>
             </button>
-            <button class="subpage__button modal__refresh header hoverable">
+            <button class="subpage__button modal__refresh header hoverable" onclick="refreshJourney()">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
                         <path d="M 13 5 A 6 6 0 1 0 16 10"/>
@@ -468,7 +497,6 @@
                     </g>
                 </svg>
             </button>
-            <div class="background-transition--horizontal"></div>
         </header>
         <div id="modal__connecion-infos" class="padded-top-bottom flex-column mobile-only">
             <div class="flex-row">
@@ -669,7 +697,34 @@
         </template>
     </div>
     <div id="leaflet-subpage">
-        <div id="map">
+        <div id="leaflet-modal__title" class="modal--full-screen__title header mobile-only">
+            <span class="de"></span><span class="en">Map</span>
+        </div>
+        <div class="modal--full-screen__actions-container flex-row mobile-only">
+            <button class="modal--full-screen__action flex-row header" onclick="shareJourney()">
+                <svg width='17px' height='17px' viewBox="0 0 20 20" xmlns='http://www.w3.org/2000/svg'>
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                        <line x1="16" y1="4" x2="4" y2="10"/>
+                        <line x1="4" y1="10" x2="16" y2="16"/>
+                    </g>
+                    <g fill="var(--foreground-color)">
+                        <circle r="3.5" cx="16" cy="4"/>
+                        <circle r="3.5" cx="4" cy="10"/>
+                        <circle r="3.5" cx="16" cy="16"/>
+                    </g>
+                </svg>
+            </button>
+            <button class="modal--full-screen__action flex-row header" onclick="refreshJourneyAndInitMap()">
+                <svg width="17px" height="17px" viewBox="0 0 20 20">
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                        <path d="M 13 5 A 6 6 0 1 0 16 10"/>
+                        <line x1="13" y1="5" x2="10" y2="7"/>
+                        <line x1="13" y1="5" x2="11" y2="2"/>
+                    </g>
+                </svg>
+            </button>
+        </div>
+        <div id="map" data-orm="false">
 
         </div>
     </div>
@@ -762,6 +817,24 @@
                     </div>
                     <div class="tab-indicator-container indicator-line-container">
                         <div class="line--accent indicator indicator__animation-to-right" id="blur-indicator" style="--animation--tab-indicator__start: 75%; --animation--tab-indicator__end: 75%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">OpenRailwayMap-Ebene</span><span class="en">OpenRailwayMap layer</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setORMLayerAppearance(false)">
+                            <span class="de">verstecken</span><span class="en">hide</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setORMLayerAppearance(true)">
+                            <span class="de">anzeigen</span><span class="en">show</span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="orm-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
                     </div>
                 </div>
             </div>
@@ -1020,28 +1093,7 @@
     </div>
 </div>
 <div id="leaflet-modal" class="modal modal--full-screen">
-    <button id="leaflet-modal__title" class="modal--full-screen__title header">
-        <span class="de"></span><span class="en">Map</span>
-    </button>
-    <div class="modal--full-screen__close-container flex-row">
-        <button id="leaflet-modal__refresh" class="modal--full-screen__close header">
-            <svg width="17px" height="17px" viewBox="0 0 20 20">
-                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
-                    <path d="M 13 5 A 6 6 0 1 0 16 10"/>
-                    <line x1="13" y1="5" x2="10" y2="7"/>
-                    <line x1="13" y1="5" x2="11" y2="2"/>
-                </g>
-            </svg>
-        </button>
-        <button class="modal--full-screen__close header" onclick="history.back()">
-            <svg width="17px" height="17px" viewBox="0 0 20 20">
-                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
-                    <line x1="4" y1="4" x2="16" y2="16"/>
-                    <line x1="4" y1="16" x2="16" y2="4"/>
-                </g>
-            </svg>
-        </button>
-    </div>
+
 </div>
 
 

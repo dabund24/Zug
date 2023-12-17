@@ -6,6 +6,7 @@ import {
 } from "./memorizer.js";
 import {addClassToChildOfParent, dateDifference, timeToString, unixToHoursStringShort} from "./util.js";
 import {Journey} from "hafas-client";
+import {shareJourney} from "./main.js";
 
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)
@@ -119,22 +120,25 @@ export function calculateJourneyBounds(): [number, number] {
         end = selectedJourneys.length - 1
     }
 
-    const shareButton = document.getElementById("share-indicator")!
+    const shareButton = <HTMLButtonElement>document.getElementById("share-button--desktop")!
     const modalButton = <HTMLButtonElement>document.getElementById("connection-subpage-button")!
     const connectionLeafletButton = <HTMLButtonElement>document.getElementById("connection-leaflet-subpage-button")!
     if (start === -1) { // invalid bounds
         document.querySelector("footer")!.classList.remove("valid-journey")
     } else {
-        setJourneyBounds([start, end])
         document.querySelector("footer")!.classList.add("valid-journey")
-        //shareButton.querySelector("button")!.onclick = () => shareJourney([start, end])
+        shareButton.onclick = () => shareJourney()
     }
+    setJourneyBounds([start, end])
     displayFooterInfoPanel([start, end])
     return [start, end]
 }
 
 export function mergeSelectedJourneys() {
     const bounds = journeyBounds
+    if (bounds[0] == -1) {
+        return
+    }
     const mergedJourney: Journey = {
         type: "journey",
         legs: []

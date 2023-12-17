@@ -1,0 +1,119 @@
+.search {
+    margin: .5rem auto 0;
+    max-width: 25rem;
+    padding: 0 .5rem;
+}
+
+.search__input-container {
+    width: 100%;
+}
+
+.search__input {
+    width: calc(100% - 64px);
+    text-align: center;
+    border: none;
+    outline: none;
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+.search .line--regular {
+    height: var(--line-width);
+    width: 100%;
+    margin: auto;
+    transition: width .3s ease-in-out, background-color .5s ease-in-out;
+}
+
+.search:focus-within .line--regular {
+    width: var(--line-length);
+    background-color: var(--accent-color);
+}
+
+.search__suggestions {
+    margin-top: .5rem;
+    display: none;
+}
+
+#inputs {
+    position: sticky;
+    left: 1.5rem;
+    z-index: 50;
+    width: calc(100vw - 3rem);
+}
+
+.station-inputs {
+    align-items: center;
+}
+
+.search__icon {
+    align-self: center;
+    --product-color: var(--accent-color);
+    text-align: center;
+}
+
+.search__icon:first-child {
+    width: 32px;
+    margin-right: -32px;
+}
+
+.search__icon:last-child {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: -2.5rem;
+    padding: .5rem;
+}
+
+.search__icon--from .station-circle--big {
+    margin-left: 6px;
+}
+
+.search__icon--to .station-circle--big {
+    margin-right: 6px;
+}
+
+.options {
+    text-align: center;
+    position: absolute;
+    z-index: 50;
+    border: var(--line-width) solid var(--foreground-color--opaque);
+    padding-right: var(--line-width);
+    width: calc(25rem - 12px);
+    backdrop-filter: var(--blur);
+    background-color: var(--background-color--opaque);
+    -webkit-backdrop-filter: var(--blur);
+    max-width: calc(100vw - 2rem - 12px);
+}
+
+.search:focus-within .search__suggestions, .search__suggestions:active {
+    display: flex;
+}
+
+.options .line--accent {
+    flex-shrink: 0;
+    width: var(--line-width);
+    margin: auto 0;
+    height: 0;
+    background-color: var(--accent-color);
+    transition: height .2s ease-in-out, background-color .5s ease-in-out;
+}
+
+.options:hover {
+    background-color: var(--background-color--opaque);
+}
+
+.search__suggestion__text {
+    text-align: center;
+}
+
+.option {
+    padding: .5rem 0;
+    width: 100%;
+}
+
+.option:hover .line--accent, .option--focus .line--accent {
+    height: var(--line-length--vertical);
+}
+
+.arrow {
+    margin: auto;
+}
