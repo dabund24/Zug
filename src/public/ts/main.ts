@@ -1,5 +1,6 @@
 import {Journey, JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop} from "hafas-client";
 import {
+    addStationNames,
     displayJourneyModal,
     displayJourneyModalFirstTime,
     displayJourneyTree,
@@ -72,6 +73,11 @@ export async function findConnections() {
     }
     const to: (Station | Stop)[] = await fetch("/api/stations?name=" + toStr).then(res => res.json())
 
+    const stationNames = [<string> from[0].name, viaNames, <string> to[0].name].flat()
+
+    addStationNames(stationNames)
+    document.getElementById("connections-root-container")!.replaceChildren()
+
     const fromID = from[0].id
     const toID = to[0].id
 
@@ -125,7 +131,7 @@ export async function findConnections() {
 
     console.log(journeyTree)
 
-    const connectionCount = displayJourneyTree(journeyTree, [<string> from[0].name, viaNames, <string> to[0].name].flat())
+    const connectionCount = displayJourneyTree(journeyTree, stationNames)
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + " connections")
     hideLoadSlider()
     unlockJourneySearch()
@@ -227,7 +233,7 @@ export function shareJourney() {
 
     if (navigator.share) {
         navigator.share({
-            title: "geteilte Verbindung",
+            title: `Reise von ${selectedJourney.legs[0].origin?.name} nach ${selectedJourney.legs.at(-1)?.origin?.name}`,
             url: sharedText
         }).then(() => {
             toast("success", "Verbindung geteilt", "Shared connection")

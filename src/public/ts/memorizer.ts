@@ -23,7 +23,7 @@ export let selectedJourneys: number[] = []
 
 export let selectedJourney: Journey
 
-export let journeyBounds: [number, number]
+export let journeyBounds: [number, number] = [-1, -1]
 
 export function setJourneyBounds(bounds: [number, number]) {
     journeyBounds = bounds

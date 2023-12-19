@@ -81,6 +81,7 @@
     --connection-width: 30rem;
 
     --map-filter: none;
+    --border: var(--line-width) solid var(--foreground-color--opaque);
 }
 
 [data-theme="dark"] {
@@ -113,6 +114,10 @@
 
 * {
     scrollbar-width: thin;
+}
+
+html, body {
+    overscroll-behavior-y: contain;
 }
 
 body {
@@ -346,6 +351,7 @@ p {
     position: relative;
     top: calc(-1 * var(--line-width));
     height: var(--line-width);
+    margin-bottom: calc(-1 * var(--line-width));
 }
 
 .indicator {
@@ -400,7 +406,7 @@ p {
     position: fixed;
     z-index: 1001;
     left: calc(50% - 15rem);
-    bottom: 4.5rem;
+    bottom: 5rem;
 }
 
 .toast {
@@ -468,6 +474,10 @@ p {
 @media screen and (min-width: 1001px) {
     .mobile-only {
         display: none;
+    }
+
+    #toasts {
+        bottom: 0;
     }
 }
 

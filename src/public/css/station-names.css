@@ -202,3 +202,9 @@
         overflow-x: clip;
     }
 }
+
+@media screen and (min-width: 1001px) {
+    #station-names-container {
+        top: 5rem;
+    }
+}

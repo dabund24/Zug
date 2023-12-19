@@ -349,6 +349,16 @@
     grid-template-columns: 30rem 1fr;
 }
 
+@media screen and (min-width: 1001px) {
+    #inputs {
+        margin-top: 5rem;
+    }
+
+    #journeys {
+        margin-bottom: 0;
+    }
+}
+
 @media screen and (max-width: 1000px) {
     #connection-leaflet-subpage {
         grid-template-columns: 100%;

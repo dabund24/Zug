@@ -1,5 +1,6 @@
 import {JourneyNode, JourneyTree, PageState, PageStateString} from "./types";
 import {
+    addStationNames,
     displayJourneyModalFirstTime,
     displayJourneyTree,
     showLeafletModal,
@@ -26,7 +27,7 @@ switch (path) {
         break
     case "settings":
     case "about":
-        showSubpage(path)
+        showSubpage(path, false)
         break
     case "journey":
         if (journeyQuery !== null) {
@@ -50,22 +51,9 @@ window.onpopstate = () => {
     const [desktopEnd, mobileEnd] = pageStateStringToID(newState)
     slideIndicator("subpage-indicator--desktop", 4, desktopStart, desktopEnd)
     slideIndicator("subpage-indicator--mobile", 5, mobileStart, mobileEnd)
-    /*switch (<PageStateString>document.documentElement.getAttribute("data-state")) {
-        case "": return
-        case "settings":
-            hideModal("settings")
-            break
-        case "about":
-            hideModal("about")
-            break
-        case "journey":
-            hideConnectionModal()
-            break
-        case "journey/map":
-            hideLeafletModal()
-            break
-    }*/
-
+    if ((newState == "journey" || newState == "journey/map") && (<PageState>history.state).journeyID !== selectedJourney?.refreshToken) {
+        toast("neutral", "Lade die Seite neu, um die korrekte Verbindung anzeigen zu lassen", "Reload the page to show the correct journey")
+    }
 }
 
 window.addEventListener("keydown", event => {
@@ -81,9 +69,9 @@ export function pushState(newState: PageStateString, refreshToken?: string) {
     }
     const baseURL = new URL(window.location.href).origin
     if (refreshToken !== undefined) {
-        refreshToken = btoa(refreshToken)
-        const url = new URL(`${newState}?journey=${refreshToken}`, baseURL)
-        window.history.pushState(<PageState>{state: newState}, "", url)
+        const refreshTokenEncoded = btoa(refreshToken)
+        const url = new URL(`${newState}?journey=${refreshTokenEncoded}`, baseURL)
+        window.history.pushState(<PageState>{state: newState, journeyID: refreshToken}, "", url)
     } else {
         const url = new URL(newState, baseURL)
         window.history.pushState(<PageState>{state: newState}, "", url)
@@ -157,6 +145,7 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
         }
     }
 
+    addStationNames(stationNames)
     displayJourneyTree(getSimpleJourneyTree(<Journey[]>journeys), stationNames)
     for (let i = 0; i < journeys.length; i++) {
         selectJourney(i, 0)
@@ -169,7 +158,7 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
     hideLoadSlider()
     unlockJourneySearch()
 
-    showSubpage(withMap ? "journey/map" : "journey")
+    showSubpage(withMap ? "journey/map" : "journey", false)
 }
 
 function getSimpleJourneyTree(journeys: Journey[]): JourneyTree {

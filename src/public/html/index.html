@@ -344,8 +344,8 @@
 </div>
 <footer class="flex-row">
     <div class="footer__buttons">
-        <div class="tab-row flex-row">
-            <button type="button" class="hoverable selectable__text" onclick="showSubpage('')" title="home">
+        <div class="tab-row">
+            <button type="button" class="hoverable selectable__text" onclick="showSubpage('', true)" title="home">
                 <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
                     <mask id="line-mask">
                         <g stroke="white" stroke-width="4" stroke-linecap="round">
@@ -366,8 +366,40 @@
                         <line x1="11" y1="13" x2="24" y2="13"/>
                     </g>
                 </svg>
+                <span class="desktop-only"><span class="de">Verbindungssuche</span><span class="en">Connection Search</span></span>
             </button>
-            <button id="connection-leaflet-subpage-button" type="button" class="hoverable selectable__text desktop-only valid-only" onclick="showSubpage('journey')" title="details">
+            <button id="connection-leaflet-subpage-button" type="button" class="hoverable selectable__text desktop-only valid-only--dim" onclick="showSubpage('journey', true)" title="details">
+                <!--svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke-width="4" stroke="var(--accent-color)" stroke-linecap="round">
+                        <line x1="5" y1="5" x2="5" y2="21"/>
+                    </g>
+                    <g stroke-width="3" stroke="var(--foreground-color)" stroke-linecap="round">
+                        <line x1="12" y1="5" x2="22" y2="5"/>
+                        <line x1="12" y1="13" x2="22" y2="13"/>
+                        <line x1="12" y1="21" x2="22" y2="21"/>
+                    </g>
+                </svg-->
+                <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                        <path d="M 6 14 A 8 8 0 1 1 20 14"/>
+                        <line x1="6" y1="14" x2="13" y2="24"/>
+                        <line x1="20" y1="14" x2="13" y2="24"/>
+                    </g>
+                    <circle cx="13" cy="10" r="3" fill="var(--accent-color)"/>
+                </svg>
+                <span class="desktop-only"><span class="de">Details/Karte</span><span class="en">Details/Map</span></span>
+            </button>
+            <button id="leaflet-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only--dim" onclick="showSubpage('journey/map', true)" title="map">
+                <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
+                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
+                        <path d="M 6 14 A 8 8 0 1 1 20 14"/>
+                        <line x1="6" y1="14" x2="13" y2="24"/>
+                        <line x1="20" y1="14" x2="13" y2="24"/>
+                    </g>
+                    <circle cx="13" cy="10" r="3" fill="var(--accent-color)"/>
+                </svg>
+            </button>
+            <button id="connection-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only--dim" onclick="showSubpage('journey', true)" title="details">
                 <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
                     <g stroke-width="4" stroke="var(--accent-color)" stroke-linecap="round">
                         <line x1="5" y1="5" x2="5" y2="21"/>
@@ -378,38 +410,8 @@
                         <line x1="12" y1="21" x2="22" y2="21"/>
                     </g>
                 </svg>
-                <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
-                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
-                        <path d="M 6 14 A 8 8 0 1 1 20 14"/>
-                        <line x1="6" y1="14" x2="13" y2="24"/>
-                        <line x1="20" y1="14" x2="13" y2="24"/>
-                    </g>
-                    <circle cx="13" cy="10" r="3" fill="var(--accent-color)"/>
-                </svg>
             </button>
-            <button id="leaflet-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only" onclick="showSubpage('journey/map')" title="map">
-                <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
-                    <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
-                        <path d="M 6 14 A 8 8 0 1 1 20 14"/>
-                        <line x1="6" y1="14" x2="13" y2="24"/>
-                        <line x1="20" y1="14" x2="13" y2="24"/>
-                    </g>
-                    <circle cx="13" cy="10" r="3" fill="var(--accent-color)"/>
-                </svg>
-            </button>
-            <button id="connection-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only" onclick="showSubpage('journey')" title="details">
-                <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
-                    <g stroke-width="4" stroke="var(--accent-color)" stroke-linecap="round">
-                        <line x1="5" y1="5" x2="5" y2="21"/>
-                    </g>
-                    <g stroke-width="3" stroke="var(--foreground-color)" stroke-linecap="round">
-                        <line x1="12" y1="5" x2="22" y2="5"/>
-                        <line x1="12" y1="13" x2="22" y2="13"/>
-                        <line x1="12" y1="21" x2="22" y2="21"/>
-                    </g>
-                </svg>
-            </button>
-            <button type="button" class="hoverable selectable__text" onclick="showSubpage('settings')" title="settings">
+            <button type="button" class="hoverable selectable__text" onclick="showSubpage('settings', true)" title="settings">
                 <svg width="26px" height="26px">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
                         <path d="M 13,24 C 13,21 19,19 21,21"></path>
@@ -423,8 +425,9 @@
                     </g>
                     <circle cx="13" cy="13" r="3" stroke="var(--accent-color)" stroke-width="3" fill="none"/>
                 </svg>
+                <span class="desktop-only"><span class="de">Einstellungen</span><span class="en">Settings</span></span>
             </button>
-            <button type="button" class="hoverable selectable__text" onclick="showSubpage('about')" title="about">
+            <button type="button" class="hoverable selectable__text" onclick="showSubpage('about', true)" title="about">
                 <svg width="26px" height="26px">
                     <circle cx="13" cy="13" r="11" stroke="var(--foreground-color)" stroke-width="3" fill="none"/>
                     <g stroke="var(--accent-color)" stroke-width="4" fill="none" stroke-linecap="round">
@@ -432,6 +435,7 @@
                         <line x1="13" y1="8" x2="13" y2="8"/>
                     </g>
                 </svg>
+                <span class="desktop-only"><span class="de">Über/Impressum</span><span class="en">About/Imprint</span></span>
             </button>
         </div>
         <div class="tab-indicator-container indicator-line-container">
@@ -439,14 +443,14 @@
             <div class="line--accent indicator indicator__animation-to-right mobile-only" id="subpage-indicator--mobile" style="--animation--tab-indicator__start: 10%; --animation--tab-indicator__end: 10%"></div>
         </div>
     </div>
-    <div class="footer__info-panel flex-row valid-only desktop-only">
+    <div class="footer__info-panel flex-row valid-only--hide desktop-only">
         <div class="flex-column header">
             <div id="footer__info-panel__origin">Start</div>
             <div id="footer__info-panel__destination">Ziel</div>
         </div>
         <div class="line--vertical connection-line"></div>
         <i id="footer__info-panel__duration" class="align-center">30min</i>
-        <button id="share-button--desktop" class="subpage__button modal__share header hoverable" title="show map" onclick="shareJourney()">
+        <button id="share-button--desktop" class="flex-row align-center hoverable" title="share journey" onclick="shareJourney()">
             <svg xmlns="http://www.w3.org/2000/svg" width="26px" height="26px">
                 <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                     <line y2="13" x1="20" y1="6" x2="6"></line>
@@ -459,7 +463,7 @@
                 </g>
             </svg>
         </button>
-        <button class="subpage__button modal__refresh header hoverable" onclick="refreshJourneyAndInitMap()">
+        <button class="flex-row align-center hoverable" onclick="refreshJourneyAndInitMap()">
             <svg width="26px" height="26px">
                 <g stroke="var(--foreground-color)" stroke-linecap="round" fill="none" stroke-width="3">
                     <path d="M 17 6 A 8 8 0 1 0 21 13" stroke-width="3"></path>

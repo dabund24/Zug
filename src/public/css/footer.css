@@ -2,7 +2,7 @@ footer {
     backdrop-filter: var(--blur);
     -webkit-backdrop-filter: var(--blur);
     background-color: var(--background-color--opaque);
-    border-top: var(--line-width) solid var(--foreground-color--opaque);
+    border-top: var(--border);
     position: fixed;
     bottom: 0;
     padding: .5rem 1.5rem;
@@ -11,20 +11,28 @@ footer {
     align-items: center;
     min-width: 0;
     width: 100vw;
+    height: 5rem;
     box-sizing: border-box;
     gap: 2rem;
 }
 
+footer .tab-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+}
+
 .footer__buttons {
-    width: 27rem;
+    flex-shrink: 0;
 }
 
 footer .selectable__text {
     width: 100%;
-}
+    gap: 1rem;
 
-footer svg {
-    margin: auto;
+    svg, span {
+        margin: auto 0;
+    }
 }
 
 .footer__info-panel {
@@ -32,21 +40,62 @@ footer svg {
     gap: 1rem;
     margin-left: auto;
 
-    .line--vertical {
-        height: 1.7rem;
+    .header {
+        min-width: 0;
     }
 
     #footer__info-panel__origin, #footer__info-panel__destination {
         text-align: right;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .line--vertical {
+        height: 1.7rem;
+        flex-shrink: 0;
+    }
+
+    button {
+        padding: .5rem;
+        margin-right: -.5rem;
     }
 }
 
-.footer__journey-buttons > :first-child {
-    margin-left: auto;
+footer:not(.valid-journey) {
+    .valid-only--dim {
+        --accent-color: var(--foreground-color);
+        opacity: .5;
+    }
+    .valid-only--hide {
+        display: none;
+    }
 }
 
-footer:not(.valid-journey) .valid-only {
-    visibility: hidden;
+
+@media screen and (min-width: 1001px) {
+    footer {
+        top: 0;
+        bottom: unset;
+        border-top: unset;
+        border-bottom: var(--border);
+        background-color: var(--background-color);
+        backdrop-filter: none;
+    }
+
+    footer .selectable__text {
+        justify-content: start;
+    }
+
+    footer .tab-indicator-container {
+        margin: 0 calc(100% / 8 - var(--line-width) - 1rem - 13px) calc(-1 * var(--line-width)) calc(-100% / 8 + var(--line-width) + 1rem + 13px);
+    }
+}
+
+@media screen and (max-width: 1500px) {
+    .footer__info-panel > *:not(button) {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 1000px) {

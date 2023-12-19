@@ -10,6 +10,7 @@ import {
     unixToHoursStringShort
 } from "./util.js";
 import {
+    journeyBounds,
     resetJourneys,
     saveJourney,
     selectedJourney,
@@ -29,7 +30,7 @@ export function displayJourneyTree(tree: JourneyTree, stations: string[]) {
     journeyCounter = 0;
     resetJourneys(stations.length - 1)
 
-    addStationNames(stations)
+    //addStationNames(stations)
     const connectionsRootContainer = document.getElementById("connections-root-container")!
     connectionsRootContainer.replaceChildren()
 
@@ -49,8 +50,7 @@ export function addJourneyNode(node: JourneyNode, parent: HTMLElement | Document
     node.children.forEach(child => addJourneyNode(child, newParent))
 }
 
-function addStationNames(stations: string[]) {
-    console.log(stations)
+export function addStationNames(stations: string[]) {
     const target = document.getElementById("station-names")!
     target.replaceChildren()
     const template = (<HTMLTemplateElement>document.getElementById("station-name-template")).content
@@ -489,9 +489,14 @@ export function getWalkHTML(distance: number | undefined, time: string) {
     return distance + "m <span class='de'>Fußweg (ca.</span><span class='en'>by foot (approx.</span> " + time + ")"
 }
 
-export function showSubpage(newState: PageStateString) {
+export function showSubpage(newState: PageStateString, fromNavbar: boolean) {
     if (newState !== "journey" && newState !== "journey/map") {
         pushState(newState)
+        return
+    }
+
+    if (fromNavbar && journeyBounds[0] === -1) {
+        toast("warning", "Wähle zunächst eine Verbindung aus", "Select at least one journey first")
         return
     }
 

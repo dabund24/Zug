@@ -13,6 +13,7 @@
 
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
     background-color: var(--background-color--opaque);
+    backdrop-filter: var(--blur);
     color: var(--foreground-color);
     box-shadow: none;
     border-radius: var(--border-radius-large);
