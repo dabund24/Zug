@@ -5,8 +5,9 @@ import {
     setSelectedJourney
 } from "./memorizer.js";
 import {addClassToChildOfParent, dateDifference, timeToString, unixToHoursStringShort} from "./util.js";
-import {Journey} from "hafas-client";
+import {Journey, Station, Stop, Location, Leg} from "hafas-client";
 import {shareJourney} from "./main.js";
+import {legsShareTransfer} from "./map.js";
 
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)
@@ -146,6 +147,13 @@ export function mergeSelectedJourneys() {
     const refreshTokens: string[] = []
     for (let i = bounds[0]; i <= bounds[1]; i++) {
         const journey = getJourney(i, selectedJourneys[i])
+
+        const journeyOrigin = journey.legs[0].origin
+        const mergedJourneyDestination = mergedJourney.legs.at(-1)?.destination
+        if (mergedJourney.legs.length > 0 && !legsShareTransfer(mergedJourney.legs.at(-1)!, journey.legs[0]) && journeyOrigin !== undefined && mergedJourneyDestination !== undefined) {
+            mergedJourney.legs = mergedJourney.legs.concat(getMergingWalk(journeyOrigin, mergedJourneyDestination))
+        }
+
         mergedJourney.legs = mergedJourney.legs.concat(journey.legs)
         if (journey.refreshToken !== undefined) {
             refreshTokens.push(journey.refreshToken)
@@ -154,6 +162,10 @@ export function mergeSelectedJourneys() {
     mergedJourney.refreshToken = JSON.stringify(refreshTokens)
     console.log("merged")
     setSelectedJourney(mergedJourney)
+}
+
+function getMergingWalk(origin: Station | Stop | Location, destination: Station | Stop | Location): Leg {
+    return {origin: origin, destination: destination, walking: true}
 }
 
 function displayFooterInfoPanel(journeyBounds: [number, number]) {

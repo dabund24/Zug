@@ -258,7 +258,7 @@ function currentLocationToGeoJSON(location: Location | undefined, leg: Leg) {
     })
 }
 
-function legsShareTransfer(arrivalLeg: Leg, departureLeg: Leg) {
+export function legsShareTransfer(arrivalLeg: Leg, departureLeg: Leg) {
     if (arrivalLeg.stopovers === undefined || departureLeg.stopovers === undefined) {
         return false
     }

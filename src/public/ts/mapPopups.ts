@@ -17,8 +17,7 @@ export function getLinePopupHTML(leg: Leg) {
 }
 
 export function getWalkPopupHTML(walk: Leg, transferTime: string) {
-    const duration = timeToString(dateDifference(walk.departure!, walk.arrival!))
-    const walkHTML = getWalkHTML(walk.distance, duration)
+    const walkHTML = getWalkHTML(walk)
     return "<div class='flex-row'>" +
         "       <div class='popup__time'>" +
         "           <i>" + transferTime + "</i>" +

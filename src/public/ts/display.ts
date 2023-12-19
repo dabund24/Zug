@@ -189,8 +189,7 @@ function addWalkToModal(walk: Leg | undefined, legsTarget: HTMLElement, transfer
     setHTMLOfChildOfParent(toBeAdded, ".transfer-time", transferTime)
 
     if (walk !== undefined) {
-        const walkingTime = timeToString(dateDifference(walk.departure!, walk.arrival!));
-        setHTMLOfChildOfParent(toBeAdded, ".modal__walk__text", getWalkHTML(walk.distance, walkingTime))
+        setHTMLOfChildOfParent(toBeAdded, ".modal__walk__text", getWalkHTML(walk))
         if ((<any>walk.origin).location.latitude !== undefined && (<any>walk.destination).location.latitude !== undefined) {
             let originLocation: Location = (<any>walk.origin).location
             let destinationLocation: Location = (<any>walk.destination).location
@@ -485,8 +484,16 @@ export function getPlatformHTML(platform: number | string | undefined) {
     return "<span class='de'>Gl.</span><span class='en'>Pl.</span> " + platform
 }
 
-export function getWalkHTML(distance: number | undefined, time: string) {
-    return distance + "m <span class='de'>Fußweg (ca.</span><span class='en'>by foot (approx.</span> " + time + ")"
+export function getWalkHTML(walk: Leg) {
+    let walkingTime
+    if (walk.departure !== undefined && walk.arrival !== undefined) {
+        walkingTime = timeToString(dateDifference(walk.departure!, walk.arrival!));
+    }
+    if (walk.distance !== undefined && walkingTime !== undefined) {
+        return walk.distance + "m <span class='de'>Fußweg (ca.</span><span class='en'>by foot (approx.</span> " + walkingTime + ")"
+    } else {
+        return "<span class='de'>Fußweg</span><span class='en'>by foot</span>"
+    }
 }
 
 export function showSubpage(newState: PageStateString, fromNavbar: boolean) {
