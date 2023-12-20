@@ -1,4 +1,4 @@
-import {Journey, JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop} from "hafas-client";
+import {Journey, JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop, Location} from "hafas-client";
 import {
     addStationNames,
     displayJourneyModal,
@@ -9,7 +9,7 @@ import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageA
 import {
     getJourney,
     isArrival, journeyBounds,
-    journeyOptions, saveJourney, selectedJourney, selectedJourneys,
+    journeyOptions, saveJourney, searchInputValues, selectedJourney, selectedJourneys,
     setJourney,
     tryLockingJourneySearch,
     unlockJourneySearch
@@ -30,61 +30,23 @@ export async function findConnections() {
     }
     showLoadSlider();
     toast("neutral", "Suche Verbindungen", "Finding connections")
-    const fromStr = (<HTMLInputElement>document.getElementById("from__input")).value
-    const vias: string[] = []
-    const viaNames: string[] = []
-    for (let i = 0; i < 3; i++) {
-        const viaStr = (<HTMLInputElement>document.getElementById("via" + (i + 1) + "__input")).value
-        if (viaStr === "") {
-            continue
-        }
-
-        let via: (Station | Stop)[]
-        try {
-            via = await fetch("/api/stations?name=" + viaStr).then(res => res.json())
-            if (via.length === 0) {
-                toast("error", "Die Station \"" + viaStr + "\" gibt es nicht", "The station \"" + viaStr + "\" does not exist")
-                hideLoadSlider();
-                unlockJourneySearch()
-                return
-            }
-        } catch (err) {
-            toast("error", "Die Station \"" + viaStr + "\" gibt es nicht", "The station \"" + viaStr + "\" does not exist")
-            hideLoadSlider();
-            unlockJourneySearch()
-            return
-        }
-        const viaID = via[0].id
-        if (viaStr !== "" && viaID !== undefined) {
-            vias.push(viaID)
-            viaNames.push(via[0].name!)
-        }
-    }
-    const toStr = (<HTMLInputElement>document.getElementById("to__input")).value
-
-    const from: (Station | Stop)[] = await fetch("/api/stations?name=" + fromStr).then(res => res.json()).catch(() => {
-        toast("error", "Verbindung zu Server fehlgeschlagen", "Network error")
-        return []
-    })
-    if (from.length === 0) {
-        hideLoadSlider()
-        unlockJourneySearch()
-        return
-    }
-    const to: (Station | Stop)[] = await fetch("/api/stations?name=" + toStr).then(res => res.json())
-
-    const stationNames = [<string> from[0].name, viaNames, <string> to[0].name].flat()
-
-    addStationNames(stationNames)
     document.getElementById("connections-root-container")!.replaceChildren()
 
-    const fromID = from[0].id
-    const toID = to[0].id
+    const vias = searchInputValues.vias
+        .filter(station => station !== undefined)
 
-    if (fromID === undefined || toID === undefined) {
+    if (searchInputValues.from === undefined || searchInputValues.to === undefined) {
+        toast("error", "Start und Ziel müssen angegeben werden", "Specifying start and destination is mandatory")
         unlockJourneySearch()
-        return;
+        hideLoadSlider()
+        return
     }
+
+    const from = searchInputValues.from
+    const to = searchInputValues.to
+
+    const stationNames = [<string> from.name, vias.map(station => <string> station!.name), <string> to.name].flat()
+    addStationNames(stationNames)
 
     const isArrQuery = "&isArrival=" + isArrival
     let timeQuery = "";
@@ -96,7 +58,7 @@ export async function findConnections() {
 
     let treeResponse: ZugResponse
     try {
-        treeResponse = await fetch("/api/journeys?from=" + fromID + viasQuery + "&to=" + toID + timeQuery + isArrQuery + journeyOptionsQuery).then(res => res.json());
+        treeResponse = await fetch("/api/journeys?from=" + from.requestParameter + viasQuery + "&to=" + to.requestParameter + timeQuery + isArrQuery + journeyOptionsQuery).then(res => res.json());
     } catch (err) {
         toast("error", "Netzwerk-Fehler", "Network error")
         hideLoadSlider()
@@ -109,18 +71,15 @@ export async function findConnections() {
         let stationB: string
         if (treeResponse.content.stationA === -1) {
             stationA = "";
-        } else if (treeResponse.content.stationA === 0) {
-            stationA = <string> from[0].name
         } else {
-            stationA = viaNames[treeResponse.content.stationA - 1]
+            stationA = stationNames[treeResponse.content.stationA]
         }
         if (treeResponse.content.stationB === -1) {
             stationB = "";
-        } else if (treeResponse.content.stationB === viaNames.length + 1) {
-            stationB = <string> to[0].name
         } else {
-            stationB = viaNames[treeResponse.content.stationB - 1]
+            stationB = stationNames[treeResponse.content.stationB]
         }
+
         printErrorMessage(treeResponse.content.errorType, stationA, stationB)
         hideLoadSlider()
         unlockJourneySearch()

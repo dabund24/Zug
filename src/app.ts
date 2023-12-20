@@ -24,10 +24,10 @@ app.get(["/", "/settings", "/about", "/journey", "/journey/map"], (req, res) => 
 })
 
 app.get("/api/journeys", (req, res) => {
-    const from = <string>req.query.from;
-    const vias: string[] = JSON.parse(<string>req.query.vias);
-    const to = <string>req.query.to;
-    const options: JourneysOptions = JSON.parse(<string>req.query.options)
+    const from = JSON.parse(<string> req.query.from);
+    const vias: string[] = JSON.parse(<string> req.query.vias);
+    const to = JSON.parse(<string> req.query.to);
+    const options: JourneysOptions = JSON.parse(<string> req.query.options)
 
     let stops: string[] = [];
     stops.push(from)
@@ -59,7 +59,7 @@ app.get("/api/journeys", (req, res) => {
 })
 
 app.get("/api/stations", (req, res) => {
-    client.locations(<string>req.query.name, {results: 10, poi: false, addresses: false}).catch(() => {
+    client.locations(<string>req.query.name, {results: 10, poi: true, addresses: true}).catch(() => {
         return []
     }).then(stations => res.send(stations))
 })

@@ -1,4 +1,4 @@
-import {Journey} from "hafas-client";
+import {Journey, Station, Stop, Location} from "hafas-client";
 
 export type PageStateString = "" | "settings" | "about" | "journey" | "journey/map"
 
@@ -88,3 +88,16 @@ type ZugError = {
 }
 
 export type TreeMatrixPair = [JourneyTree, Journey[][]]
+
+export type SearchInputs = {
+    from: SearchObject | undefined,
+    vias: (SearchObject | undefined)[],
+    to: SearchObject | undefined
+}
+
+export type SearchObject = {
+    name: string,
+    requestParameter: string,
+    type: "station" | "address" | "poi"
+}
+

@@ -1,11 +1,11 @@
 import {setHTMLOfChildOfParent} from "./util.js";
-import {Station} from "hafas-client";
-/*import {createClient} from "hafas-client"
-import {profile as dbProfile} from "hafas-client/p/db/index.js"
+import {Location, Station, Stop} from "hafas-client";
+import {searchInputValues} from "./memorizer.js";
+import {SearchObject} from "./types";
 
-const client = createClient(dbProfile, "github.com/dabund24/Zug")*/
+
 let selectedSuggestion = 0
-let suggestions: string[] = []
+let suggestions: SearchObject[] = []
 
 export function setupSearch() {
     const searchInputs = <HTMLCollectionOf<HTMLInputElement>>document.getElementsByClassName("search--autocomplete")
@@ -45,7 +45,6 @@ export function setupSearch() {
 
 export async function refreshAutocomplete(text: string, inputIndex: number) {
     if (text === "") {
-        console.log("\"\"");
         (<HTMLElement>document.getElementsByClassName("search__icon--clear").item(inputIndex)).style.setProperty("display", "none")
         document.getElementsByClassName("search__suggestions").item(inputIndex)!.replaceChildren();
         suggestions = []
@@ -53,8 +52,8 @@ export async function refreshAutocomplete(text: string, inputIndex: number) {
         return;
     }
     (<HTMLElement>document.getElementsByClassName("search__icon--clear").item(inputIndex)).style.setProperty("display", "flex")
-    const stations: Station[] = await fetch("/api/stations?name=" + text).then(res => res.json())// client.locations(text, {results: 10, poi: false, addresses: false});
-    suggestions = stations.map(station => <string>station.name);
+    const searchResults = <(Station | Stop | Location)[]> await fetch("/api/stations?name=" + text).then(res => res.json())
+    suggestions = searchResults.map(result => parseStationStopLocation(result))
     displaySearchSuggestions(inputIndex);
 }
 
@@ -63,10 +62,11 @@ export function displaySearchSuggestions(inputIndex: number) {
     suggestionsTarget.replaceChildren()
     const template = (<HTMLTemplateElement>document.getElementById("suggestion-template")).content
     let toBeAdded
-    for (let suggestion of suggestions) {
+    for (let i = 0; i < suggestions.length; i++) {
+        const suggestion = suggestions[i]
         toBeAdded = document.importNode(template, true)
-        setHTMLOfChildOfParent(toBeAdded, ".option__text", suggestion)
-        toBeAdded.querySelector(".search__suggestion__click")!.setAttribute("value", suggestion);
+        setHTMLOfChildOfParent(toBeAdded, ".option__text", <string>suggestion.name)
+        toBeAdded.querySelector(".search__suggestion__click")!.setAttribute("value", "" + i);
         toBeAdded.querySelector(".option")!.addEventListener("click", function () {
             clickSuggestion(suggestion, inputIndex);
         });
@@ -80,14 +80,25 @@ export function displaySearchSuggestions(inputIndex: number) {
     }
 }
 
-export function clickSuggestion(suggestion: string, inputIndex: number) {
+export function clickSuggestion(suggestion: SearchObject | undefined, inputIndex: number) {
     const input = (<HTMLCollectionOf<HTMLInputElement>>document.getElementsByClassName("search__input")).item(inputIndex)!
-    input.value = suggestion;
-    if (suggestion === "") {
-        input.focus()
-        return
+    const suggestionText = suggestion === undefined ? "" : suggestion.name
+
+    input.value = suggestionText
+    switch (inputIndex) {
+        case 0:
+            searchInputValues.from = suggestion
+            break
+        case 4:
+            searchInputValues.to = suggestion
+            break
+        default:
+            searchInputValues.vias[inputIndex - 1] = suggestion
     }
-    refreshAutocomplete(suggestion, inputIndex);
+    refreshAutocomplete(suggestionText, inputIndex);
+    if (suggestion === undefined) {
+        input.focus()
+    }
 }
 
 function changeSuggestionFocus(suggestionContainers: HTMLCollection, toBeFocused: number) {
@@ -104,4 +115,14 @@ function changeSuggestionFocus(suggestionContainers: HTMLCollection, toBeFocused
     }
     selectedSuggestion = toBeFocused;
     suggestionContainers[selectedSuggestion].classList.add("option--focus");
+}
+
+function parseStationStopLocation(ssl: Station | Stop | Location): SearchObject {
+    if (ssl.type === "station" || ssl.type === "stop") {
+        return {name: ssl.name!, requestParameter: JSON.stringify(ssl.id), type: "station"}
+    } else if (ssl.poi) {
+        return {name: ssl.name!, requestParameter: JSON.stringify(ssl.id), type: "poi"}
+    } else {
+        return {name: ssl.address!, requestParameter: JSON.stringify(ssl), type: "address"}
+    }
 }

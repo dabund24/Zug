@@ -8,6 +8,7 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
     opt.routingMode = "REALTIME"
     opt.stopovers = true
     opt.polylines = true
+    opt.startWithWalking = true
     hafasClient = client;
     let journeysArray: Journey[][] = [];
 

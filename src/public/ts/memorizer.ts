@@ -1,6 +1,6 @@
-import {Journey, JourneysOptions} from "hafas-client";
+import {Journey, JourneysOptions, Station, Stop, Location} from "hafas-client";
 import {slideIndicator} from "./pageActions.js";
-import {Accessibility, Language, PageState, PageStateString, Product, WalkingSpeed} from "./types.js";
+import {Accessibility, Language, PageState, PageStateString, Product, SearchInputs, WalkingSpeed} from "./types.js";
 import {calculateJourneyBounds} from "./journeyMerge.js";
 
 let allowJourneySearch = true
@@ -15,6 +15,12 @@ export function tryLockingJourneySearch() {
 
 export function unlockJourneySearch() {
     allowJourneySearch = true
+}
+
+export const searchInputValues: SearchInputs = {
+    from: undefined,
+    vias: [],
+    to: undefined
 }
 
 let displayedJourneys: Journey[][] = []

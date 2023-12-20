@@ -190,16 +190,24 @@ function addWalkToModal(walk: Leg | undefined, legsTarget: HTMLElement, transfer
 
     if (walk !== undefined) {
         setHTMLOfChildOfParent(toBeAdded, ".modal__walk__text", getWalkHTML(walk))
-        if ((<any>walk.origin).location.latitude !== undefined && (<any>walk.destination).location.latitude !== undefined) {
-            let originLocation: Location = (<any>walk.origin).location
-            let destinationLocation: Location = (<any>walk.destination).location
-            const osmLink = "https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&from=" +
-                originLocation.latitude + "%2C" + originLocation.longitude + "&to=" +
-                destinationLocation.latitude + "%2C" + destinationLocation.longitude
-
-            toBeAdded.querySelector(".modal__walk__text")!.setAttribute("href", osmLink)
+        let originLocation: Location
+        let destinationLocation: Location
+        if (walk.origin?.type === "location") {
+            originLocation = walk.origin
+        } else {
+            originLocation = walk.origin?.location!
         }
 
+        if (walk.destination?.type === "location") {
+            destinationLocation = walk.destination
+        } else {
+            destinationLocation = walk.destination?.location!
+        }
+        const osmLink = "https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&from=" +
+            originLocation.latitude + "%2C" + originLocation.longitude + "&to=" +
+            destinationLocation.latitude + "%2C" + destinationLocation.longitude
+
+        toBeAdded.querySelector(".modal__walk__text")!.setAttribute("href", osmLink)
     } else {
         addClassToChildOfParent(toBeAdded, ".connection-line--walk", "connection-line--transfer")
     }
