@@ -121,7 +121,7 @@ function parseStationStopLocation(ssl: Station | Stop | Location): SearchObject 
     if (ssl.type === "station" || ssl.type === "stop") {
         return {name: ssl.name!, requestParameter: JSON.stringify(ssl.id), type: "station"}
     } else if (ssl.poi) {
-        return {name: ssl.name!, requestParameter: JSON.stringify(ssl.id), type: "poi"}
+        return {name: ssl.name!, requestParameter: JSON.stringify(ssl), type: "poi"}
     } else {
         return {name: ssl.address!, requestParameter: JSON.stringify(ssl), type: "address"}
     }

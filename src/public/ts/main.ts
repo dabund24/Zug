@@ -53,7 +53,7 @@ export async function findConnections() {
     if ((<HTMLInputElement>document.getElementById("time__input")).value !== "") {
         timeQuery = "&time=" + (<HTMLInputElement>document.getElementById("time__input")).value
     }
-    let viasQuery = "&vias=" + JSON.stringify(vias)
+    let viasQuery = "&vias=" + JSON.stringify(vias.map(via => via?.requestParameter))
     let journeyOptionsQuery = "&options=" + JSON.stringify(journeyOptions)
 
     let treeResponse: ZugResponse

@@ -25,7 +25,7 @@ app.get(["/", "/settings", "/about", "/journey", "/journey/map"], (req, res) => 
 
 app.get("/api/journeys", (req, res) => {
     const from = JSON.parse(<string> req.query.from);
-    const vias: string[] = JSON.parse(<string> req.query.vias);
+    const vias: string[] = JSON.parse(<string> req.query.vias).map((via: string) => JSON.parse(via));
     const to = JSON.parse(<string> req.query.to);
     const options: JourneysOptions = JSON.parse(<string> req.query.options)
 
