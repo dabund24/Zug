@@ -9,12 +9,13 @@
 }
 
 .search__input {
-    width: calc(100% - 64px);
+    width: calc(100% - 64px - 2rem);
     text-align: center;
+    text-overflow: ellipsis;
     border: none;
     outline: none;
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: calc(32px + 1rem);
+    padding-right: calc(32px + 1rem);
 }
 
 .search .line--regular {
@@ -112,6 +113,10 @@
 
 .option:hover .line--accent, .option--focus .line--accent {
     height: var(--line-length--vertical);
+}
+
+.option__text {
+    padding: 0 .5rem;
 }
 
 .arrow {
