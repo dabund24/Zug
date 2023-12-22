@@ -1,5 +1,5 @@
 import {Hint, Journey, Leg, Location, Status, StopOver, Warning} from "hafas-client";
-import {refreshJourney, refreshJourneyAndInitMap, shareJourney} from "./main.js";
+import {findConnections, refreshJourney, refreshJourneyAndInitMap, shareJourney} from "./main.js";
 import {
     addClassToChildOfParent,
     dateDifference,
@@ -10,9 +10,10 @@ import {
     unixToHoursStringShort
 } from "./util.js";
 import {
+    displayedStations,
     journeyBounds,
     resetJourneys,
-    saveJourney,
+    saveJourney, searchInputValues,
     selectedJourney,
     tryLockingJourneySearch,
     unlockJourneySearch
@@ -58,7 +59,15 @@ export function addStationNames(stations: string[]) {
 
     for (let i = 0; i < stations.length; i++) {
         toBeAdded = document.importNode(template, true)
-        setHTMLOfChildOfParent(toBeAdded, ".station-name__name", stations[i])
+        setHTMLOfChildOfParent(toBeAdded, ".station-name__name", stations[i]);
+        if (i !== 0 && i !== stations.length - 1) {
+            const index = i - 1;
+            const iconButton = (<HTMLButtonElement> toBeAdded.querySelector(".station-icon-container"))
+            iconButton.onclick = () => {
+                displayedStations.vias.splice(index, 1)
+                findConnections(false)
+            }
+        }
         target.append(toBeAdded)
     }
 }

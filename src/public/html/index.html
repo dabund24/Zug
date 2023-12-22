@@ -234,14 +234,7 @@
                 </div>
             </div>
             <div>
-                <button class="hoverable tab-row__tab header flex-row" onclick="findConnections()">
-                    <!--svg class="arrow" width="35px" height="27px">
-                        <g stroke-width="4" stroke-linecap="round">
-                            <line x1="5" y1="14" x2="30" y2="14" stroke="var(--foreground-color)"/>
-                            <line x1="20" y1="4" x2="30" y2="14" stroke="var(--accent-color)"/>
-                            <line x1="20" y1="24" x2="30" y2="14" stroke="var(--accent-color)"/>
-                        </g>
-                    </svg-->
+                <button class="hoverable tab-row__tab header flex-row" onclick="findConnections(true)">
                     <svg class="arrow" width="35px" height="35px" xmlns="http://www.w3.org/2000/svg">
                         <line x1="5" y1="30" x2="15" y2="20" stroke="var(--foreground-color)" stroke-width="4" stroke-linecap="round"/>
                         <circle cx="20" cy="15" r="10" stroke="var(--accent-color)" fill="var(--background-color)" stroke-width="3"/>
@@ -263,13 +256,15 @@
 
                 </div>
                 <div class="station-name__line-container flex-row">
-                    <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
-                        <circle cx='8' cy='8' r='6.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
-                        <circle cx='8' cy='8' r='2' fill='var(--product-color)'/>
-                    </svg>
-                    <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
-                        <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
-                    </svg>
+                    <button class="station-icon-container station-icon-container--via hoverable">
+                        <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                            <circle cx='8' cy='8' r='6.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                            <circle cx='8' cy='8' r='2' fill='var(--product-color)'/>
+                        </svg>
+                        <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                            <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                        </svg>
+                    </button>
                     <div class="station-name__connector flex-row">
 
                     </div>
@@ -288,11 +283,11 @@
         </template>
         <template id="station-name__line__stopover-template">
             <div class="station-name__connector__stopover flex-row">
-                <div class="station-icon--stopover-container tooltip tooltip--attribute">
+                <button class="station-icon-container station-icon-container--stopover hoverable tooltip tooltip--attribute">
                     <svg class="station-icon station-icon--stopover" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
                         <circle cx='6' cy='6' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
                     </svg>
-                </div>
+                </button>
                 <div class="station-name__connector__line-container tooltip tooltip--down tooltip--attribute">
                     <div class="line--regular connection-line"></div>
                 </div>

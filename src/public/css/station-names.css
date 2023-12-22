@@ -42,36 +42,43 @@
 }
 
 .station-name__line-container {
-    height: 16px;
+    height: calc(24px + 2 * var(--line-width));
     margin: 0 calc(var(--connection-width) / -2) 0 calc(var(--connection-width) / 2);
     .station-name__connector {
         width: 100%;
-        margin-left: -8px;
+        margin-left: -16px;
         visibility: hidden;
     }
     .station-name__connector__stopover {
         width: 100%;
     }
-    .station-name__connector__stopover:first-child .station-icon--stopover-container {
+    .station-name__connector__stopover:first-child .station-icon-container {
         visibility: hidden;
     }
     .station-name__connector__line-container {
         align-self: center;
-        margin-left: -8px;
+        margin-left: -16px;
         height: 100%;
         width: 100%;
         display: flex;
         align-items: center;
     }
-    .station-icon--stopover-container {
-        margin-left: -8px;
-        display: flex;
-    }
-    .station-icon {
+    .station-icon-container {
+        display: none;
+        margin-left: -16px;
+        padding: 4px;
+        border-radius: 100%;
         z-index: 1;
+        cursor: pointer;
+    }
+    .station-icon-container--via:hover svg {
+        --product-color: var(--foreground-color);
+    }
+    .station-icon-container--stopover:hover svg {
+        --foreground-color: var(--accent-color);
     }
     .station-icon--major, .station-icon--minor {
-        margin-left: -8px;
+        margin-left: 0;
         display: none;
     }
 }
@@ -119,6 +126,10 @@
     .station-name__durations__wait {
         display: inline;
     }
+}
+
+.station--selected .station-icon-container, .station--selected + * .station-icon-container {
+    display: flex;
 }
 
 :not(.station--selected) + .station--selected, .station--selected + :not(.station--selected) {
@@ -187,7 +198,7 @@
         display: none;
     }
     .station-name__line-container {
-        margin: 0 calc(2rem - 8px) 0 auto;
+        margin: 0 calc(2rem - 16px) 0 auto;
     }
     .station-name__durations {
         margin: 0;
@@ -200,6 +211,18 @@
         margin: 0;
         width: 0;
         overflow-x: clip;
+    }
+}
+
+.station-name-container:first-child, .station-name-container:last-child {
+    .station-icon-container--via:hover {
+        background-color: transparent;
+        border-color: transparent;
+        cursor: unset;
+        svg {
+            --product-color: inherit;
+            --foreground-color: inherit;
+        }
     }
 }
 

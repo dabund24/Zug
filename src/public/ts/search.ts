@@ -117,7 +117,7 @@ function changeSuggestionFocus(suggestionContainers: HTMLCollection, toBeFocused
     suggestionContainers[selectedSuggestion].classList.add("option--focus");
 }
 
-function parseStationStopLocation(ssl: Station | Stop | Location): SearchObject {
+export function parseStationStopLocation(ssl: Station | Stop | Location): SearchObject {
     if (ssl.type === "station" || ssl.type === "stop") {
         return {name: ssl.name!, requestParameter: JSON.stringify(ssl.id), type: "station"}
     } else if (ssl.poi) {

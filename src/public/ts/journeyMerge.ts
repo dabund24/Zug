@@ -1,13 +1,15 @@
 import {
-    getJourney, journeyBounds,
+    displayedStations,
+    getJourney, journeyBounds, searchInputValues,
     selectedJourney,
     selectedJourneys, setJourneyBounds,
     setSelectedJourney
 } from "./memorizer.js";
 import {addClassToChildOfParent, dateDifference, timeToString, unixToHoursStringShort} from "./util.js";
 import {Journey, Station, Stop, Location, Leg} from "hafas-client";
-import {shareJourney} from "./main.js";
+import {findConnections, shareJourney} from "./main.js";
 import {legsShareTransfer} from "./map.js";
+import {parseStationStopLocation} from "./search.js";
 
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)
@@ -80,12 +82,12 @@ export function selectJourney(depth: number, idInDepth: number) {
     }
 
     calculateJourneyBounds()
-    addStopoversToStationNames(stationNameContainer.querySelector(".station-name__connector")!, journey)
+    addStopoversToStationNames(stationNameContainer.querySelector(".station-name__connector")!, journey, depth)
     stationNameContainer.classList.add("station--selected")
     mergeSelectedJourneys()
 }
 
-function addStopoversToStationNames(target: HTMLElement, journey: Journey) {
+function addStopoversToStationNames(target: HTMLElement, journey: Journey, index: number) {
     target.replaceChildren()
     const template = (<HTMLTemplateElement> document.getElementById("station-name__line__stopover-template")).content
     journey.legs.forEach(leg => {
@@ -95,7 +97,15 @@ function addStopoversToStationNames(target: HTMLElement, journey: Journey) {
         const toBeAdded = document.importNode(template, true)
         const productClass = "connection-line--" + leg.line?.product!;
         addClassToChildOfParent(toBeAdded, ".connection-line", productClass)
-        toBeAdded.querySelector(".station-icon--stopover-container")!.setAttribute("data-tooltip-content", <string> leg.origin?.name)
+
+        const origin = parseStationStopLocation(leg.origin!)
+        const stopoverContainer = <HTMLButtonElement> toBeAdded.querySelector(".station-icon-container")!
+        stopoverContainer.setAttribute("data-tooltip-content", origin.name)
+        stopoverContainer.onclick = () => {
+            displayedStations.vias.splice(index, 0, origin)
+            findConnections(false)
+        }
+
         toBeAdded.querySelector(".station-name__connector__line-container")!.setAttribute("data-tooltip-content", <string> leg.line?.name)
         target.append(toBeAdded)
     })

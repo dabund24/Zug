@@ -7,6 +7,7 @@ import {
 } from "./display.js";
 import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
 import {
+    displayedStations,
     getJourney,
     isArrival, journeyBounds,
     journeyOptions, saveJourney, searchInputValues, selectedJourney, selectedJourneys,
@@ -23,7 +24,7 @@ setColor([2, "green"])
 setTheme([0, 'light'])
 setupSearch()
 
-export async function findConnections() {
+export async function findConnections(fromInput: boolean) {
     if (!tryLockingJourneySearch()) {
         toast("warning", "Mensch bist du ungeduldig :)", "Please wait")
         return
@@ -32,18 +33,20 @@ export async function findConnections() {
     toast("neutral", "Suche Verbindungen", "Finding connections")
     document.getElementById("connections-root-container")!.replaceChildren()
 
-    const vias = searchInputValues.vias
+    const requestValues = fromInput ? searchInputValues : displayedStations
+
+    const vias = requestValues.vias
         .filter(station => station !== undefined)
 
-    if (searchInputValues.from === undefined || searchInputValues.to === undefined) {
+    if (requestValues.from === undefined || requestValues.to === undefined) {
         toast("error", "Start und Ziel müssen angegeben werden", "Specifying start and destination is mandatory")
         unlockJourneySearch()
         hideLoadSlider()
         return
     }
 
-    const from = searchInputValues.from
-    const to = searchInputValues.to
+    const from = requestValues.from
+    const to = requestValues.to
 
     const stationNames = [<string> from.name, vias.map(station => <string> station!.name), <string> to.name].flat()
     addStationNames(stationNames)
@@ -88,6 +91,10 @@ export async function findConnections() {
 
     const journeyTree = treeResponse.content
 
+    displayedStations.from = from
+    displayedStations.vias = vias.slice(0)
+    displayedStations.to = to
+
     console.log(journeyTree)
 
     const connectionCount = displayJourneyTree(journeyTree, stationNames)
@@ -131,7 +138,7 @@ export async function refreshJourney(tokenString: string | undefined) {
             }).catch(() => {
                 toast("error", "Netzwerkfehler", "network error")
                 return null
-        })
+            })
         journeyPromises.push(journeyPromise)
     })
 

@@ -23,6 +23,12 @@ export const searchInputValues: SearchInputs = {
     to: undefined
 }
 
+export const displayedStations: SearchInputs = {
+    from: undefined,
+    vias: [],
+    to: undefined
+}
+
 let displayedJourneys: Journey[][] = []
 
 export let selectedJourneys: number[] = []
