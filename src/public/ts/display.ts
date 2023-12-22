@@ -1,5 +1,5 @@
 import {Hint, Journey, Leg, Location, Status, StopOver, Warning} from "hafas-client";
-import {findConnections, refreshJourney, refreshJourneyAndInitMap, shareJourney} from "./main.js";
+import {findConnections} from "./main.js";
 import {
     addClassToChildOfParent,
     dateDifference,
@@ -13,23 +13,24 @@ import {
     displayedStations,
     journeyBounds,
     resetJourneys,
-    saveJourney, searchInputValues,
+    saveJourney,
     selectedJourney,
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
-import {JourneyNode, JourneyTree, LoadFactor, PageStateString} from "./types.js";
+import {JourneyNode, JourneyTree, LoadFactor, PageStateString, SearchObject} from "./types.js";
 import {toast} from "./pageActions.js";
 import {initMap} from "./map.js";
 import {pushState} from "./routing.js";
 import {selectJourney} from "./journeyMerge.js";
+import {parseStationStopLocation} from "./search.js";
 
 let journeyCounter: number;
 const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content
 
-export function displayJourneyTree(tree: JourneyTree, stations: string[]) {
+export function displayJourneyTree(tree: JourneyTree, treedepth: number) {
     journeyCounter = 0;
-    resetJourneys(stations.length - 1)
+    resetJourneys(treedepth - 1)
 
     //addStationNames(stations)
     const connectionsRootContainer = document.getElementById("connections-root-container")!
@@ -38,7 +39,7 @@ export function displayJourneyTree(tree: JourneyTree, stations: string[]) {
     tree.children.forEach(node => {
         addJourneyNode(node, connectionsRootContainer)
     })
-    document.documentElement.setAttribute("data-vias", (stations.length - 2).toString())
+    document.documentElement.setAttribute("data-vias", (treedepth - 2).toString())
     return journeyCounter
 }
 
@@ -51,7 +52,7 @@ export function addJourneyNode(node: JourneyNode, parent: HTMLElement | Document
     node.children.forEach(child => addJourneyNode(child, newParent))
 }
 
-export function addStationNames(stations: string[]) {
+export function addStationNames(stations: SearchObject[]) {
     const target = document.getElementById("station-names")!
     target.replaceChildren()
     const template = (<HTMLTemplateElement>document.getElementById("station-name-template")).content
@@ -59,10 +60,11 @@ export function addStationNames(stations: string[]) {
 
     for (let i = 0; i < stations.length; i++) {
         toBeAdded = document.importNode(template, true)
-        setHTMLOfChildOfParent(toBeAdded, ".station-name__name", stations[i]);
+        setHTMLOfChildOfParent(toBeAdded, ".station-name__name", stations[i].name);
+        const iconButton = (<HTMLButtonElement> toBeAdded.querySelector(".station-icon-container"))
+        iconButton.classList.add(`mini-icon-container--${stations[i].type}`)
         if (i !== 0 && i !== stations.length - 1) {
             const index = i - 1;
-            const iconButton = (<HTMLButtonElement> toBeAdded.querySelector(".station-icon-container"))
             iconButton.onclick = () => {
                 displayedStations.vias.splice(index, 1)
                 findConnections(false)
@@ -148,12 +150,7 @@ export function displayJourneyModalFirstTime(lockingNecessary: boolean) {
         toast("warning", "Bitte warten...", "Please wait...")
         return
     }
-    const subpage = document.getElementById("connection-leaflet-subpage")!
-    const journey = selectedJourney;
-    //(<HTMLButtonElement>subpage.querySelector(".modal__title")).onclick = function () {shareJourney()};
-    //(<HTMLButtonElement>subpage.querySelector(".modal__refresh")).onclick = function(){refreshJourney(journey.refreshToken)};
-    //(<HTMLButtonElement>document.getElementById("leaflet-modal__refresh")).onclick = function(){refreshJourneyAndInitMap(journey.refreshToken)};
-    displayJourneyModal(journey)
+    displayJourneyModal(selectedJourney)
 
     if (lockingNecessary) {
         unlockJourneySearch()
@@ -174,18 +171,27 @@ export function displayJourneyModal(journey: Journey) {
     const legs = journey.legs
 
     for (let i = 0; i < legs.length; i++) {
-        if (legs[i].walking) {
+        const leg = legs[i]
+        if (leg.walking) {
             let transferTime = "";
             if (legs[i - 1] !== undefined && legs[i + 1] !== undefined) {
                 transferTime = timeToString(dateDifference(legs[i - 1].arrival!, legs[i + 1].departure!));
+            } else {
+                transferTime = timeToString(dateDifference(leg.departure!, leg.arrival!))
             }
-            addWalkToModal(legs[i], legsTarget, transferTime)
+            if (leg.origin?.type === "location") {
+                addLocationToModal(parseStationStopLocation(leg.origin), legsTarget, unixToHoursStringShort(legs[i].departure!), undefined)
+            }
+            addWalkToModal(leg, legsTarget, transferTime)
+            if (leg.destination?.type === "location") {
+                addLocationToModal(parseStationStopLocation(leg.destination), legsTarget, undefined, unixToHoursStringShort(leg.arrival!))
+            }
         } else {
-            if (legs[i - 1] !== undefined && legs[i] !== undefined && !legs[i - 1].walking) {
-                let transferTime = timeToString(dateDifference(legs[i - 1].arrival!, legs[i].departure!));
+            if (legs[i - 1] !== undefined && !legs[i - 1].walking) {
+                let transferTime = timeToString(dateDifference(legs[i - 1].arrival!, leg.departure!));
                 addWalkToModal(undefined, legsTarget, transferTime)
             }
-            addLegToModal(legs[i], legsTarget)
+            addLegToModal(leg, legsTarget)
             legCounter++;
         }
     }
@@ -220,6 +226,23 @@ function addWalkToModal(walk: Leg | undefined, legsTarget: HTMLElement, transfer
     } else {
         addClassToChildOfParent(toBeAdded, ".connection-line--walk", "connection-line--transfer")
     }
+
+    legsTarget.append(toBeAdded)
+}
+
+function addLocationToModal(location: SearchObject, legsTarget: HTMLElement, arrival: string | undefined, departure: string | undefined) {
+    const locationTemplate = (<HTMLTemplateElement>document.getElementById("modal__location-template")!).content
+    const toBeAdded = document.importNode(locationTemplate, true)
+
+    if (arrival !== undefined) {
+        setHTMLOfChildOfParent(toBeAdded, ".time--arrival", arrival)
+    }
+    if (departure !== undefined) {
+        setHTMLOfChildOfParent(toBeAdded, ".time--departure", departure)
+    }
+
+    addClassToChildOfParent(toBeAdded, ".mini-icon-container", `mini-icon-container--${location.type}`)
+    setHTMLOfChildOfParent(toBeAdded, ".modal__location__text", location.name)
 
     legsTarget.append(toBeAdded)
 }

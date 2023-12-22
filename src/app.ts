@@ -53,7 +53,6 @@ app.get("/api/journeys", (req, res) => {
     }
 
     getJourneys(stops, options, client).then(journeys => {
-        //console.log(journeys[1][1].length + " afterw")
         res.send(journeys)
     })
 })

@@ -460,6 +460,19 @@ p {
     }
 }
 
+.mini-icon-container > * {
+    display: none;
+}
+.mini-icon-container--station .mini-icon--station {
+    display: block;
+}
+.mini-icon-container--poi .mini-icon--poi {
+    display: block;
+}
+.mini-icon-container--address .mini-icon--address {
+    display: block;
+}
+
 @media screen and (max-width: 1500px) {
 
     :root {

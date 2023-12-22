@@ -1,4 +1,4 @@
-import {JourneyNode, JourneyTree, PageState, PageStateString} from "./types";
+import {JourneyNode, JourneyTree, PageState, PageStateString, SearchObject} from "./types";
 import {
     addStationNames,
     displayJourneyModalFirstTime,
@@ -17,6 +17,7 @@ import {
 import {hideLoadSlider, showLoadSlider, slideIndicator, toast} from "./pageActions.js";
 import {Journey, JourneyWithRealtimeData} from "hafas-client";
 import {calculateJourneyBounds, mergeSelectedJourneys, selectJourney} from "./journeyMerge.js";
+import {parseStationStopLocation} from "./search.js";
 
 const path = <PageStateString>window.location.pathname.substring(1)
 const journeyQuery = new URLSearchParams(window.location.search).get("journey")
@@ -128,15 +129,15 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
     }
 
     // write journeys
-    const stationNames: string[] = []
+    const stations: SearchObject[] = []
     resetJourneys(journeys.length)
     for (let i = 0; i < journeys.length; i++) {
         const journey = journeys[i]
         if (journey !== null) {
             setJourney(i, selectedJourneys[i], journey)
-            stationNames.push(<string>journey.legs[0].origin?.name)
+            stations.push(parseStationStopLocation(journey.legs[0].origin!))
             if (i === journeys.length - 1) {
-                stationNames.push(<string>journey.legs[journey.legs.length - 1].destination?.name)
+                stations.push(parseStationStopLocation(journey.legs.at(-1)?.destination!))
             }
         } else {
             hideLoadSlider()
@@ -145,8 +146,8 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
         }
     }
 
-    addStationNames(stationNames)
-    displayJourneyTree(getSimpleJourneyTree(<Journey[]>journeys), stationNames)
+    addStationNames(stations)
+    displayJourneyTree(getSimpleJourneyTree(<Journey[]>journeys), stations.length)
     for (let i = 0; i < journeys.length; i++) {
         selectJourney(i, 0)
     }

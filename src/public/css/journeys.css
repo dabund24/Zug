@@ -238,6 +238,20 @@
     padding: 0 calc(1rem + 6px);
 }
 
+.modal__location {
+    margin-right: auto;
+    .time {
+        width: auto;
+        margin: 0;
+    }
+    .modal__trip__l {
+        margin: auto 0;
+    }
+    .mini-icon-container {
+        margin: -8px 0;
+    }
+}
+
 .modal__trip__element__first-last-child {
     height: 3.5rem;
     align-items: center;

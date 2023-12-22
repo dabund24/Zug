@@ -63,6 +63,18 @@
         <template id="suggestion-template">
             <div class="search__suggestion option flex-row padded-top-bottom">
                 <div class="line--accent"></div>
+                <div class="option__icon mini-icon-container">
+                    <svg class="mini-icon--station" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                        <circle cx="8" cy="8" r="6.5" stroke="var(--product-color)" stroke-width="3" fill="var(--background-color)"/>
+                        <circle cx="8" cy="8" r="2" fill="var(--product-color)"/>
+                    </svg>
+                    <svg class="mini-icon--poi" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                        <polyline points="1.5,13.5 14.5,13.5 8,2.25 1.5,13.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                    </svg>
+                    <svg class="mini-icon--address" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="2,2 2,14 14,14 14,2 2,2" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                    </svg>
+                </div>
                 <div class="option__text center"></div>
                 <input class="search__suggestion__click" type="hidden">
             </div>
@@ -256,13 +268,21 @@
 
                 </div>
                 <div class="station-name__line-container flex-row">
-                    <button class="station-icon-container station-icon-container--via hoverable">
-                        <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                    <button class="mini-icon-container station-icon-container station-icon-container--via hoverable">
+                        <span class="mini-icon--station">
+                            <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
                             <circle cx='8' cy='8' r='6.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
                             <circle cx='8' cy='8' r='2' fill='var(--product-color)'/>
                         </svg>
                         <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
                             <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                        </svg>
+                        </span>
+                        <svg class="mini-icon--poi" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                            <polyline points="1.5,13.5 14.5,13.5 8,2.25 1.5,13.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                        </svg>
+                        <svg class="mini-icon--address" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="2,2 2,14 14,14 14,2 2,2" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
                         </svg>
                     </button>
                     <div class="station-name__connector flex-row">
@@ -692,6 +712,31 @@
                 <a class="modal__trip__element modal__walk__text modal__trip__element__middle-child" target="_blank">
 
                 </a>
+            </div>
+        </template>
+        <template id="modal__location-template">
+            <div class="modal__location flex-row padded-top-bottom">
+                <div class="modal__trip__element modal__trip__ltl time flex-column">
+                    <div class="time--arrival flex-column">
+
+                    </div>
+                    <div class="time--departure flex-column">
+
+                    </div>
+                </div>
+                <div class="modal__trip__element modal__trip__l flex-column">
+                    <div class="mini-icon-container">
+                        <svg class="mini-icon--poi" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                            <polyline points="1.5,13.5 14.5,13.5 8,2.25 1.5,13.5" stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                        </svg>
+                        <svg class="mini-icon--address" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="2,2 2,14 14,14 14,2 2,2" stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="modal__trip__element modal__location__text modal__trip__element__middle-child header">
+
+                </div>
             </div>
         </template>
     </div>

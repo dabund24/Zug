@@ -1,4 +1,4 @@
-import {setHTMLOfChildOfParent} from "./util.js";
+import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util.js";
 import {Location, Station, Stop} from "hafas-client";
 import {searchInputValues} from "./memorizer.js";
 import {SearchObject} from "./types";
@@ -64,8 +64,9 @@ export function displaySearchSuggestions(inputIndex: number) {
     let toBeAdded
     for (let i = 0; i < suggestions.length; i++) {
         const suggestion = suggestions[i]
-        toBeAdded = document.importNode(template, true)
-        setHTMLOfChildOfParent(toBeAdded, ".option__text", <string>suggestion.name)
+        toBeAdded = document.importNode(template, true);
+        addClassToChildOfParent(toBeAdded, ".mini-icon-container", `mini-icon-container--${suggestion.type}`)
+        setHTMLOfChildOfParent(toBeAdded, ".option__text", suggestion.name)
         toBeAdded.querySelector(".search__suggestion__click")!.setAttribute("value", "" + i);
         toBeAdded.querySelector(".option")!.addEventListener("click", function () {
             clickSuggestion(suggestion, inputIndex);

@@ -15,7 +15,7 @@ import {
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
-import {PageState, PageStateString, ZugErrorType, ZugResponse} from "./types.js";
+import {PageState, PageStateString, SearchObject, ZugErrorType, ZugResponse} from "./types.js";
 import {setupSearch} from "./search.js";
 import {initMap} from "./map.js";
 import {mergeSelectedJourneys} from "./journeyMerge.js";
@@ -36,7 +36,7 @@ export async function findConnections(fromInput: boolean) {
     const requestValues = fromInput ? searchInputValues : displayedStations
 
     const vias = requestValues.vias
-        .filter(station => station !== undefined)
+        .filter((station): station is SearchObject => station !== undefined)
 
     if (requestValues.from === undefined || requestValues.to === undefined) {
         toast("error", "Start und Ziel müssen angegeben werden", "Specifying start and destination is mandatory")
@@ -48,8 +48,8 @@ export async function findConnections(fromInput: boolean) {
     const from = requestValues.from
     const to = requestValues.to
 
-    const stationNames = [<string> from.name, vias.map(station => <string> station!.name), <string> to.name].flat()
-    addStationNames(stationNames)
+    const stations = [from, vias, to].flat()
+    addStationNames(stations)
 
     const isArrQuery = "&isArrival=" + isArrival
     let timeQuery = "";
@@ -75,12 +75,12 @@ export async function findConnections(fromInput: boolean) {
         if (treeResponse.content.stationA === -1) {
             stationA = "";
         } else {
-            stationA = stationNames[treeResponse.content.stationA]
+            stationA = stations[treeResponse.content.stationA]!.name
         }
         if (treeResponse.content.stationB === -1) {
             stationB = "";
         } else {
-            stationB = stationNames[treeResponse.content.stationB]
+            stationB = stations[treeResponse.content.stationB]!.name
         }
 
         printErrorMessage(treeResponse.content.errorType, stationA, stationB)
@@ -97,7 +97,7 @@ export async function findConnections(fromInput: boolean) {
 
     console.log(journeyTree)
 
-    const connectionCount = displayJourneyTree(journeyTree, stationNames)
+    const connectionCount = displayJourneyTree(journeyTree, stations.length)
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + " connections")
     hideLoadSlider()
     unlockJourneySearch()
