@@ -7,10 +7,9 @@ import {
     showSubpage
 } from "./display.js";
 import {
-    journeyOptions,
     resetJourneys, selectedJourney,
     selectedJourneys,
-    setJourney,
+    setJourney, settings,
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
@@ -103,7 +102,7 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
     const journeyPromises: Promise<Journey | null>[] = []
     // fetch journeys for all tokens
     tokens.forEach(token => {
-        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language)
+        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + settings.journeysSettings.options.language)
             .then(res => res.json())
             .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
                 const refreshed = refreshedResponse[0]

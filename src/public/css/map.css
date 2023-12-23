@@ -111,7 +111,7 @@
     }
 }
 
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: 1700px) {
     .map__popup {
         font-size: 14px;
     }

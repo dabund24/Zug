@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="" data-color="" data-blur="false" data-vias="0" data-state="">
+<html lang="de" data-theme="" data-color="" data-vias="0" data-state="">
 
 <head>
     <meta charset="UTF-8"/>
@@ -23,15 +23,14 @@
 </head>
 <body>
 <script type="module">
-    import {setColor, setTheme, setBlurEffect, setORMLayerAppearance} from "/ts/pageActions.js";
+    import {setColor, setTheme, setORMLayerAppearance} from "/ts/pageActions.js";
     import {findConnections, shareJourney, refreshJourneyAndInitMap, refreshJourney} from "/ts/main.js";
     import {showSubpage, showLeafletModal, displayJourneyModalFirstTime} from "/ts/display.js"
-    import {setDepArr, setLanguage, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "/ts/memorizer.js";
+    import {setDepArr, setLanguage, setSearchType, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "/ts/memorizer.js";
     import {clickSuggestion} from "/ts/search.js";
 
     window.setColor = setColor;
     window.setTheme = setTheme;
-    window.setBlurEffect = setBlurEffect;
     window.setORMLayerAppearance = setORMLayerAppearance;
 
     window.findConnections = findConnections;
@@ -42,6 +41,8 @@
     window.showSubpage = showSubpage;
     window.showLeafletModal = showLeafletModal;
     window.displayJourneyModalFirstTime = displayJourneyModalFirstTime;
+
+    window.setSearchType = setSearchType;
 
     window.setDepArr = setDepArr;
     window.setLanguage = setLanguage;
@@ -782,6 +783,9 @@
             </span>
         </header>
         <div id="settings" class="flex-column">
+            <div class="header padded-top-bottom">
+                <span class="de">Anzeige</span><span class="en">View</span>
+            </div>
             <div class="setting flex-row-column padded-top-bottom">
                 <div class="setting__name"><span class="de">Farbschema</span><span class="en">Color scheme</span></div>
                 <div class="setting__action flex-column">
@@ -848,24 +852,6 @@
             </div>
             <div class="setting flex-row-column padded-top-bottom">
                 <div class="setting__name">
-                    <span class="de">Unschärfe-Effekt</span><span class="en">Blur effect</span>
-                </div>
-                <div class="setting__action flex-column">
-                    <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setBlurEffect(true)">
-                            <span class="de">aktivieren</span><span class="en">activate</span>
-                        </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setBlurEffect(false)">
-                            <span class="de">deaktivieren</span><span class="en">deactivate</span>
-                        </button>
-                    </div>
-                    <div class="tab-indicator-container indicator-line-container">
-                        <div class="line--accent indicator indicator__animation-to-right" id="blur-indicator" style="--animation--tab-indicator__start: 75%; --animation--tab-indicator__end: 75%"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="setting flex-row-column padded-top-bottom">
-                <div class="setting__name">
                     <span class="de">OpenRailwayMap-Ebene</span><span class="en">OpenRailwayMap layer</span>
                 </div>
                 <div class="setting__action flex-column">
@@ -899,6 +885,33 @@
                         <div class="line--accent indicator indicator__animation-to-right" id="language-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
                     </div>
                 </div>
+            </div>
+            <div class="header padded-top-bottom">
+                <span class="de">Suchvorschläge</span><span class="en">Search Suggestions</span>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Adressen/POI</span><span class="en">Addresses/POI</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="flex-row">
+                        <div id="search-type-indicator__addresses" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setSearchType('addresses')">
+                                <span class="de">Adressen</span><span class="en">addresses</span>
+                            </button>
+                            <div class="line--accent"></div>
+                        </div>
+                        <div id="search-type-indicator__poi" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
+                            <button class="hoverable selectable__text tab-row__tab" onclick="setSearchType('poi')">
+                                POI
+                            </button>
+                            <div class="line--accent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header padded-top-bottom">
+                <span class="de">Verbindungen</span><span class="en">Connections</span>
             </div>
             <div class="setting flex-row-column padded-top-bottom">
                 <div class="setting__name">

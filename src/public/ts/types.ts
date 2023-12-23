@@ -1,10 +1,23 @@
-import {Journey, Station, Stop, Location} from "hafas-client";
+import {Journey, Station, Stop, Location, JourneysOptions, LocationsOptions} from "hafas-client";
 
 export type PageStateString = "" | "settings" | "about" | "journey" | "journey/map"
 
 export type PageState = {
     state: PageStateString
     journeyID?: string
+}
+
+export type Settings = {
+    displaySettings: {
+        theme: Theme,
+        color: Color,
+        ormLayer: boolean
+    }
+    locationsSettings: LocationsOptions
+    journeysSettings: {
+        isArrival: 0 | 1
+        options: JourneysOptions
+    }
 }
 
 export type Color =

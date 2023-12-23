@@ -1,6 +1,6 @@
 import {Journey, JourneysOptions, Station, Stop, Location} from "hafas-client";
-import {slideIndicator} from "./pageActions.js";
-import {Accessibility, Language, PageState, PageStateString, Product, SearchInputs, WalkingSpeed} from "./types.js";
+import {setColor, setTheme, slideIndicator} from "./pageActions.js";
+import {Settings, Accessibility, Language, PageState, PageStateString, Product, SearchInputs, WalkingSpeed} from "./types.js";
 import {calculateJourneyBounds} from "./journeyMerge.js";
 
 let allowJourneySearch = true
@@ -46,7 +46,6 @@ export function saveJourney(depth: number, journey: Journey) {
 }
 
 export function getJourney(depth: number, idInDepth: number) {
-    /*selectedJourneys = [depth, idInDepth];*/
     return displayedJourneys[depth][idInDepth];
 }
 
@@ -64,6 +63,46 @@ export function setSelectedJourney(journey: Journey) {
     selectedJourney = journey
 }
 
+export const settings: Settings = {
+    displaySettings: {
+        theme: [0, "light"],
+        color: [2, "green"],
+        ormLayer:false
+    },
+    locationsSettings: {
+        language: "de",
+        poi: true,
+        addresses: true
+    },
+    journeysSettings: {
+        isArrival: 0,
+        options: {
+            language: "de",
+            results: 10,
+            transfers: -1,
+            transferTime: 0,
+            products: {
+                nationalExpress: true,
+                national: true,
+                regionalExpress: true,
+                regional: true,
+                suburban: true,
+                subway: true,
+                tram: true,
+                bus: true,
+                ferry: true,
+                taxi: true
+            },
+            accessibility: "none",
+            walkingSpeed: "normal",
+            bike: false
+        }
+    }
+}
+
+setColor([2, "green"])
+setTheme([0, 'light'])
+
 export let isArrival = 0;
 
 export function setDepArr(isArr: number) {
@@ -75,60 +114,49 @@ export function setDepArr(isArr: number) {
     isArrival = isArr
 }
 
-export let journeyOptions: JourneysOptions = {
-    language: "de",
-    results: 10,
-    transfers: -1,
-    transferTime: 0,
-    products: {
-        nationalExpress: true,
-        national: true,
-        regionalExpress: true,
-        regional: true,
-        suburban: true,
-        subway: true,
-        tram: true,
-        bus: true,
-        ferry: true,
-        taxi: true
-    },
-    accessibility: "none",
-    walkingSpeed: "normal",
-    bike: false
-}
-
 export function setLanguage(language: Language) {
     const index = (value: Language) => ({
         "de": 0,
         "en": 1
     })[value]
-    const start = index(<Language>journeyOptions.language)
+    const start = index(<Language>settings.journeysSettings.options.language)
     const end = index(language)
     slideIndicator("language-indicator", 2, start, end)
     document.documentElement.setAttribute("lang", language)
 
-    journeyOptions.language = language
+    settings.journeysSettings.options.language = language
+    settings.locationsSettings.language = language
+}
+
+export function setSearchType(type: "addresses" | "poi") {
+    const searchTypeButton = document.getElementById("search-type-indicator__" + type)!
+    if (settings.locationsSettings![type]) {
+        searchTypeButton.classList.remove("selectable--horizontal--active")
+        settings.locationsSettings[type] = false
+    } else {
+        searchTypeButton.classList.add("selectable--horizontal--active")
+        settings.locationsSettings[type] = true
+    }
 }
 
 export function setProduct(product: Product) {
-    console.log(product)
     const productButton = document.getElementById("product-indicator__" + product)!
-    if (journeyOptions.products![product]) {
+    if (settings.journeysSettings.options.products![product]) {
         productButton.classList.remove("selectable--horizontal--active")
-        journeyOptions.products![product] = false
+        settings.journeysSettings.options.products![product] = false
     } else {
         productButton.classList.add("selectable--horizontal--active")
-        journeyOptions.products![product] = true
+        settings.journeysSettings.options.products![product] = true
     }
 }
 
 export function setTransfers(transfers: number) {
     const index = (value: number) => value === -1 ? 7 : value
-    const start = index(journeyOptions.transfers!)
+    const start = index(settings.journeysSettings.options.transfers!)
     const end = index(transfers)
     slideIndicator("transfers-indicator", 8, start, end)
 
-    journeyOptions.transfers = transfers
+    settings.journeysSettings.options.transfers = transfers
 }
 
 export function setTransferTime(transferTime: number) {
@@ -142,11 +170,11 @@ export function setTransferTime(transferTime: number) {
         30: 6,
         40: 7
     })[value] || 0
-    const start = index(journeyOptions.transferTime!)
+    const start = index(settings.journeysSettings.options.transferTime!)
     const end = index(transferTime)
     slideIndicator("transfer-time-indicator", 8, start, end)
 
-    journeyOptions.transferTime = transferTime
+    settings.journeysSettings.options.transferTime = transferTime
 }
 
 
@@ -157,11 +185,11 @@ export function setAccessibility(accessibility: Accessibility) {
         "partial": 1,
         "complete": 2
     })[value]
-    const start = index(<Accessibility>journeyOptions.accessibility)
+    const start = index(<Accessibility> settings.journeysSettings.options.accessibility)
     const end = index(accessibility)
     slideIndicator("accessibility-indicator", 3, start, end)
 
-    journeyOptions.accessibility = accessibility
+    settings.journeysSettings.options.accessibility = accessibility
 }
 
 export function setWalkingSpeed(walkingSpeed: WalkingSpeed) {
@@ -170,17 +198,17 @@ export function setWalkingSpeed(walkingSpeed: WalkingSpeed) {
         "normal": 1,
         "fast": 2
     })[value]
-    const start = index(<WalkingSpeed>journeyOptions.walkingSpeed)
+    const start = index(<WalkingSpeed> settings.journeysSettings.options.walkingSpeed)
     const end = index(walkingSpeed)
     slideIndicator("walking-speed-indicator", 3, start, end)
 
-    journeyOptions.walkingSpeed = walkingSpeed
+    settings.journeysSettings.options.walkingSpeed = walkingSpeed
 }
 
 export function setBike(bike: boolean) {
-    const start = +!!journeyOptions.bike
+    const start = +!!settings.journeysSettings.options.bike
     const end: number = +bike
     slideIndicator("bike-indicator", 2, start, end)
 
-    journeyOptions.bike = bike
+    settings.journeysSettings.options.bike = bike
 }

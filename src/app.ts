@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import {fileURLToPath} from 'url';
-import {createClient, JourneysOptions} from "hafas-client"
+import {createClient, JourneysOptions, LocationsOptions} from "hafas-client"
 import {profile as dbProfile} from "hafas-client/p/db/index.js"
 
 import {getJourneys} from "./api/journeys.js"
@@ -58,13 +58,15 @@ app.get("/api/journeys", (req, res) => {
 })
 
 app.get("/api/stations", (req, res) => {
-    client.locations(<string>req.query.name, {results: 10, poi: true, addresses: true}).catch(() => {
+    const options: LocationsOptions = JSON.parse(<string> req.query.options)
+    options.results = 10
+    client.locations(<string> req.query.name, options).catch(() => {
         return []
     }).then(stations => res.send(stations))
 })
 
 app.get("/api/refresh", (req, res) => {
-    client.refreshJourney?.(<string>req.query.token, {stopovers: true, language: <string>req.query.lang, polylines: true})
+    client.refreshJourney?.(<string> req.query.token, {stopovers: true, language: <string>req.query.lang, polylines: true})
         .catch(() => null)
         .then(refreshed => res.send([refreshed]))
 })

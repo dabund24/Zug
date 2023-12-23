@@ -39,8 +39,8 @@
     opacity: 1;
 }
 
-@media screen and (max-width: 1000px) {
-    .tooltip:hover:after {
+@media screen and (max-width: 1700px) {
+    .tooltip:hover::after, .tooltip:active::after {
         font-size: 16px;
     }
 }

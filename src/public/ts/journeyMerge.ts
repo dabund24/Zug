@@ -114,9 +114,7 @@ function addStopoversToStationNames(target: HTMLElement, journey: Journey, index
 export function calculateJourneyBounds(): [number, number] {
     let start = -1
     let end = -1
-    console.log("len: " + selectedJourneys.length)
     for (let i = 0; i < selectedJourneys.length; i++) {
-        console.log(selectedJourneys[i])
         if (start === -1 && end === -1 &&  selectedJourneys[i] !== -1) {
             start = i
         } else if (start !== -1 && end === -1 && selectedJourneys[i] === -1) {
@@ -132,8 +130,6 @@ export function calculateJourneyBounds(): [number, number] {
     }
 
     const shareButton = <HTMLButtonElement>document.getElementById("share-button--desktop")!
-    const modalButton = <HTMLButtonElement>document.getElementById("connection-subpage-button")!
-    const connectionLeafletButton = <HTMLButtonElement>document.getElementById("connection-leaflet-subpage-button")!
     if (start === -1) { // invalid bounds
         document.querySelector("footer")!.classList.remove("valid-journey")
     } else {

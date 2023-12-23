@@ -1,5 +1,6 @@
 import {Color, Language, Theme, ToasterType} from "./types.js";
 import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util.js";
+import {settings} from "./memorizer.js";
 
 export function slideIndicator(indicatorID: string, selectableCount: number, start: number, end: number): void {
     const indicator = document.getElementById(indicatorID)!
@@ -27,44 +28,34 @@ export function hideLoadSlider(): void {
 }
 
 export function setTheme(theme: Theme) {
-    if (document.documentElement.getAttribute("data-theme") === theme[1]) {
+    if (settings.displaySettings.theme[1] === theme[1]) {
         return
     }
     slideIndicator("theme-indicator", 2, theme[0] === 0 ? 1 : 0, theme[0])
 
     document.documentElement.setAttribute("data-theme", theme[1]);
-    //fetch("/setCookie?key=theme&value=" + theme)
+    settings.displaySettings.theme = theme
 }
 
-let currentColor: Color = [0, "red"]
 export function setColor(color: Color) {
+    const currentColor = settings.displaySettings.color
     if (color === currentColor) {
         return;
     }
 
     slideIndicator("color-indicator", 6, currentColor[0], color[0])
-
-    currentColor = color;
+    settings.displaySettings.color = color
     document.documentElement.setAttribute("data-color", color[1]);
-    //fetch("/setcookie?key=color&value=" + color)
-}
-
-export function setBlurEffect(blur: boolean) {
-    if ("" + blur === document.documentElement.getAttribute("data-blur")) {
-        return
-    }
-
-    document.documentElement.setAttribute("data-blur", "" + blur)
-    slideIndicator("blur-indicator", 2, blur ? 1 : 0, blur ? 0 : 1)
 }
 
 export function setORMLayerAppearance(show: boolean) {
-    if ("" + show === document.getElementById("map")!.getAttribute("data-orm")) {
+    if (show === settings.displaySettings.ormLayer) {
         return
     }
 
     slideIndicator("orm-indicator", 2, show ? 0 : 1, show ? 1 : 0)
     document.getElementById("map")!.setAttribute("data-orm", "" + show)
+    settings.displaySettings.ormLayer = show
 }
 
 export function toast(type: ToasterType, messageDe: string, messageEn: string) {

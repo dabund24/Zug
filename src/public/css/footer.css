@@ -92,9 +92,17 @@ footer:not(.valid-journey) {
     }
 }
 
-@media screen and (max-width: 1500px) {
-    .footer__info-panel > *:not(button) {
-        display: none;
+@media screen and (max-width: 1700px) {
+    [data-state=""], [data-state="settings"], [data-state="about"] {
+        .footer__info-panel > button {
+            display: none;
+        }
+    }
+
+    [data-state="journey"], [data-state="journey/map"], [data-state="settings"], [data-state="about"] {
+        .footer__info-panel > :not(button) {
+            display: none;
+        }
     }
 }
 

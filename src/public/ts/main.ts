@@ -5,23 +5,21 @@ import {
     displayJourneyModalFirstTime,
     displayJourneyTree,
 } from "./display.js";
-import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
 import {
     displayedStations,
     getJourney,
     isArrival, journeyBounds,
-    journeyOptions, saveJourney, searchInputValues, selectedJourney, selectedJourneys,
-    setJourney,
+    saveJourney, searchInputValues, selectedJourney, selectedJourneys,
+    setJourney, settings,
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
+import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
 import {PageState, PageStateString, SearchObject, ZugErrorType, ZugResponse} from "./types.js";
 import {setupSearch} from "./search.js";
 import {initMap} from "./map.js";
 import {mergeSelectedJourneys} from "./journeyMerge.js";
 
-setColor([2, "green"])
-setTheme([0, 'light'])
 setupSearch()
 
 export async function findConnections(fromInput: boolean) {
@@ -51,13 +49,13 @@ export async function findConnections(fromInput: boolean) {
     const stations = [from, vias, to].flat()
     addStationNames(stations)
 
-    const isArrQuery = "&isArrival=" + isArrival
+    const isArrQuery = "&isArrival=" + settings.journeysSettings.isArrival
     let timeQuery = "";
     if ((<HTMLInputElement>document.getElementById("time__input")).value !== "") {
         timeQuery = "&time=" + (<HTMLInputElement>document.getElementById("time__input")).value
     }
     let viasQuery = "&vias=" + JSON.stringify(vias.map(via => via?.requestParameter))
-    let journeyOptionsQuery = "&options=" + JSON.stringify(journeyOptions)
+    let journeyOptionsQuery = "&options=" + JSON.stringify(settings.journeysSettings.options)
 
     let treeResponse: ZugResponse
     try {
@@ -125,7 +123,7 @@ export async function refreshJourney(tokenString: string | undefined) {
     const journeyPromises: Promise<Journey | null>[] = []
     // fetch journeys for all tokens
     tokens.forEach(token => {
-        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + journeyOptions.language)
+        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + settings.journeysSettings.options.language)
             .then(res => res.json())
             .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
                 const refreshed = refreshedResponse[0]

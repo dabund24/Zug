@@ -161,7 +161,7 @@ export function displayJourneyModal(journey: Journey) {
     const subpage = document.getElementById("connection-subpage")!;
     legCounter = 0;
 
-    setHTMLOfChildOfParent(subpage, ".modal__title", journey.legs[0].origin!.name + " — " + journey.legs[journey.legs.length - 1]!.destination!.name)
+    setHTMLOfChildOfParent(subpage, ".modal__title", parseStationStopLocation(journey.legs[0].origin!).name + " — " + parseStationStopLocation(journey.legs.at(-1)!.destination!).name)
     setHTMLOfChildOfParent(subpage, ".modal__connection-date", dateToString(journey.legs[0].departure!))
     setHTMLOfChildOfParent(subpage, ".modal__connection-duration", timeToString(dateDifference(journey.legs[0].departure!, journey.legs[journey.legs.length - 1].arrival!)));
 
@@ -568,7 +568,7 @@ export function showLeafletModal(lockingNecessary: boolean) {
         return
     }
 
-    document.getElementById("leaflet-modal__title")!.innerText = selectedJourney.legs[0].origin!.name + " — " + selectedJourney.legs.at(-1)!.destination!.name
+    document.getElementById("leaflet-modal__title")!.innerText = parseStationStopLocation(selectedJourney.legs[0].origin!).name + " — " + parseStationStopLocation(selectedJourney.legs.at(-1)!.destination!).name
 
     initMap(selectedJourney, true)
 

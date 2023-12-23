@@ -1,6 +1,6 @@
 import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util.js";
 import {Location, Station, Stop} from "hafas-client";
-import {searchInputValues} from "./memorizer.js";
+import {searchInputValues, settings} from "./memorizer.js";
 import {SearchObject} from "./types";
 
 
@@ -52,7 +52,7 @@ export async function refreshAutocomplete(text: string, inputIndex: number) {
         return;
     }
     (<HTMLElement>document.getElementsByClassName("search__icon--clear").item(inputIndex)).style.setProperty("display", "flex")
-    const searchResults = <(Station | Stop | Location)[]> await fetch("/api/stations?name=" + text).then(res => res.json())
+    const searchResults = <(Station | Stop | Location)[]> await fetch("/api/stations?name=" + text + "&options=" + JSON.stringify(settings.locationsSettings)).then(res => res.json())
     suggestions = searchResults.map(result => parseStationStopLocation(result))
     displaySearchSuggestions(inputIndex);
 }
