@@ -1,5 +1,5 @@
 import {dateDifference, numberWithSign, timeToString, unixToHoursStringShort} from "./util.js";
-import {Product} from "./types.js";
+import {Product, SearchObject} from "./types.js";
 import {Leg, StopOver} from "hafas-client";
 import {getPlatformHTML, getWalkHTML} from "./display.js";
 
@@ -174,6 +174,27 @@ export function getTransferPopupHTML(arrivalStopover: StopOver, departureStopove
         "           <div class='align-center'>" + arrivalStopover.stop?.name + "</div>" +
         "           <div class='flex-column'>" + arrivalDelay + departureDelay + "</div>" +
         "           <div class='flex-column'>" + arrivalPlatform + departurePlatform + "</div>" +
+        "       </div>" +
+        "   </div>"
+}
+
+export function getLocationPopupHTML(location: SearchObject, departure: string, arrival: string) {
+    return "<div class='flex-row'>" +
+        "       <div class='popup__time time'>" +
+        "           <div>" + arrival + "</div>" + "<div>" + departure + "</div>" +
+        "       </div>" +
+        "       <div class='popup__icon popup__icon--small flex-column'>" +
+        "           <div class='popup__icon__middle mini-icon-container mini-icon-container--" + location.type + "'>" +
+        "               <svg class='mini-icon--poi' width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>" +
+        "                   <polyline points='1.5,13.5 14.5,13.5 8,2.25 1.5,13.5' stroke='var(--foreground-color)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='var(--background-color)'/>" +
+        "               </svg>" +
+        "               <svg class='mini-icon--address' width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>" +
+        "                   <polyline points='2,2 2,14 14,14 14,2 2,2' stroke='var(--foreground-color)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='var(--background-color)'/>" +
+        "               </svg>" +
+        "           </div>" +
+        "       </div>" +
+        "       <div class='popup__text flex-row'>" +
+        "           <div class='align-center'>" + location.name + "</div>" +
         "       </div>" +
         "   </div>"
 }

@@ -120,10 +120,10 @@ function changeSuggestionFocus(suggestionContainers: HTMLCollection, toBeFocused
 
 export function parseStationStopLocation(ssl: Station | Stop | Location): SearchObject {
     if (ssl.type === "station" || ssl.type === "stop") {
-        return {name: ssl.name!, requestParameter: JSON.stringify(ssl.id), type: "station"}
+        return {name: ssl.name!, requestParameter: JSON.stringify(ssl.id), type: "station", longitude: ssl.location?.longitude!, latitude: ssl.location?.latitude!}
     } else if (ssl.poi) {
-        return {name: ssl.name!, requestParameter: JSON.stringify(ssl), type: "poi"}
+        return {name: ssl.name!, requestParameter: JSON.stringify(ssl), type: "poi", longitude: ssl.longitude!, latitude: ssl.latitude!}
     } else {
-        return {name: ssl.address!, requestParameter: JSON.stringify(ssl), type: "address"}
+        return {name: ssl.address!, requestParameter: JSON.stringify(ssl), type: "address", longitude: ssl.longitude!, latitude: ssl.latitude!}
     }
 }

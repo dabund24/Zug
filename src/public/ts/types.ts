@@ -92,12 +92,15 @@ export type TreeMatrixPair = [JourneyTree, Journey[][]]
 export type SearchInputs = {
     from: SearchObject | undefined,
     vias: (SearchObject | undefined)[],
-    to: SearchObject | undefined
+    to: SearchObject | undefined,
+
 }
 
 export type SearchObject = {
     name: string,
     requestParameter: string,
-    type: "station" | "address" | "poi"
+    type: "station" | "address" | "poi",
+    longitude: number,
+    latitude: number
 }
 

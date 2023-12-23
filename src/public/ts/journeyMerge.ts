@@ -184,11 +184,11 @@ function displayFooterInfoPanel(journeyBounds: [number, number]) {
     }
     const firstLeg = getJourney(journeyBounds[0], selectedJourneys[journeyBounds[0]]).legs[0]
     const departure = firstLeg.departure!
-    const origin = <string>firstLeg.origin?.name
+    const origin = parseStationStopLocation(firstLeg.origin!).name
     const lastJourney = getJourney(journeyBounds[1], selectedJourneys[journeyBounds[1]])
-    const lastLeg = lastJourney.legs[lastJourney.legs.length -1]
+    const lastLeg = lastJourney.legs.at(-1)!
     const arrival = lastLeg.arrival!
-    const destination = <string>lastLeg.destination?.name
+    const destination = parseStationStopLocation(lastLeg.destination!).name
     document.getElementById("footer__info-panel__origin")!.innerText = origin
     document.getElementById("footer__info-panel__destination")!.innerText = destination
     document.getElementById("footer__info-panel__duration")!.innerText = timeToString(dateDifference(departure, arrival))

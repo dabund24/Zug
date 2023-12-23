@@ -1,14 +1,15 @@
 import {Feature, FeatureCollection, Journey, StopOver, Location, Line, Leg, Stop} from "hafas-client";
 import {Position, MultiLineString, LineString, MultiPoint, Point} from "geojson"
 import {FeatureGroup, featureGroup, GeoJSON, LatLngBounds, LayerGroup} from "leaflet";
-import {dateDifference, timeToString} from "./util.js";
-import {Product} from "./types.js";
+import {dateDifference, timeToString, unixToHoursStringShort} from "./util.js";
+import {Product, SearchObject} from "./types.js";
 import {
     getFirstLastStationPopupHTML,
     getCurrentLocationPopupHTML,
     getStopoverPopupHTML,
-    getLinePopupHTML, getTransferPopupHTML, getWalkPopupHTML
+    getLinePopupHTML, getTransferPopupHTML, getWalkPopupHTML, getLocationPopupHTML
 } from "./mapPopups.js";
+import {parseStationStopLocation} from "./search.js";
 
 const map = L.map("map", {
     zoomControl: false
@@ -54,13 +55,28 @@ function journeyToGeoJSON(journey: Journey): [FeatureGroup, LatLngBounds] {
     for (let i = 0; i < journey.legs.length; i++) {
         const leg = journey.legs[i]
         if (leg.walking) {
+            const origin = parseStationStopLocation(leg.origin!)
+            const destination = parseStationStopLocation(leg.destination!)
             let transferTime = ""
-            if (journey.legs[i - 1] !== undefined && journey.legs[i + 1] !== undefined) {
+            if (journey.legs[i - 1] !== undefined && journey.legs[i + 1] !== undefined && !journey.legs[i - 1].walking && !journey.legs[i + 1].walking) {
                 transferTime = timeToString(dateDifference(journey.legs[i - 1].arrival!, journey.legs[i + 1].departure!));
+            } else {
+                transferTime = timeToString(dateDifference(leg.departure!, leg.arrival!))
             }
-            const walkLine = walkToGeoJSON(leg, transferTime)
+            const walkLine = walkToGeoJSON(leg, origin, destination, transferTime)
             if (walkLine.length === 1) {
                 lines.push(walkLine[0])
+            }
+            if (leg.origin?.type === "location" && !(journey.legs[i - 1] !== undefined && journey.legs[i - 1].walking)) {
+                const locationPoint = locationToGeoJSON(origin, "", unixToHoursStringShort(leg.departure!))
+                points.push(locationPoint)
+            } else if (leg.destination?.type === "location") {
+                let departure: string = ""
+                if (journey.legs[i + 1] !== undefined && journey.legs[i + 1].walking) {
+                    departure = unixToHoursStringShort(journey.legs[i + 1].departure)
+                }
+                const locationPoint = locationToGeoJSON(destination, unixToHoursStringShort(leg.arrival!), departure)
+                points.push(locationPoint)
             }
             continue
         } else if (leg.polyline === undefined) {
@@ -114,15 +130,8 @@ function journeyToGeoJSON(journey: Journey): [FeatureGroup, LatLngBounds] {
     return [L.featureGroup(lines.concat(points)), L.featureGroup(lines).getBounds()]
 }
 
-function walkToGeoJSON(walk: Leg, transferTime: string) {
-    const originLatitude = (<Stop>walk.origin).location?.latitude
-    const originLongitude = (<Stop>walk.origin).location?.longitude
-    const destinationLatitude = (<Stop>walk.destination).location?.latitude
-    const destinationLongitude = (<Stop>walk.destination).location?.longitude
-    if (originLatitude === undefined || originLongitude === undefined || destinationLatitude === undefined || destinationLongitude === undefined) {
-        return []
-    }
-    const line: LineString = {type: "LineString", coordinates: [[originLongitude, originLatitude], [destinationLongitude, destinationLatitude]]}
+function walkToGeoJSON(walk: Leg, origin: SearchObject, destination: SearchObject, transferTime: string) {
+    const line: LineString = {type: "LineString", coordinates: [[origin.longitude, origin.latitude], [destination.longitude, destination.latitude]]}
     const popup = L.popup({
         className: "map__popup",
         closeButton: false
@@ -134,6 +143,35 @@ function walkToGeoJSON(walk: Leg, transferTime: string) {
             dashArray: "0 8 0"
         }
     }).bindPopup(popup)]
+}
+
+function locationToGeoJSON(location: SearchObject, arrival: string, departure: string) {
+    const point: Point = {type: "Point", coordinates: [location.longitude, location.latitude]}
+    const popup = L.popup({
+        className: "map__popup",
+        closeButton: false
+    }).setContent(getLocationPopupHTML(location, arrival, departure))
+
+    return L.geoJSON(point, {
+        pointToLayer: function (geoJsonPoint, latlng) {
+            let markerHTML = location.type === "poi" ?
+                "<svg class='mini-icon--poi' width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>" +
+                "    <polyline points='1.5,13.5 14.5,13.5 8,2.25 1.5,13.5' stroke='var(--foreground-color)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='var(--background-color)'/>" +
+                "</svg>"
+                :
+                "<svg class='mini-icon--address' width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>" +
+                "    <polyline points='2,2 2,14 14,14 14,2 2,2' stroke='var(--foreground-color)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='var(--background-color)'/>" +
+                "</svg>"
+
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "",
+                    html: markerHTML,
+                    iconAnchor: [8, 8]
+                })
+            }).bindPopup(popup)
+        }
+    })
 }
 
 function stopoversToGeoJSON(stopovers: readonly StopOver[] | undefined, product: Product) {
@@ -164,16 +202,13 @@ function transferToGeoJSON(arrivalLeg: Leg, departureLeg: Leg) {
     }
     const coordinates: [number, number] = [longitude, latitude]
     const point: Point = {type: "Point", coordinates: coordinates}
-    console.log(arrivalStopover)
-    console.log(departureStopover)
     const popup = L.popup({
         className: "map__popup",
         closeButton: false
     }).setContent(getTransferPopupHTML(arrivalStopover, departureStopover, arrivalProduct, departureProduct))
     return L.geoJSON(point, {
         pointToLayer: function (geoJsonPoint, latlng) {
-            let markerHTML: string;
-                markerHTML = "<svg width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>" +
+            let markerHTML = "<svg width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>" +
                     "   <path d='M 0 8 A 8 8 0 0 1 16 8' fill='var(--product-color)' class='connection-line--" + arrivalProduct + "'/>" +
                     "   <path d='M 0 8 A 8 8 0 0 0 16 8' fill='var(--product-color)' class='connection-line--" + departureProduct + "'/>" +
                     "   <circle cx='8' cy='8' r='3.5' fill='transparent' stroke='var(--background-color)' stroke-width='3'/>" +
@@ -259,12 +294,10 @@ function currentLocationToGeoJSON(location: Location | undefined, leg: Leg) {
 }
 
 export function legsShareTransfer(arrivalLeg: Leg, departureLeg: Leg) {
-    if (arrivalLeg.stopovers === undefined || departureLeg.stopovers === undefined) {
+    if (arrivalLeg.destination === undefined || departureLeg.origin === undefined) {
         return false
     }
-    const arrivalStopover = arrivalLeg.stopovers[arrivalLeg.stopovers.length - 1]
-    const arrivalLocation = arrivalStopover.stop?.location
-    const departureStopover = departureLeg.stopovers[0]
-    const departureLocation = departureStopover.stop?.location
-    return arrivalLocation?.longitude === departureLocation?.longitude && arrivalLocation?.latitude === departureLocation?.latitude
+    const arrivalPlace = parseStationStopLocation(arrivalLeg.destination)
+    const departurePlace = parseStationStopLocation(departureLeg.origin)
+    return arrivalPlace.longitude === departurePlace.longitude && arrivalPlace.latitude === departurePlace.latitude
 }

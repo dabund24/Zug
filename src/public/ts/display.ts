@@ -174,17 +174,21 @@ export function displayJourneyModal(journey: Journey) {
         const leg = legs[i]
         if (leg.walking) {
             let transferTime = "";
-            if (legs[i - 1] !== undefined && legs[i + 1] !== undefined) {
+            if (legs[i - 1] !== undefined && legs[i + 1] !== undefined && !legs[i - 1].walking && !legs[i + 1].walking) {
                 transferTime = timeToString(dateDifference(legs[i - 1].arrival!, legs[i + 1].departure!));
             } else {
                 transferTime = timeToString(dateDifference(leg.departure!, leg.arrival!))
             }
-            if (leg.origin?.type === "location") {
-                addLocationToModal(parseStationStopLocation(leg.origin), legsTarget, unixToHoursStringShort(legs[i].departure!), undefined)
+            if (leg.origin?.type === "location" && !(legs[i - 1] !== undefined && legs[i - 1].walking)) {
+                addLocationToModal(parseStationStopLocation(leg.origin), legsTarget, undefined, unixToHoursStringShort(legs[i].departure!))
             }
             addWalkToModal(leg, legsTarget, transferTime)
             if (leg.destination?.type === "location") {
-                addLocationToModal(parseStationStopLocation(leg.destination), legsTarget, undefined, unixToHoursStringShort(leg.arrival!))
+                let departure: string | undefined = undefined
+                if (legs[i + 1] !== undefined && legs[i + 1].walking) {
+                    departure = unixToHoursStringShort(legs[i + 1].departure)
+                }
+                addLocationToModal(parseStationStopLocation(leg.destination), legsTarget, unixToHoursStringShort(leg.arrival!), departure)
             }
         } else {
             if (legs[i - 1] !== undefined && !legs[i - 1].walking) {
