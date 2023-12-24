@@ -27,37 +27,6 @@ export function hideLoadSlider(): void {
     document.querySelector(":root")!.classList.remove("loading")
 }
 
-export function setTheme(theme: Theme) {
-    if (settings.displaySettings.theme[1] === theme[1]) {
-        return
-    }
-    slideIndicator("theme-indicator", 2, theme[0] === 0 ? 1 : 0, theme[0])
-
-    document.documentElement.setAttribute("data-theme", theme[1]);
-    settings.displaySettings.theme = theme
-}
-
-export function setColor(color: Color) {
-    const currentColor = settings.displaySettings.color
-    if (color === currentColor) {
-        return;
-    }
-
-    slideIndicator("color-indicator", 6, currentColor[0], color[0])
-    settings.displaySettings.color = color
-    document.documentElement.setAttribute("data-color", color[1]);
-}
-
-export function setORMLayerAppearance(show: boolean) {
-    if (show === settings.displaySettings.ormLayer) {
-        return
-    }
-
-    slideIndicator("orm-indicator", 2, show ? 0 : 1, show ? 1 : 0)
-    document.getElementById("map")!.setAttribute("data-orm", "" + show)
-    settings.displaySettings.ormLayer = show
-}
-
 export function toast(type: ToasterType, messageDe: string, messageEn: string) {
     const template = (<HTMLTemplateElement>document.getElementById("toast-template")).content
     const toBeAdded = document.importNode(template, true)

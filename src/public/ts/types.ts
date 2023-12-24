@@ -11,6 +11,7 @@ export type Settings = {
     displaySettings: {
         theme: Theme,
         color: Color,
+        language: Language
         ormLayer: boolean
     }
     locationsSettings: LocationsOptions

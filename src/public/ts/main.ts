@@ -8,13 +8,13 @@ import {
 import {
     displayedStations,
     getJourney,
-    isArrival, journeyBounds,
+    journeyBounds,
     saveJourney, searchInputValues, selectedJourney, selectedJourneys,
     setJourney, settings,
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer.js";
-import {hideLoadSlider, setColor, setTheme, showLoadSlider, toast} from "./pageActions.js";
+import {hideLoadSlider, showLoadSlider, toast} from "./pageActions.js";
 import {PageState, PageStateString, SearchObject, ZugErrorType, ZugResponse} from "./types.js";
 import {setupSearch} from "./search.js";
 import {initMap} from "./map.js";
