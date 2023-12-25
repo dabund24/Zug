@@ -102,7 +102,7 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
     const journeyPromises: Promise<Journey | null>[] = []
     // fetch journeys for all tokens
     tokens.forEach(token => {
-        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + settings.journeysSettings.options.language)
+        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + settings.journeysSettings.language)
             .then(res => res.json())
             .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
                 const refreshed = refreshedResponse[0]

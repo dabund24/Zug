@@ -15,9 +15,12 @@ export type Settings = {
         ormLayer: boolean
     }
     locationsSettings: LocationsOptions
-    journeysSettings: {
-        isArrival: 0 | 1
-        options: JourneysOptions
+    journeysSettings: JourneysOptions
+    isArrival: 0 | 1
+    storageSettings: {
+        displaySettings: boolean
+        locationsSettings: boolean
+        journeysSettings: boolean
     }
 }
 

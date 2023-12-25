@@ -25,7 +25,7 @@
 <script type="module">
     import {findConnections, shareJourney, refreshJourneyAndInitMap, refreshJourney} from "/ts/main.js";
     import {showSubpage, showLeafletModal, displayJourneyModalFirstTime} from "/ts/display.js"
-    import {setColor, setTheme, setORMLayerAppearance, setDepArr, setLanguage, setSearchType, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike} from "/ts/memorizer.js";
+    import {setColor, setTheme, setORMLayerAppearance, setDepArr, setLanguage, setSearchType, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike, setStorageSettings} from "/ts/memorizer.js";
     import {clickSuggestion} from "/ts/search.js";
 
     window.setColor = setColor;
@@ -51,6 +51,8 @@
     window.setAccessibility = setAccessibility;
     window.setWalkingSpeed = setWalkingSpeed;
     window.setBike = setBike;
+
+    window.setStorageSettings = setStorageSettings;
 
     window.clickSuggestion = clickSuggestion;
 </script>
@@ -1125,6 +1127,63 @@
                     </div>
                     <div class="tab-indicator-container indicator-line-container">
                         <div class="line--accent indicator indicator__animation-to-right" id="bike-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="header padded-top-bottom">
+                <span class="de">Einstellungen dauerhaft im Browser mit <a href="https://de.wikipedia.org/wiki/Web_Storage">Local Storage</a> speichern</span><span class="en">Store settings permanently in Browser with <a href="https://en.wikipedia.org/wiki/Web_storage">Local Storage</a></span>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Anzeige-Einstellungen</span><span class="en">View Settings</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('displaySettings', false)">
+                            <span class="de">nicht speichern</span><span class="en">do not store</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('displaySettings', true)">
+                            <span class="de">speichern</span><span class="en">store</span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="storage--displaySettings-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Einstellungen zu Suchvorschlägen</span><span class="en">Search Suggestion Settings</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('locationsSettings', false)">
+                            <span class="de">nicht speichern</span><span class="en">do not store</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('locationsSettings', true)">
+                            <span class="de">speichern</span><span class="en">store</span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="storage--locationsSettings-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="setting flex-row-column padded-top-bottom">
+                <div class="setting__name">
+                    <span class="de">Verbindungs-Einstellungen</span><span class="en">Connection Settings</span>
+                </div>
+                <div class="setting__action flex-column">
+                    <div class="tab-row flex-row">
+                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('journeysSettings', false)">
+                            <span class="de">nicht speichern</span><span class="en">do not store</span>
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('journeysSettings', true)">
+                            <span class="de">speichern</span><span class="en">store</span>
+                        </button>
+                    </div>
+                    <div class="tab-indicator-container indicator-line-container">
+                        <div class="line--accent indicator indicator__animation-to-right" id="storage--journeysSettings-indicator" style="--animation--tab-indicator__start: 25%; --animation--tab-indicator__end: 25%"></div>
                     </div>
                 </div>
             </div>

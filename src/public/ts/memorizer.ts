@@ -85,29 +85,32 @@ export const settings: Settings = {
         poi: true,
         addresses: true
     },
+    isArrival: 0,
     journeysSettings: {
-        isArrival: 0,
-        options: {
-            language: "de",
-            results: 10,
-            transfers: -1,
-            transferTime: 0,
-            products: {
-                nationalExpress: true,
-                national: true,
-                regionalExpress: true,
-                regional: true,
-                suburban: true,
-                subway: true,
-                tram: true,
-                bus: true,
-                ferry: true,
-                taxi: true
-            },
-            accessibility: "none",
-            walkingSpeed: "normal",
-            bike: false
-        }
+        language: "de",
+        results: 10,
+        transfers: -1,
+        transferTime: 0,
+        products: {
+            nationalExpress: true,
+            national: true,
+            regionalExpress: true,
+            regional: true,
+            suburban: true,
+            subway: true,
+            tram: true,
+            bus: true,
+            ferry: true,
+            taxi: true
+        },
+        accessibility: "none",
+        walkingSpeed: "normal",
+        bike: false
+    },
+    storageSettings: {
+        displaySettings: false,
+        locationsSettings: false,
+        journeysSettings: false
     }
 }
 
@@ -119,39 +122,62 @@ export function applyDisplaySettings(newSettings: Settings["displaySettings"]) {
 }
 
 export function applyLocationsSettings(newSettings: LocationsOptions) {
-    setLanguage(<Language> newSettings.language)
-    if (!newSettings.poi) {
+    if (newSettings.language !== undefined)
+        setLanguage(<Language> newSettings.language)
+    if (!newSettings.poi)
         setSearchType("poi")
-    }
-    if (!newSettings.addresses) {
+    if (!newSettings.addresses)
         setSearchType("addresses")
-    }
 }
 
 export function applyJourneysSettings(newSettings: JourneysOptions) {
-    setLanguage(<Language> newSettings.language)
-    setTransfers(newSettings.transfers!)
-    setTransferTime(newSettings.transferTime!)
+    if (newSettings.language !== undefined)
+        setLanguage(<Language> newSettings.language)
+    if (newSettings.transfers !== undefined)
+        setTransfers(newSettings.transfers)
+    if (newSettings.transferTime !== undefined)
+        setTransferTime(newSettings.transferTime)
     for (let product in newSettings.products) {
         if (!newSettings.products[product]) {
             setProduct(<Product> product)
         }
     }
-    setAccessibility(<Accessibility> newSettings.accessibility)
-    setWalkingSpeed(<WalkingSpeed> newSettings.walkingSpeed)
-    setBike(newSettings.bike!)
+    if (newSettings.accessibility !== undefined)
+        setAccessibility(<Accessibility> newSettings.accessibility)
+    if (newSettings.walkingSpeed !== undefined)
+        setWalkingSpeed(<WalkingSpeed> newSettings.walkingSpeed)
+    if (newSettings.bike !== undefined)
+        setBike(newSettings.bike)
 }
 
-function saveDisplaySettings() {
-    localStorage.setItem("display", JSON.stringify(settings.displaySettings))
+function saveSettings(settingType: keyof Settings["storageSettings"]) {
+    if (settings.storageSettings[settingType])
+        localStorage.setItem(settingType, JSON.stringify(settings[settingType]))
 }
 
-const storedDisplaySettings = localStorage.getItem("display")
+function deleteSettings(settingType: keyof Settings["storageSettings"]) {
+    localStorage.removeItem(settingType)
+}
+
+const storedDisplaySettings = localStorage.getItem("displaySettings")
 if (storedDisplaySettings === null) {
     setColor([2, "green"])
     setTheme([0, 'light'])
 } else {
+    setStorageSettings("displaySettings", true)
     applyDisplaySettings(JSON.parse(storedDisplaySettings))
+}
+
+const storedLocationsSettings = localStorage.getItem("locationsSettings")
+if (storedLocationsSettings !== null) {
+    setStorageSettings("locationsSettings", true)
+    applyLocationsSettings(JSON.parse(storedLocationsSettings))
+}
+
+const storedJourneysSettings = localStorage.getItem("journeysSettings")
+if (storedJourneysSettings !== null) {
+    setStorageSettings("journeysSettings", true)
+    applyJourneysSettings(JSON.parse(storedJourneysSettings))
 }
 
 export function setTheme(theme: Theme) {
@@ -162,7 +188,7 @@ export function setTheme(theme: Theme) {
 
     document.documentElement.setAttribute("data-theme", theme[1]);
     settings.displaySettings.theme = theme
-    saveDisplaySettings()
+    saveSettings("displaySettings")
 }
 
 export function setColor(color: Color) {
@@ -174,7 +200,7 @@ export function setColor(color: Color) {
     slideIndicator("color-indicator", 6, currentColor[0], color[0])
     settings.displaySettings.color = color
     document.documentElement.setAttribute("data-color", color[1]);
-    saveDisplaySettings()
+    saveSettings("displaySettings")
 }
 
 export function setLanguage(language: Language) {
@@ -182,15 +208,15 @@ export function setLanguage(language: Language) {
         "de": 0,
         "en": 1
     })[value]
-    const start = index(<Language>settings.journeysSettings.options.language)
+    const start = index(<Language>settings.journeysSettings.language)
     const end = index(language)
     slideIndicator("language-indicator", 2, start, end)
     document.documentElement.setAttribute("lang", language)
 
     settings.displaySettings.language = language
-    settings.journeysSettings.options.language = language
+    settings.journeysSettings.language = language
     settings.locationsSettings.language = language
-    saveDisplaySettings()
+    saveSettings("displaySettings")
 }
 
 export function setORMLayerAppearance(show: boolean) {
@@ -201,16 +227,16 @@ export function setORMLayerAppearance(show: boolean) {
     slideIndicator("orm-indicator", 2, show ? 0 : 1, show ? 1 : 0)
     document.getElementById("map")!.setAttribute("data-orm", "" + show)
     settings.displaySettings.ormLayer = show
-    saveDisplaySettings()
+    saveSettings("displaySettings")
 }
 
 export function setDepArr(isArr: 0 | 1) {
-    if (isArr === settings.journeysSettings.isArrival) {
+    if (isArr === settings.isArrival) {
         return
     }
 
-    slideIndicator("dep-arr-indicator", 2, settings.journeysSettings.isArrival, isArr)
-    settings.journeysSettings.isArrival = isArr
+    slideIndicator("dep-arr-indicator", 2, settings.isArrival, isArr)
+    settings.isArrival = isArr
 }
 
 export function setSearchType(type: "addresses" | "poi") {
@@ -222,26 +248,29 @@ export function setSearchType(type: "addresses" | "poi") {
         searchTypeButton.classList.add("selectable--horizontal--active")
         settings.locationsSettings[type] = true
     }
+    saveSettings("locationsSettings")
 }
 
 export function setProduct(product: Product) {
     const productButton = document.getElementById("product-indicator__" + product)!
-    if (settings.journeysSettings.options.products![product]) {
+    if (settings.journeysSettings.products![product]) {
         productButton.classList.remove("selectable--horizontal--active")
-        settings.journeysSettings.options.products![product] = false
+        settings.journeysSettings.products![product] = false
     } else {
         productButton.classList.add("selectable--horizontal--active")
-        settings.journeysSettings.options.products![product] = true
+        settings.journeysSettings.products![product] = true
     }
+    saveSettings("journeysSettings")
 }
 
 export function setTransfers(transfers: number) {
     const index = (value: number) => value === -1 ? 7 : value
-    const start = index(settings.journeysSettings.options.transfers!)
+    const start = index(settings.journeysSettings.transfers!)
     const end = index(transfers)
     slideIndicator("transfers-indicator", 8, start, end)
 
-    settings.journeysSettings.options.transfers = transfers
+    settings.journeysSettings.transfers = transfers
+    saveSettings("journeysSettings")
 }
 
 export function setTransferTime(transferTime: number) {
@@ -255,11 +284,12 @@ export function setTransferTime(transferTime: number) {
         30: 6,
         40: 7
     })[value] || 0
-    const start = index(settings.journeysSettings.options.transferTime!)
+    const start = index(settings.journeysSettings.transferTime!)
     const end = index(transferTime)
     slideIndicator("transfer-time-indicator", 8, start, end)
 
-    settings.journeysSettings.options.transferTime = transferTime
+    settings.journeysSettings.transferTime = transferTime
+    saveSettings("journeysSettings")
 }
 
 
@@ -270,11 +300,12 @@ export function setAccessibility(accessibility: Accessibility) {
         "partial": 1,
         "complete": 2
     })[value]
-    const start = index(<Accessibility> settings.journeysSettings.options.accessibility)
+    const start = index(<Accessibility> settings.journeysSettings.accessibility)
     const end = index(accessibility)
     slideIndicator("accessibility-indicator", 3, start, end)
 
-    settings.journeysSettings.options.accessibility = accessibility
+    settings.journeysSettings.accessibility = accessibility
+    saveSettings("journeysSettings")
 }
 
 export function setWalkingSpeed(walkingSpeed: WalkingSpeed) {
@@ -283,17 +314,34 @@ export function setWalkingSpeed(walkingSpeed: WalkingSpeed) {
         "normal": 1,
         "fast": 2
     })[value]
-    const start = index(<WalkingSpeed> settings.journeysSettings.options.walkingSpeed)
+    const start = index(<WalkingSpeed> settings.journeysSettings.walkingSpeed)
     const end = index(walkingSpeed)
     slideIndicator("walking-speed-indicator", 3, start, end)
 
-    settings.journeysSettings.options.walkingSpeed = walkingSpeed
+    settings.journeysSettings.walkingSpeed = walkingSpeed
+    saveSettings("journeysSettings")
 }
 
 export function setBike(bike: boolean) {
-    const start = +!!settings.journeysSettings.options.bike
+    const start = +!!settings.journeysSettings.bike
     const end: number = +bike
     slideIndicator("bike-indicator", 2, start, end)
 
-    settings.journeysSettings.options.bike = bike
+    settings.journeysSettings.bike = bike
+    saveSettings("journeysSettings")
+}
+
+export function setStorageSettings(settingType: keyof Settings["storageSettings"], value: boolean) {
+    if (value === settings.storageSettings[settingType]) {
+        return
+    }
+    const start = +settings.storageSettings[settingType]
+    const end = +value
+    settings.storageSettings[settingType] = value
+    if (value) {
+        saveSettings(settingType)
+    } else {
+        deleteSettings(settingType)
+    }
+    slideIndicator(`storage--${settingType}-indicator`, 2, start, end)
 }

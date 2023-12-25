@@ -49,13 +49,13 @@ export async function findConnections(fromInput: boolean) {
     const stations = [from, vias, to].flat()
     addStationNames(stations)
 
-    const isArrQuery = "&isArrival=" + settings.journeysSettings.isArrival
+    const isArrQuery = "&isArrival=" + settings.isArrival
     let timeQuery = "";
     if ((<HTMLInputElement>document.getElementById("time__input")).value !== "") {
         timeQuery = "&time=" + (<HTMLInputElement>document.getElementById("time__input")).value
     }
     let viasQuery = "&vias=" + JSON.stringify(vias.map(via => via?.requestParameter))
-    let journeyOptionsQuery = "&options=" + JSON.stringify(settings.journeysSettings.options)
+    let journeyOptionsQuery = "&options=" + JSON.stringify(settings.journeysSettings)
 
     let treeResponse: ZugResponse
     try {
@@ -123,7 +123,7 @@ export async function refreshJourney(tokenString: string | undefined) {
     const journeyPromises: Promise<Journey | null>[] = []
     // fetch journeys for all tokens
     tokens.forEach(token => {
-        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + settings.journeysSettings.options.language)
+        const journeyPromise = fetch("/api/refresh?token=" + token + "&lang=" + settings.journeysSettings.language)
             .then(res => res.json())
             .then((refreshedResponse: [JourneyWithRealtimeData] | [null]) => {
                 const refreshed = refreshedResponse[0]
