@@ -7,6 +7,7 @@ import {
     showSubpage
 } from "./display.js";
 import {
+    displayedStations,
     resetJourneys, selectedJourney,
     selectedJourneys,
     setJourney, settings,
@@ -146,6 +147,9 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
     }
 
     addStationNames(stations)
+    displayedStations.from = stations[0]
+    displayedStations.vias = stations.slice(1, -1)
+    displayedStations.to = stations.at(-1)
     displayJourneyTree(getSimpleJourneyTree(<Journey[]>journeys), stations.length)
     for (let i = 0; i < journeys.length; i++) {
         selectJourney(i, 0)

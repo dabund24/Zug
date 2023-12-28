@@ -465,6 +465,14 @@ p {
 .mini-icon-container--address .mini-icon--address {
     display: block;
 }
+.mini-icon-container--undefined .mini-icon--undefined {
+    display: block;
+}
+
+.mini-icon-overlay {
+    margin-left: -16px;
+}
+
 
 @media screen and (max-width: 1700px) {
 

@@ -61,7 +61,7 @@ export function addStationNames(stations: SearchObject[]) {
     for (let i = 0; i < stations.length; i++) {
         toBeAdded = document.importNode(template, true)
         setHTMLOfChildOfParent(toBeAdded, ".station-name__name", stations[i].name);
-        const iconButton = (<HTMLButtonElement> toBeAdded.querySelector(".station-icon-container"))
+        const iconButton = (<HTMLButtonElement> toBeAdded.querySelector(".mini-icon-container"))
         iconButton.classList.add(`mini-icon-container--${stations[i].type}`)
         if (i !== 0 && i !== stations.length - 1) {
             const index = i - 1;

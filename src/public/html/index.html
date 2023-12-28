@@ -87,8 +87,22 @@
                     <div class="search__icon search__icon--from flex-row">
                         <svg class="station-icon station-icon--major" width='32px' height='32px' xmlns='http://www.w3.org/2000/svg'>
                             <line x1="8" y1="16" x2="30" y2="16" stroke="var(--foreground-color)" stroke-width="4" stroke-linecap="round"/>
-                            <circle cx='8' cy='16' r='6.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
-                            <circle cx='8' cy='16' r='2' fill='var(--accent-color)'/>
+                            <g class="mini-icon-container mini-icon-container--undefined">
+                                <g class="mini-icon--undefined">
+                                    <circle cx='8' cy='16' r='6.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
+                                    <circle cx='8' cy='16' r='2' fill='var(--foreground-color)'/>
+                                </g>
+                                <g class="mini-icon--station">
+                                    <circle cx='8' cy='16' r='6.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
+                                    <circle cx='8' cy='16' r='2' fill='var(--accent-color)'/>
+                                </g>
+                                <g class="mini-icon--poi">
+                                    <polyline points="1.5,21.5 14.5,21.5 8,10.25 1.5,21.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                                <g class="mini-icon--address">
+                                    <polyline points="2,10 2,22 14,22 14,10 2,10" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                            </g>
                         </svg>
                     </div>
                     <div id="from-search" class="search__input-container">
@@ -114,7 +128,20 @@
                     <div class="search__icon search__icon--via flex-row">
                         <svg class="station-icon station-icon--major" width='32px' height='32px' xmlns='http://www.w3.org/2000/svg'>
                             <line x1="2" y1="16" x2="30" y2="16" stroke="var(--foreground-color)" stroke-width="4" stroke-linecap="round"/>
-                            <circle cx='16' cy='16' r='4.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
+                            <g class="mini-icon-container mini-icon-container--undefined">
+                                <g class="mini-icon--undefined">
+                                    <circle cx='16' cy='16' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
+                                </g>
+                                <g class="mini-icon--station">
+                                    <circle cx='16' cy='16' r='4.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
+                                </g>
+                                <g class="mini-icon--poi">
+                                    <polyline points="9.5,21.5 22.5,21.5 16,10.25 9.5,21.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                                <g class="mini-icon--address">
+                                    <polyline points="10,10 10,22 22,22 22,10 8,10" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                            </g>
                         </svg>
                     </div>
                     <div id="via1-search" class="search__input-container">
@@ -136,10 +163,23 @@
                     </button>
                 </div>
                 <div class="search flex-row">
-                    <div class="search__icon flex-row">
+                    <div class="search__icon search__icon--via flex-row">
                         <svg class="station-icon station-icon--major" width='32px' height='32px' xmlns='http://www.w3.org/2000/svg'>
                             <line x1="2" y1="16" x2="30" y2="16" stroke="var(--foreground-color)" stroke-width="4" stroke-linecap="round"/>
-                            <circle cx='16' cy='16' r='4.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
+                            <g class="mini-icon-container mini-icon-container--undefined">
+                                <g class="mini-icon--undefined">
+                                    <circle cx='16' cy='16' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
+                                </g>
+                                <g class="mini-icon--station">
+                                    <circle cx='16' cy='16' r='4.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
+                                </g>
+                                <g class="mini-icon--poi">
+                                    <polyline points="9.5,21.5 22.5,21.5 16,10.25 9.5,21.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                                <g class="mini-icon--address">
+                                    <polyline points="10,10 10,22 22,22 22,10 8,10" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                            </g>
                         </svg>
                     </div>
                     <div id="via2-search" class="search__input-container">
@@ -164,7 +204,20 @@
                     <div class="search__icon search__icon--via flex-row">
                         <svg class="station-icon station-icon--major" width='32px' height='32px' xmlns='http://www.w3.org/2000/svg'>
                             <line x1="2" y1="16" x2="30" y2="16" stroke="var(--foreground-color)" stroke-width="4" stroke-linecap="round"/>
-                            <circle cx='16' cy='16' r='4.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
+                            <g class="mini-icon-container mini-icon-container--undefined">
+                                <g class="mini-icon--undefined">
+                                    <circle cx='16' cy='16' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
+                                </g>
+                                <g class="mini-icon--station">
+                                    <circle cx='16' cy='16' r='4.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
+                                </g>
+                                <g class="mini-icon--poi">
+                                    <polyline points="9.5,21.5 22.5,21.5 16,10.25 9.5,21.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                                <g class="mini-icon--address">
+                                    <polyline points="10,10 10,22 22,22 22,10 8,10" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                            </g>
                         </svg>
                     </div>
                     <div id="via3-search" class="search__input-container">
@@ -191,8 +244,22 @@
                     <div class="search__icon search__icon--to flex-row">
                         <svg class="station-icon station-icon--major" width='32px' height='32px' xmlns='http://www.w3.org/2000/svg'>
                             <line x1="2" y1="16" x2="24" y2="16" stroke="var(--foreground-color)" stroke-width="4" stroke-linecap="round"/>
-                            <circle cx='24' cy='16' r='6.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
-                            <circle cx='24' cy='16' r='2' fill='var(--accent-color)'/>
+                            <g class="mini-icon-container mini-icon-container--undefined">
+                                <g class="mini-icon--undefined">
+                                    <circle cx='24' cy='16' r='6.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
+                                    <circle cx='24' cy='16' r='2' fill='var(--foreground-color)'/>
+                                </g>
+                                <g class="mini-icon--station">
+                                    <circle cx='24' cy='16' r='6.5' stroke='var(--accent-color)' stroke-width='3' fill='var(--background-color)'/>
+                                    <circle cx='24' cy='16' r='2' fill='var(--accent-color)'/>
+                                </g>
+                                <g class="mini-icon--poi">
+                                    <polyline points="17.5,21.5 30.5,21.5 24,10.25 17.5,21.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                                <g class="mini-icon--address">
+                                    <polyline points="18,10 18,22 30,22 30,10 16,10" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                                </g>
+                            </g>
                         </svg>
                     </div>
                     <div id="to-search" class="search__input-container">
@@ -270,8 +337,9 @@
 
                 </div>
                 <div class="station-name__line-container flex-row">
-                    <button class="mini-icon-container station-icon-container station-icon-container--via hoverable">
-                        <span class="mini-icon--station">
+                    <button class="station-icon-container station-icon-container--via hoverable">
+                        <span class="mini-icon-container">
+                            <span class="mini-icon--station">
                             <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
                             <circle cx='8' cy='8' r='6.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
                             <circle cx='8' cy='8' r='2' fill='var(--product-color)'/>
@@ -285,6 +353,13 @@
                         </svg>
                         <svg class="mini-icon--address" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
                             <polyline points="2,2 2,14 14,14 14,2 2,2" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                        </svg>
+                        </span>
+                        <svg class="mini-icon-overlay" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="var(--accent-red)" stroke-width="4" stroke-linecap="round">
+                                <line x1="2" y1="2" x2="14" y2="14"/>
+                                <line x1="2" y1="14" x2="14" y2="2"/>
+                            </g>
                         </svg>
                     </button>
                     <div class="station-name__connector flex-row">

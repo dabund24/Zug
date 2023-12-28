@@ -96,6 +96,7 @@ export function clickSuggestion(suggestion: SearchObject | undefined, inputIndex
         default:
             searchInputValues.vias[inputIndex - 1] = suggestion
     }
+    setSearchIcons(inputIndex, suggestion?.type)
     refreshAutocomplete(suggestionText, inputIndex);
     if (suggestion === undefined) {
         input.focus()
@@ -125,5 +126,27 @@ export function parseStationStopLocation(ssl: Station | Stop | Location): Search
         return {name: ssl.name!, requestParameter: JSON.stringify(ssl), type: "poi", longitude: ssl.longitude!, latitude: ssl.latitude!}
     } else {
         return {name: ssl.address!, requestParameter: JSON.stringify(ssl), type: "address", longitude: ssl.longitude!, latitude: ssl.latitude!}
+    }
+}
+
+function setSearchIcons(id: number, type: SearchObject["type"] | undefined) {
+    let inputContainer: Element
+    switch (id) {
+        case 0:
+            inputContainer = document.getElementsByClassName("search__icon--from")[0]
+            break
+        case 4:
+            inputContainer = document.getElementsByClassName("search__icon--to")[0]
+            break
+        default:
+            inputContainer = document.getElementsByClassName("search__icon--via")[id - 1]
+    }
+    const iconContainer = inputContainer.querySelector(".mini-icon-container")!
+    const regex = /^mini-icon-container--/
+    const iconClass = Array.from(iconContainer.classList).find(className => regex.test(className))!
+
+    if (iconClass !== "mini-icon-container--" + type) {
+        iconContainer.classList.add("mini-icon-container--" + type)
+        iconContainer.classList.remove(iconClass)
     }
 }

@@ -71,11 +71,21 @@
         z-index: 1;
         cursor: pointer;
     }
-    .station-icon-container--via:hover svg {
-        --product-color: var(--foreground-color);
+    .mini-icon-overlay {
+        display: none;
     }
-    .station-icon-container--stopover:hover svg {
-        --foreground-color: var(--accent-color);
+    .station-icon-container--via:hover {
+        svg {
+            --product-color: var(--foreground-color);
+        }
+        .mini-icon-overlay {
+            display: block;
+        }
+    }
+    .station-icon-container--stopover:hover {
+        svg {
+            --foreground-color: var(--accent-color);
+        }
     }
     .station-icon--major, .station-icon--minor {
         margin-left: 0;
@@ -222,6 +232,9 @@
         svg {
             --product-color: inherit;
             --foreground-color: inherit;
+        }
+        .mini-icon-overlay {
+            display: none;
         }
     }
 }
