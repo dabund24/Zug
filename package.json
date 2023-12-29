@@ -1,6 +1,6 @@
 {
   "name": "zug",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "dist/app.js",
   "type": "module",
   "scripts": {
