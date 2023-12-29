@@ -474,14 +474,23 @@ p {
 }
 
 
-@media screen and (max-width: 1700px) {
+@media screen and (min-width: 1701px) {
+    .small-only {
+        display: none;
+    }
+}
 
+@media screen and (max-width: 1700px) {
     :root {
         font-size: .8rem;
     }
 
     body, input, button {
         font-size: 16px;
+    }
+
+    .wide-only {
+        display: none;
     }
 }
 

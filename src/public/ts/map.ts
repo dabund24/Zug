@@ -29,7 +29,7 @@ const ormLayer = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/
 let layer: LayerGroup = L.layerGroup();
 layer.addTo(map)
 
-map.attributionControl.setPosition("topright")
+map.attributionControl.setPosition("bottomright")
 
 export function initMap(journey: Journey, withRezoom: boolean) {
     if (document.getElementById("map")!.getAttribute("data-orm") === "true") {

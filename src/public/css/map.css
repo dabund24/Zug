@@ -94,14 +94,6 @@
     align-self: center;
 }
 
-.leaflet-top.leaflet-right {
-    transform: rotate(-90deg);
-    text-align: center;
-    transform-origin: bottom right;
-    top: 3.5rem;
-    width: 100vh;
-}
-
 .leaflet-container .leaflet-control-attribution {
     background: var(--background-color--opaque);
     color: var(--foreground-color);
@@ -114,5 +106,16 @@
 @media screen and (max-width: 1700px) {
     .map__popup {
         font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .leaflet-bottom.leaflet-right {
+        transform: rotate(-90deg);
+        text-align: center;
+        transform-origin: bottom right;
+        top: 4rem;
+        bottom: unset;
+        width: 100vh;
     }
 }

@@ -42,5 +42,5 @@
     }
   ],
   "display": "standalone",
-  "theme-color": "#0e7667"
+  "theme_color": "#0e7667"
 }
