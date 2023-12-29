@@ -2,6 +2,15 @@ import {Color, Language, Theme, ToasterType} from "./types.js";
 import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util.js";
 import {settings} from "./memorizer.js";
 
+const indicators = document.getElementsByClassName("indicator")
+for (let i = 0; i < indicators.length; i++) {
+    const indicator = indicators[i]
+    indicator.addEventListener("animationend", () => {
+        indicator.classList.remove("indicator__animation-to-right")
+        indicator.classList.remove("indicator__animation-to-left")
+    })
+}
+
 export function slideIndicator(indicatorID: string, selectableCount: number, start: number, end: number): void {
     const indicator = document.getElementById(indicatorID)!
 
