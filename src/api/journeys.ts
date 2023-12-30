@@ -56,19 +56,22 @@ export async function getJourneys(stops: string[], opt: JourneysOptions, client:
         if (journeysResponse.journeys === undefined || journeysResponse.journeys.length === 0) {
             return respondErrorStations("noConnections", i, i + 1)
         }
+
+        const journeys = removeJourneysStartingTooEarly(journeysResponse.journeys, opt.departure!)
+
         const latestDeparture = getLatestDepartureFromJourneys(journeysResponse.journeys)
 
         // check if fetching more journeys is necessary
         if (latestDeparture !== undefined && new Date(latestDeparture).getTime() < new Date(latestArrival).getTime()) {
             let remainingJourneys = await requestMoreJourneys(journeysResponse.laterRef!, stops[i], stops[i + 1], opt, new Date(latestArrival))
             if (remainingJourneys !== undefined) {
-                journeysArray.push(journeysResponse.journeys.concat(remainingJourneys));
+                journeysArray.push(journeys.concat(remainingJourneys));
             } else {
                 console.error("remaining journeys is undefined")
                 return respondHafasError("hafasServer", 0, 0)
             }
         } else {
-            journeysArray.push(journeysResponse.journeys.concat())
+            journeysArray.push(journeys.concat())
         }
 
         let earliestArrival = getEarliestArrivalFromJourney(journeysArray[i])
@@ -109,19 +112,27 @@ async function requestMoreJourneys(laterRef: string, from: string, to: string, o
     return journeys
 }
 
+function removeJourneysStartingTooEarly(journeys: readonly Journey[], time: Date): Journey[] {
+    let indexOfFirstValidJourney = 0
+    while (new Date(journeys[indexOfFirstValidJourney].legs[0].departure!) < time) {
+        indexOfFirstValidJourney++
+    }
+    return journeys.slice(indexOfFirstValidJourney)
+}
+
 function getLatestArrivalFromJourneys(journeys: readonly Journey[] | Journey[]) {
-    const lastJourney = journeys[journeys.length - 1]
-    return lastJourney.legs[lastJourney.legs.length - 1].arrival;
+    const lastJourney = journeys.at(-1)!
+    return lastJourney.legs.at(-1)!.arrival;
 }
 
 function getLatestDepartureFromJourneys(journeys: readonly Journey[] | Journey[]) {
-    const lastJourney = journeys[journeys.length - 1]
+    const lastJourney = journeys.at(-1)!
     return lastJourney.legs[0].departure;
 }
 
 function getEarliestArrivalFromJourney(journeys: readonly Journey[] | Journey[]) {
     const firstJourney = journeys[0]
-    return firstJourney.legs[firstJourney.legs.length - 1].arrival
+    return firstJourney.legs.at(-1)!.arrival
 }
 
 let idInDepthCounters: number[];
@@ -153,7 +164,7 @@ function getNodesFromMatrix(matrix: Journey[][], nextDeparture: Date, depth: num
         if (nextChild.legs.length === 0) {
             nextArrival = new Date(8640000000000000)
         } else {
-            nextArrival = new Date(nextChild.legs[nextChild.legs.length - 1].arrival!)
+            nextArrival = new Date(nextChild.legs.at(-1)?.arrival!)
         }
         const childNode: JourneyNode = {
             depth: depth,
