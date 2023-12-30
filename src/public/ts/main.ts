@@ -28,8 +28,6 @@ export async function findConnections(fromInput: boolean) {
         return
     }
     showLoadSlider();
-    toast("neutral", "Suche Verbindungen", "Finding connections")
-    document.getElementById("connections-root-container")!.replaceChildren()
 
     const requestValues = fromInput ? searchInputValues : displayedStations
 
@@ -47,7 +45,16 @@ export async function findConnections(fromInput: boolean) {
     const to = requestValues.to
 
     const stations = [from, vias, to].flat()
+    const invalidStation = checkStationsValidity(stations)
+    if (invalidStation !== null) {
+        toast("error", `${invalidStation.name} kann nicht Start und Ziel gleichzeiting sein`, `${invalidStation.name} cannot be both start and destination`)
+        unlockJourneySearch()
+        hideLoadSlider()
+        return
+    }
+    toast("neutral", "Suche Verbindungen", "Finding connections")
     addStationNames(stations)
+    document.getElementById("connections-root-container")!.replaceChildren()
 
     const isArrQuery = "&isArrival=" + settings.isArrival
     let timeQuery = "";
@@ -99,6 +106,15 @@ export async function findConnections(fromInput: boolean) {
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + " connections")
     hideLoadSlider()
     unlockJourneySearch()
+}
+
+function checkStationsValidity(stations: SearchObject[]) {
+    for (let i = 1; i < stations.length; i++) {
+        if (stations[i - 1].requestParameter === stations[i].requestParameter) {
+            return stations[i]
+        }
+    }
+    return null
 }
 
 export async function refreshJourneyAndInitMap(tokenString: string | undefined) {
