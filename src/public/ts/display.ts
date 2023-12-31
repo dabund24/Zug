@@ -61,17 +61,20 @@ export function addStationNames(stations: SearchObject[]) {
     for (let i = 0; i < stations.length; i++) {
         toBeAdded = document.importNode(template, true)
         setHTMLOfChildOfParent(toBeAdded, ".station-name__name", stations[i].name);
-        const iconButton = toBeAdded.querySelector("button")!
+        const nameButton = <HTMLButtonElement> toBeAdded.querySelector(".station-name__name")
+        const iconButton = <HTMLButtonElement> toBeAdded.querySelector(".station-icon-container")
         iconButton.classList.add(`mini-icon-container--${stations[i].type}`)
         if (i !== 0 && i !== stations.length - 1) {
-            const index = i - 1;
-            iconButton.onclick = () => {
-                displayedStations.vias.splice(index, 1)
-                findConnections(false)
-            }
+            nameButton.onclick = () => removeStation(i - 1)
+            iconButton.onclick = () => removeStation(i - 1)
         }
         target.append(toBeAdded)
     }
+}
+
+function removeStation(index: number) {
+    displayedStations.vias.splice(index, 1)
+    findConnections(false)
 }
 
 export function displayJourney(journeyNode: JourneyNode, connectionsTarget: HTMLElement | DocumentFragment): HTMLElement {

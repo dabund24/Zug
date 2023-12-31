@@ -30,12 +30,8 @@
     --product-color: var(--accent-color);
 }
 
-.station-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .station-name__name {
+    padding: 0 .5rem;
     width: 100%;
     overflow-x: hidden;
     text-overflow: ellipsis;
@@ -225,7 +221,12 @@
 }
 
 .station-name-container:first-child, .station-name-container:last-child {
-    .station-icon-container--via:hover {
+    .station-name__name {
+        padding: 0;
+        border: none;
+    }
+
+    .station-icon-container--via:hover, .station-name__name:hover {
         background-color: transparent;
         border-color: transparent;
         cursor: unset;
@@ -238,6 +239,18 @@
         }
     }
 }
+
+.station-name-container:not(:first-child, :last-child) {
+    .station-name__name {
+        margin: 0 auto calc(-1 * var(--line-width));
+        width: fit-content;
+    }
+    .station-name__name:hover {
+        text-decoration: line-through;
+        color: var(--accent-red);
+    }
+}
+
 
 @media screen and (min-width: 1001px) {
     #station-names-container {
