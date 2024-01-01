@@ -2,15 +2,15 @@
 
 A web application assisting users of public transport in Germany on planning longer journeys with transfers.
 
-Users can investigate possible transfers in a very detailed way in order to prepare for delays/cancellations in advance and/or incorporate longer stays into their journey. This is achieved by fetching journeys between all selected stopovers from [`Hafas`](https://de.wikipedia.org/wiki/HAFAS) and visualizing how they relate to each other in an interactive diagram.
+Users can investigate possible transfers in a detailed way in order to prepare for delays/cancellations in advance and/or incorporate longer stays into their journey. This is achieved by fetching journeys between all selected stopovers from [`Hafas`](https://de.wikipedia.org/wiki/HAFAS) and visualizing how they relate to each other in an interactive diagram.
 
-This app is intended to be some sort of hybrid between [DB Navigator](https://bahn.de) and [Time-Space Train Planner (TSTP)](https://github.com/traines-source/time-space-train-planner)
+This app is intended to be some sort of hybrid between [DB Navigator](https://bahn.de) and [Time-Space Train Planner (TSTP)](https://github.com/traines-source/time-space-train-planner).
 
 ## Features
 
 This app can...
 
-- find possible sub-journeys between up to five stations (as of now)
+- find possible sub-journeys between multiple stations, addresses and poi
 
 - visualize temporal relations between these sub-journeys
 
@@ -40,7 +40,7 @@ npm run build
 npm start
 ```
 
-Then, open `http://localhost:8081` in your browser.
+Then, open [`http://localhost:8081`](http://localhost:8081) in your browser.
 
 ## Great projects this app relies on
 
@@ -48,6 +48,12 @@ Then, open `http://localhost:8081` in your browser.
 - [Leaflet](https://leafletjs.com)
 - [OpenStreetMap](https://www.openstreetmap.org)
 - [OpenRailwayMap](https://www.openrailwaymap.org)
+
+## Screenshots
+
+![connection search](media/connection_search.png)
+![journey details 1](media/details_map_0.png)
+![journey details 2](media/details_map_1.png)
 
 ## How it works
 
