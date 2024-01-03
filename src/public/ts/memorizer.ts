@@ -162,7 +162,8 @@ function deleteSettings(settingType: keyof Settings["storageSettings"]) {
 const storedDisplaySettings = localStorage.getItem("displaySettings")
 if (storedDisplaySettings === null) {
     setColor([2, "green"])
-    setTheme([0, 'light'])
+    setTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ?
+        [1, "dark"] : [0, 'light'])
 } else {
     setStorageSettings("displaySettings", true)
     applyDisplaySettings(JSON.parse(storedDisplaySettings))
