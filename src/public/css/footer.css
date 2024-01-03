@@ -22,7 +22,7 @@ footer .tab-row {
     grid-auto-columns: 1fr;
 }
 
-.footer__buttons {
+#footer__buttons {
     flex-shrink: 0;
 }
 
@@ -107,7 +107,7 @@ footer:not(.valid-journey) {
 }
 
 @media screen and (max-width: 1000px) {
-    .footer__buttons {
+    #footer__buttons {
         width: 100%;
     }
 }

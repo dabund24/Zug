@@ -1,5 +1,5 @@
 import {Hint, Journey, Leg, Location, Status, StopOver, Warning} from "hafas-client";
-import {findConnections} from "./main.js";
+import {findConnections, shareJourney} from "./main";
 import {
     addClassToChildOfParent,
     dateDifference,
@@ -8,7 +8,7 @@ import {
     setHTMLOfChildOfParent,
     timeToString,
     unixToHoursStringShort
-} from "./util.js";
+} from "./util";
 import {
     displayedStations,
     journeyBounds,
@@ -17,13 +17,13 @@ import {
     selectedJourney,
     tryLockingJourneySearch,
     unlockJourneySearch
-} from "./memorizer.js";
-import {JourneyNode, JourneyTree, LoadFactor, PageStateString, SearchObject} from "./types.js";
-import {toast} from "./pageActions.js";
-import {initMap} from "./map.js";
-import {pushState} from "./routing.js";
-import {selectJourney} from "./journeyMerge.js";
-import {parseStationStopLocation} from "./search.js";
+} from "./memorizer";
+import {JourneyNode, JourneyTree, LoadFactor, PageStateString, SearchObject} from "./types";
+import {toast} from "./pageActions";
+import {initMap} from "./map";
+import {pushState} from "./routing";
+import {selectJourney} from "./journeyMerge";
+import {parseStationStopLocation} from "./search";
 
 let journeyCounter: number;
 const connectionTemplate = (<HTMLTemplateElement> document.getElementById("connection-template")).content

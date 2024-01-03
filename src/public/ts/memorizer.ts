@@ -1,5 +1,5 @@
 import {Journey, JourneysOptions, Station, Stop, Location, LocationsOptions} from "hafas-client";
-import {slideIndicator} from "./pageActions.js";
+import {addSelectableEvents, slideIndicator} from "./pageActions";
 import {
     Settings,
     Accessibility,
@@ -10,8 +10,8 @@ import {
     SearchInputs,
     WalkingSpeed,
     Theme, Color
-} from "./types.js";
-import {calculateJourneyBounds} from "./journeyMerge.js";
+} from "./types";
+import {calculateJourneyBounds} from "./journeyMerge";
 
 let allowJourneySearch = true
 
@@ -159,26 +159,67 @@ function deleteSettings(settingType: keyof Settings["storageSettings"]) {
     localStorage.removeItem(settingType)
 }
 
-const storedDisplaySettings = localStorage.getItem("displaySettings")
-if (storedDisplaySettings === null) {
-    setColor([2, "green"])
-    setTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ?
-        [1, "dark"] : [0, 'light'])
-} else {
-    setStorageSettings("displaySettings", true)
-    applyDisplaySettings(JSON.parse(storedDisplaySettings))
-}
+export function applyInitialSettings() {
+    const storedDisplaySettings = localStorage.getItem("displaySettings")
+    if (storedDisplaySettings === null) {
+        setColor([2, "green"])
+        setTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ?
+            [1, "dark"] : [0, 'light'])
+    } else {
+        setStorageSettings("displaySettings", true)
+        applyDisplaySettings(JSON.parse(storedDisplaySettings))
+    }
 
-const storedLocationsSettings = localStorage.getItem("locationsSettings")
-if (storedLocationsSettings !== null) {
-    setStorageSettings("locationsSettings", true)
-    applyLocationsSettings(JSON.parse(storedLocationsSettings))
-}
+    const storedLocationsSettings = localStorage.getItem("locationsSettings")
+    if (storedLocationsSettings !== null) {
+        setStorageSettings("locationsSettings", true)
+        applyLocationsSettings(JSON.parse(storedLocationsSettings))
+    }
 
-const storedJourneysSettings = localStorage.getItem("journeysSettings")
-if (storedJourneysSettings !== null) {
-    setStorageSettings("journeysSettings", true)
-    applyJourneysSettings(JSON.parse(storedJourneysSettings))
+    const storedJourneysSettings = localStorage.getItem("journeysSettings")
+    if (storedJourneysSettings !== null) {
+        setStorageSettings("journeysSettings", true)
+        applyJourneysSettings(JSON.parse(storedJourneysSettings))
+    }
+
+    addSelectableEvents("setting__action--theme", setTheme, [[0, "light"], [1, "dark"]])
+    addSelectableEvents("setting__action--color", setColor, [
+        [0, 'red'],
+        [1, "yellow"],
+        [2, "green"],
+        [3, "blue"],
+        [4, "purple"],
+        [5, "gray"]
+    ])
+    addSelectableEvents("setting__action--orm-layer-appearance", setORMLayerAppearance, [false, true])
+    addSelectableEvents("setting__action--language", setLanguage, ["de", "en"])
+    addSelectableEvents("setting__action--search-type", setSearchType, ["addresses", "poi"])
+    addSelectableEvents("setting__action--products", setProduct, [
+        "nationalExpress",
+        "national",
+        "regionalExpress",
+        "regional",
+        "suburban",
+        "subway",
+        "tram",
+        "bus",
+        "taxi",
+        "ferry"
+    ])
+    addSelectableEvents("setting__action--transfers", setTransfers, [0, 1, 2, 3, 4, 5, 6, -1])
+    addSelectableEvents("setting__action--transferTime", setTransferTime, [0, 2, 5, 10, 15, 20, 30, 40])
+    addSelectableEvents("setting__action--accessibility", setAccessibility, ["none", "partial", "complete"])
+    addSelectableEvents("setting__action--walking-speed", setWalkingSpeed, ["slow", "normal", "fast"])
+    addSelectableEvents("setting__action--bike", setBike, [false, true])
+    addSelectableEvents("setting__action--storage--display", (value: boolean) => {
+        setStorageSettings("displaySettings", value)
+    }, [false, true])
+    addSelectableEvents("setting__action--storage--locations", (value: boolean) => {
+        setStorageSettings("locationsSettings", value)
+    }, [false, true])
+    addSelectableEvents("setting__action--storage--journeys", (value: boolean) => {
+        setStorageSettings("journeysSettings", value)
+    }, [false, true])
 }
 
 export function setTheme(theme: Theme) {

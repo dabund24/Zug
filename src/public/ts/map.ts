@@ -1,15 +1,15 @@
 import {Feature, FeatureCollection, Journey, StopOver, Location, Line, Leg, Stop} from "hafas-client";
-import {Position, MultiLineString, LineString, MultiPoint, Point} from "geojson"
-import {FeatureGroup, featureGroup, GeoJSON, LatLngBounds, LayerGroup} from "leaflet";
-import {dateDifference, timeToString, unixToHoursStringShort} from "./util.js";
-import {Product, SearchObject} from "./types.js";
+import {LineString, Point} from "geojson"
+import L, {FeatureGroup, GeoJSON, LatLngBounds, LayerGroup} from "leaflet";
+import {dateDifference, timeToString, unixToHoursStringShort} from "./util";
+import {Product, SearchObject} from "./types";
 import {
     getFirstLastStationPopupHTML,
     getCurrentLocationPopupHTML,
     getStopoverPopupHTML,
     getLinePopupHTML, getTransferPopupHTML, getWalkPopupHTML, getLocationPopupHTML
-} from "./mapPopups.js";
-import {parseStationStopLocation} from "./search.js";
+} from "./mapPopups";
+import {parseStationStopLocation} from "./search";
 
 const map = L.map("map", {
     zoomControl: false

@@ -1,13 +1,22 @@
-import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util.js";
+import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util";
 import {Location, Station, Stop} from "hafas-client";
-import {searchInputValues, settings} from "./memorizer.js";
+import {searchInputValues, setDepArr, settings} from "./memorizer";
 import {SearchObject} from "./types";
+import {addSelectableEvents} from "./pageActions";
+import {findConnections} from "./main";
 
 
 let selectedSuggestion = 0
 let suggestions: SearchObject[] = []
 
 export function setupSearch() {
+    const clearButtons = document.getElementsByClassName("search__icon--clear")
+    for (let i = 0; i < clearButtons.length; i++) {
+        clearButtons[i].addEventListener("click", () => clickSuggestion(undefined, i))
+    }
+    addSelectableEvents("search__departure-arrival-buttons", setDepArr, [0, 1])
+    document.getElementById("search__find-button")!.addEventListener("click", () => findConnections(true))
+
     const searchInputs = <HTMLCollectionOf<HTMLInputElement>>document.getElementsByClassName("search--autocomplete")
     const suggestionsContainers = document.getElementsByClassName("search__suggestions")
 

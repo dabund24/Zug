@@ -4,8 +4,9 @@ import {
     displayJourneyModal,
     displayJourneyModalFirstTime,
     displayJourneyTree,
-} from "./display.js";
+} from "./display";
 import {
+    applyInitialSettings,
     displayedStations,
     getJourney,
     journeyBounds,
@@ -13,14 +14,32 @@ import {
     setJourney, settings,
     tryLockingJourneySearch,
     unlockJourneySearch
-} from "./memorizer.js";
-import {hideLoadSlider, showLoadSlider, toast} from "./pageActions.js";
-import {PageState, PageStateString, SearchObject, ZugErrorType, ZugResponse} from "./types.js";
-import {setupSearch} from "./search.js";
-import {initMap} from "./map.js";
-import {mergeSelectedJourneys} from "./journeyMerge.js";
+} from "./memorizer";
+import {hideLoadSlider, showLoadSlider, toast} from "./pageActions";
+import {PageState, PageStateString, SearchObject, ZugErrorType, ZugResponse} from "./types";
+import {setupSearch} from "./search";
+import {initMap} from "./map";
+import {mergeSelectedJourneys} from "./journeyMerge";
+import {routeToInitialState} from "./routing";
 
+applyInitialSettings()
+routeToInitialState()
 setupSearch()
+
+const shareButtons = document.getElementsByClassName("share-button")
+for (let i = 0; i < shareButtons.length; i++) {
+    shareButtons[i].addEventListener("click", () => shareJourney())
+}
+
+const refreshButtons = document.getElementsByClassName("refresh-button")
+for (let i = 0; i < refreshButtons.length; i++) {
+    refreshButtons[i].addEventListener("click", () => refreshJourney(undefined))
+}
+
+const refreshMapButtons = document.getElementsByClassName("refresh-map-button")
+for (let i = 0; i < refreshMapButtons.length; i++) {
+    refreshMapButtons[i].addEventListener("click", () => refreshJourneyAndInitMap(undefined))
+}
 
 export async function findConnections(fromInput: boolean) {
     if (!tryLockingJourneySearch()) {

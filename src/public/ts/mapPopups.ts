@@ -1,7 +1,7 @@
-import {dateDifference, numberWithSign, timeToString, unixToHoursStringShort} from "./util.js";
-import {Product, SearchObject} from "./types.js";
+import {dateDifference, numberWithSign, timeToString, unixToHoursStringShort} from "./util";
+import {Product, SearchObject} from "./types";
 import {Leg, StopOver} from "hafas-client";
-import {getPlatformHTML, getWalkHTML} from "./display.js";
+import {getPlatformHTML, getWalkHTML} from "./display";
 
 export function getLinePopupHTML(leg: Leg) {
     const duration = timeToString(dateDifference(leg.departure!, leg.arrival!))

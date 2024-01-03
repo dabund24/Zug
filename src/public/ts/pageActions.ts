@@ -1,6 +1,5 @@
-import {Color, Language, Theme, ToasterType} from "./types.js";
-import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util.js";
-import {settings} from "./memorizer.js";
+import {ToasterType} from "./types";
+import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util";
 
 const indicators = document.getElementsByClassName("indicator")
 for (let i = 0; i < indicators.length; i++) {
@@ -11,6 +10,13 @@ for (let i = 0; i < indicators.length; i++) {
     })
 }
 
+export function addSelectableEvents<T>(parentID: string, func: ((newValue: T) => void), newValues: T[]) {
+    const buttons = document.getElementById(parentID)!.querySelectorAll("button")
+    for (let i = 0; i < newValues.length; i++) {
+        buttons[i].addEventListener("click", () => func(newValues[i]))
+    }
+}
+
 export function slideIndicator(indicatorID: string, selectableCount: number, start: number, end: number): void {
     const indicator = document.getElementById(indicatorID)!
 
@@ -19,21 +25,21 @@ export function slideIndicator(indicatorID: string, selectableCount: number, sta
     indicator.offsetWidth
 
     if (start < end) {
-        indicator.classList.add("indicator__animation-to-right");
+        indicator.classList.add("indicator__animation-to-right")
     } else {
         indicator.classList.add("indicator__animation-to-left")
     }
 
-    indicator.style.setProperty("--animation--tab-indicator__start", "calc(" + (100 * start + 50) + "% / " + selectableCount + ")")
-    indicator.style.setProperty("--animation--tab-indicator__end", "calc(" + (100 * end + 50) + "% / " + selectableCount + ")")
+    indicator.style.setProperty("--animation--tab-indicator__start", `calc(${100 * start + 50}% / ${selectableCount})`)
+    indicator.style.setProperty("--animation--tab-indicator__end", `calc(${100 * end + 50}% / ${selectableCount})`)
 }
 
 export function showLoadSlider(): void {
-    document.querySelector(":root")!.classList.add("loading")
+    document.documentElement.classList.add("loading")
 }
 
 export function hideLoadSlider(): void {
-    document.querySelector(":root")!.classList.remove("loading")
+    document.documentElement.classList.remove("loading")
 }
 
 export function toast(type: ToasterType, messageDe: string, messageEn: string) {

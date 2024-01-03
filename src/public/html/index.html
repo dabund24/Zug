@@ -22,43 +22,6 @@
     <link href="/css/map.css" rel="stylesheet">
 </head>
 <body>
-<script type="module">
-    import {findConnections, shareJourney, refreshJourneyAndInitMap, refreshJourney} from "/ts/main.js";
-    import {showSubpage, showLeafletModal, displayJourneyModalFirstTime} from "/ts/display.js"
-    import {setColor, setTheme, setORMLayerAppearance, setDepArr, setLanguage, setSearchType, setProduct, setTransfers, setTransferTime, setAccessibility, setWalkingSpeed, setBike, setStorageSettings} from "/ts/memorizer.js";
-    import {clickSuggestion} from "/ts/search.js";
-
-    window.setColor = setColor;
-    window.setTheme = setTheme;
-    window.setORMLayerAppearance = setORMLayerAppearance;
-
-    window.findConnections = findConnections;
-    window.shareJourney = shareJourney;
-    window.refreshJourney = refreshJourney;
-    window.refreshJourneyAndInitMap = refreshJourneyAndInitMap;
-
-    window.showSubpage = showSubpage;
-    window.showLeafletModal = showLeafletModal;
-    window.displayJourneyModalFirstTime = displayJourneyModalFirstTime;
-
-    window.setSearchType = setSearchType;
-
-    window.setDepArr = setDepArr;
-    window.setLanguage = setLanguage;
-    window.setProduct = setProduct;
-    window.setTransfers = setTransfers;
-    window.setTransferTime = setTransferTime;
-    window.setAccessibility = setAccessibility;
-    window.setWalkingSpeed = setWalkingSpeed;
-    window.setBike = setBike;
-
-    window.setStorageSettings = setStorageSettings;
-
-    window.clickSuggestion = clickSuggestion;
-</script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
 <div id="content">
     <div id="load-indicator" class="line--accent"></div>
     <section id="inputs">
@@ -113,7 +76,7 @@
                         </div>
                         <div class="line--regular"></div>
                     </div>
-                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion(undefined, 0)" style="display: none">
+                    <button class="search__icon search__icon--clear hoverable" style="display: none">
                         <svg width="17px" height="17px" viewBox="0 0 20 20">
                             <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                                 <line x1="4" y1="4" x2="16" y2="16"/>
@@ -153,7 +116,7 @@
                         </div>
                         <div class="line--regular"></div>
                     </div>
-                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion(undefined, 1)" style="display: none">
+                    <button class="search__icon search__icon--clear hoverable" style="display: none">
                         <svg width="17px" height="17px" viewBox="0 0 20 20">
                             <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                                 <line x1="4" y1="4" x2="16" y2="16"/>
@@ -191,7 +154,7 @@
                         </div>
                         <div class="line--regular"></div>
                     </div>
-                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion(undefined, 2)" style="display: none">
+                    <button class="search__icon search__icon--clear hoverable" style="display: none">
                         <svg width="17px" height="17px" viewBox="0 0 20 20">
                             <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                                 <line x1="4" y1="4" x2="16" y2="16"/>
@@ -229,7 +192,7 @@
                         </div>
                         <div class="line--regular"></div>
                     </div>
-                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion(undefined, 3)" style="display: none">
+                    <button class="search__icon search__icon--clear hoverable" style="display: none">
                         <svg width="17px" height="17px" viewBox="0 0 20 20">
                             <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                                 <line x1="4" y1="4" x2="16" y2="16"/>
@@ -271,7 +234,7 @@
                         </div>
                         <div class="line--regular"></div>
                     </div>
-                    <button class="search__icon search__icon--clear hoverable" onclick="clickSuggestion(undefined, 4)" style="display: none">
+                    <button class="search__icon search__icon--clear hoverable" style="display: none">
                         <svg width="17px" height="17px" viewBox="0 0 20 20">
                             <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                                 <line x1="4" y1="4" x2="16" y2="16"/>
@@ -301,12 +264,12 @@
                 </div>
 
             </div>
-            <div>
+            <div id="search__departure-arrival-buttons">
                 <div class="tab-row flex-row">
-                    <button type="button" class="hoverable tab-row__tab" onclick="setDepArr(0)">
+                    <button type="button" class="hoverable tab-row__tab">
                         <span class="de">Abfahrt</span><span class="en">departure</span>
                     </button>
-                    <button type="button" class="hoverable tab-row__tab" onclick="setDepArr(1)">
+                    <button type="button" class="hoverable tab-row__tab">
                         <span class="de">Ankunft (2. Bahnhof)</span><span class="en">arrival (first leg)</span>
                     </button>
                 </div>
@@ -315,7 +278,7 @@
                 </div>
             </div>
             <div>
-                <button class="hoverable tab-row__tab header flex-row" onclick="findConnections(true)">
+                <button id="search__find-button" class="hoverable tab-row__tab header flex-row">
                     <svg class="arrow" width="35px" height="35px" xmlns="http://www.w3.org/2000/svg">
                         <line x1="5" y1="30" x2="15" y2="20" stroke="var(--foreground-color)" stroke-width="4" stroke-linecap="round"/>
                         <circle cx="20" cy="15" r="10" stroke="var(--accent-color)" fill="var(--background-color)" stroke-width="3"/>
@@ -435,9 +398,9 @@
     </section>
 </div>
 <footer class="flex-row">
-    <div class="footer__buttons">
+    <div id="footer__buttons">
         <div class="tab-row">
-            <button type="button" class="hoverable selectable__text" onclick="showSubpage('', true)" title="home">
+            <button type="button" class="hoverable selectable__text" title="home">
                 <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
                     <mask id="line-mask">
                         <g stroke="white" stroke-width="4" stroke-linecap="round">
@@ -460,17 +423,7 @@
                 </svg>
                 <span class="desktop-only"><span class="de">Verbindungssuche</span><span class="en">Connection Search</span></span>
             </button>
-            <button id="connection-leaflet-subpage-button" type="button" class="hoverable selectable__text desktop-only valid-only--dim" onclick="showSubpage('journey', true)" title="details">
-                <!--svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
-                    <g stroke-width="4" stroke="var(--accent-color)" stroke-linecap="round">
-                        <line x1="5" y1="5" x2="5" y2="21"/>
-                    </g>
-                    <g stroke-width="3" stroke="var(--foreground-color)" stroke-linecap="round">
-                        <line x1="12" y1="5" x2="22" y2="5"/>
-                        <line x1="12" y1="13" x2="22" y2="13"/>
-                        <line x1="12" y1="21" x2="22" y2="21"/>
-                    </g>
-                </svg-->
+            <button id="connection-leaflet-subpage-button" type="button" class="hoverable selectable__text desktop-only valid-only--dim" title="details">
                 <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
                         <path d="M 6 14 A 8 8 0 1 1 20 14"/>
@@ -481,7 +434,7 @@
                 </svg>
                 <span class="desktop-only"><span class="de">Details/Karte</span><span class="en">Details/Map</span></span>
             </button>
-            <button id="leaflet-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only--dim" onclick="showSubpage('journey/map', true)" title="map">
+            <button id="leaflet-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only--dim" title="map">
                 <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
                         <path d="M 6 14 A 8 8 0 1 1 20 14"/>
@@ -491,7 +444,7 @@
                     <circle cx="13" cy="10" r="3" fill="var(--accent-color)"/>
                 </svg>
             </button>
-            <button id="connection-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only--dim" onclick="showSubpage('journey', true)" title="details">
+            <button id="connection-subpage-button" type="button" class="hoverable selectable__text mobile-only valid-only--dim" title="details">
                 <svg width="26px" height="26px" xmlns="http://www.w3.org/2000/svg">
                     <g stroke-width="4" stroke="var(--accent-color)" stroke-linecap="round">
                         <line x1="5" y1="5" x2="5" y2="21"/>
@@ -503,7 +456,7 @@
                     </g>
                 </svg>
             </button>
-            <button type="button" class="hoverable selectable__text" onclick="showSubpage('settings', true)" title="settings">
+            <button type="button" class="hoverable selectable__text" title="settings">
                 <svg width="26px" height="26px">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
                         <path d="M 13,24 C 13,21 19,19 21,21"></path>
@@ -519,7 +472,7 @@
                 </svg>
                 <span class="desktop-only"><span class="de">Einstellungen</span><span class="en">Settings</span></span>
             </button>
-            <button type="button" class="hoverable selectable__text" onclick="showSubpage('about', true)" title="about">
+            <button type="button" class="hoverable selectable__text" title="about">
                 <svg width="26px" height="26px">
                     <circle cx="13" cy="13" r="11" stroke="var(--foreground-color)" stroke-width="3" fill="none"/>
                     <g stroke="var(--accent-color)" stroke-width="4" fill="none" stroke-linecap="round">
@@ -542,7 +495,7 @@
         </div>
         <div class="line--vertical connection-line"></div>
         <i id="footer__info-panel__duration" class="align-center">30min</i>
-        <button id="share-button--desktop" class="flex-row align-center hoverable" title="share journey" onclick="shareJourney()">
+        <button id="share-button--desktop" class="share-button flex-row align-center hoverable" title="share journey">
             <svg xmlns="http://www.w3.org/2000/svg" width="26px" height="26px">
                 <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                     <line y2="13" x1="20" y1="6" x2="6"></line>
@@ -555,7 +508,7 @@
                 </g>
             </svg>
         </button>
-        <button class="flex-row align-center hoverable" onclick="refreshJourneyAndInitMap()">
+        <button class="refresh-map-button flex-row align-center hoverable">
             <svg width="26px" height="26px">
                 <g stroke="var(--foreground-color)" stroke-linecap="round" fill="none" stroke-width="3">
                     <path d="M 17 6 A 8 8 0 1 0 21 13" stroke-width="3"></path>
@@ -571,7 +524,7 @@
     <div id="connection-subpage" class="modal-content">
         <header class="flex-row small-only">
             <div class="modal__title header padded-top-bottom"></div>
-            <button class="subpage__button modal__share mobile-only header hoverable" title="show map" onclick="shareJourney()">
+            <button class="share-button subpage__button mobile-only header hoverable" title="show map">
                 <svg width='17px' height='17px' viewBox="0 0 20 20" xmlns='http://www.w3.org/2000/svg'>
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                         <line x1="16" y1="4" x2="4" y2="10"/>
@@ -584,7 +537,7 @@
                     </g>
                 </svg>
             </button>
-            <button class="subpage__button modal__refresh mobile-only header hoverable" onclick="refreshJourney()">
+            <button class="refresh-button subpage__button modal__refresh mobile-only header hoverable">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
                         <path d="M 13 5 A 6 6 0 1 0 16 10"/>
@@ -822,7 +775,7 @@
             <span class="de"></span><span class="en">Map</span>
         </div>
         <div class="modal--full-screen__actions-container flex-row mobile-only">
-            <button class="modal--full-screen__action flex-row header" onclick="shareJourney()">
+            <button class="share-button modal--full-screen__action flex-row header">
                 <svg width='17px' height='17px' viewBox="0 0 20 20" xmlns='http://www.w3.org/2000/svg'>
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
                         <line x1="16" y1="4" x2="4" y2="10"/>
@@ -835,7 +788,7 @@
                     </g>
                 </svg>
             </button>
-            <button class="modal--full-screen__action flex-row header" onclick="refreshJourneyAndInitMap()">
+            <button class="refresh-map-button modal--full-screen__action flex-row header">
                 <svg width="17px" height="17px" viewBox="0 0 20 20">
                     <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" fill="none">
                         <path d="M 13 5 A 6 6 0 1 0 16 10"/>
@@ -864,12 +817,12 @@
             </div>
             <div class="setting flex-row-column padded-top-bottom">
                 <div class="setting__name"><span class="de">Farbschema</span><span class="en">Color scheme</span></div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--theme" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTheme([0, 'light'])">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class=""><span class="de">hell</span><span class="en">light</span></span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTheme([1, 'dark'])">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class=""><span class="de">dunkel</span><span class="en">dark</span></span>
                         </button>
                     </div>
@@ -882,39 +835,39 @@
                 <div class="setting__name">
                     <span class="de">Akzentfarbe</span><span class="en">Accent color</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--color" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([0, 'red'])">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="desktop-only"><span class="de">rot</span><span class="en">red</span></span>
                             <span class="mobile-only" style="color: var(--accent-red)">
                     &#9679
                 </span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([1, 'yellow'])">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="desktop-only"><span class="de">gelb</span><span class="en">yellow</span></span>
                             <span class="mobile-only" style="color: var(--accent-yellow)">
                     &#9679
                 </span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([2, 'green'])">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="desktop-only"><span class="de">grün</span><span class="en">green</span></span>
                             <span class="mobile-only" style="color: var(--accent-green)">
                     &#9679
                 </span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([3, 'blue'])">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="desktop-only"><span class="de">blau</span><span class="en">blue</span></span>
                             <span class="mobile-only" style="color: var(--accent-blue)">
                     &#9679
                 </span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([4, 'purple'])">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="desktop-only"><span class="de">lila</span><span class="en">purple</span></span>
                             <span class="mobile-only" style="color: var(--accent-purple)">
                     &#9679
                 </span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setColor([5, 'gray'])">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="desktop-only"><span class="de">grau</span><span class="en">gray</span></span>
                             <span class="mobile-only" style="color: var(--accent-gray)">
                     &#9679
@@ -930,12 +883,12 @@
                 <div class="setting__name">
                     <span class="de">OpenRailwayMap-Ebene</span><span class="en">OpenRailwayMap layer</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--orm-layer-appearance" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setORMLayerAppearance(false)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">verstecken</span><span class="en">hide</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setORMLayerAppearance(true)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">anzeigen</span><span class="en">show</span>
                         </button>
                     </div>
@@ -948,12 +901,12 @@
                 <div class="setting__name">
                     <span class="de">Sprache</span><span class="en">Language</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--language" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setLanguage('de')">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">Deutsch</span><span class="en">German</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setLanguage('en')">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">Englisch</span><span class="en">English</span>
                         </button>
                     </div>
@@ -969,16 +922,16 @@
                 <div class="setting__name">
                     <span class="de">Adressen/POI</span><span class="en">Addresses/POI</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--search-type" class="setting__action flex-column">
                     <div class="flex-row">
                         <div id="search-type-indicator__addresses" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setSearchType('addresses')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="de">Adressen</span><span class="en">addresses</span>
                             </button>
                             <div class="line--accent"></div>
                         </div>
                         <div id="search-type-indicator__poi" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setSearchType('poi')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 POI
                             </button>
                             <div class="line--accent"></div>
@@ -993,10 +946,10 @@
                 <div class="setting__name">
                     <span class="de">Verkehrsmittel</span><span class="en">Modes of transprt</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--products" class="setting__action flex-column">
                     <div class="flex-row">
                         <div id="product-indicator__nationalExpress" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('nationalExpress')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="desktop-only">
                                     <span class="de">Intercity-Express</span><span class="en">national express</span>
                                 </span>
@@ -1005,7 +958,7 @@
                             <div class="line--accent connection-line--nationalExpress connection-line-color"></div>
                         </div>
                         <div id="product-indicator__national" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('national')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="desktop-only">
                                     <span class="de">Intercity / Eurocity</span><span class="en">national</span>
                                 </span>
@@ -1014,7 +967,7 @@
                             <div class="line--accent connection-line--national connection-line-color"></div>
                         </div>
                         <div id="product-indicator__regionalExpress" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('regionalExpress')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="desktop-only">
                                     <span class="de">Regional-Schnellzug</span><span class="en">regional express</span>
                                 </span>
@@ -1025,19 +978,19 @@
                     </div>
                     <div class="flex-row">
                         <div id="product-indicator__regional" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('regional')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="de">Regionalzug</span><span class="en">regional</span>
                             </button>
                             <div class="line--accent connection-line--regional connection-line-color"></div>
                         </div>
                         <div id="product-indicator__suburban" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('suburban')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="de">S-Bahn</span><span class="en">suburban</span>
                             </button>
                             <div class="line--accent connection-line--suburban connection-line-color"></div>
                         </div>
                         <div id="product-indicator__subway" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('subway')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="de">U-Bahn</span><span class="en">subway</span>
                             </button>
                             <div class="line--accent connection-line--subway connection-line-color"></div>
@@ -1045,25 +998,25 @@
                     </div>
                     <div class="flex-row">
                         <div id="product-indicator__tram" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('tram')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="de"><span class="desktop-only">Straßenbahn</span><span class="mobile-only">Tram</span></span><span class="en">tram</span>
                             </button>
                             <div class="line--accent connection-line--tram connection-line-color"></div>
                         </div>
                         <div id="product-indicator__bus" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('bus')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="de">Bus</span><span class="en">bus</span>
                             </button>
                             <div class="line--accent connection-line--bus connection-line-color"></div>
                         </div>
                         <div id="product-indicator__taxi" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('taxi')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="de">Ruftaxi</span><span class="en">taxi</span>
                             </button>
                             <div class="line--accent connection-line--taxi connection-line-color"></div>
                         </div>
                         <div id="product-indicator__ferry" class="selectable--horizontal selectable--horizontal--active tab-row__tab">
-                            <button class="hoverable selectable__text tab-row__tab" onclick="setProduct('ferry')">
+                            <button class="hoverable selectable__text tab-row__tab">
                                 <span class="de">Schiff</span><span class="en">ferry</span>
                             </button>
                             <div class="line--accent connection-line--ferry connection-line-color"></div>
@@ -1075,30 +1028,30 @@
                 <div class="setting__name">
                     <span class="de">Umstiegsmaximum</span><span class="en">Transfer limit</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--transfers" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(0)">
+                        <button type="button" class="hoverable tab-row__tab">
                             0
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(1)">
+                        <button type="button" class="hoverable tab-row__tab">
                             1
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(2)">
+                        <button type="button" class="hoverable tab-row__tab">
                             2
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(3)">
+                        <button type="button" class="hoverable tab-row__tab">
                             3
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(4)">
+                        <button type="button" class="hoverable tab-row__tab">
                             4
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(5)">
+                        <button type="button" class="hoverable tab-row__tab">
                             5
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(6)">
+                        <button type="button" class="hoverable tab-row__tab">
                             6
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransfers(-1)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="desktop-only"><span class="de">keins</span><span class="en">none</span></span>
                             <span class="mobile-only">&infin;</span>
                         </button>
@@ -1112,30 +1065,30 @@
                 <div class="setting__name">
                     <span class="de">Mindestumsteigezeit</span><span class="en">Minimum transfer time</span><span class="mobile-only"> [min]</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--transferTime" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(0)">
+                        <button type="button" class="hoverable tab-row__tab">
                             0<span class="desktop-only">min</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(2)">
+                        <button type="button" class="hoverable tab-row__tab">
                             2<span class="desktop-only">min</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(5)">
+                        <button type="button" class="hoverable tab-row__tab">
                             5<span class="desktop-only">min</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(10)">
+                        <button type="button" class="hoverable tab-row__tab">
                             10<span class="desktop-only">min</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(15)">
+                        <button type="button" class="hoverable tab-row__tab">
                             15<span class="desktop-only">min</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(20)">
+                        <button type="button" class="hoverable tab-row__tab">
                             20<span class="desktop-only">min</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(30)">
+                        <button type="button" class="hoverable tab-row__tab">
                             30<span class="desktop-only">min</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setTransferTime(40)">
+                        <button type="button" class="hoverable tab-row__tab">
                             40<span class="desktop-only">min</span>
                         </button>
                     </div>
@@ -1148,16 +1101,16 @@
                 <div class="setting__name">
                     <span class="de">Barrierefreiheit</span><span class="en">Accessibility</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--accessibility" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setAccessibility('none')">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">egal</span><span class="en">ignore</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setAccessibility('partial')">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="desktop-only"><span class="de">priorisieren</span><span class="en">prioritize</span></span>
                             <span class="mobile-only"><span class="de">prioris.</span><span class="en">prior.</span></span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setAccessibility('complete')">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">strikt</span><span class="en">strict</span>
                         </button>
                     </div>
@@ -1170,15 +1123,15 @@
                 <div class="setting__name">
                     <span class="de">Gehgeschwindigkeit</span><span class="en">Walking speed</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--walking-speed" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setWalkingSpeed('slow')">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">langsam</span><span class="en">slow</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setWalkingSpeed('normal')">
+                        <button type="button" class="hoverable tab-row__tab">
                             normal
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setWalkingSpeed('fast')">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">schnell</span><span class="en">fast</span>
                         </button>
                     </div>
@@ -1191,12 +1144,12 @@
                 <div class="setting__name">
                     <span class="de">Fahrradmitnahme</span><span class="en">Bicycle transport</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--bike" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setBike(false)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">nein</span><span class="en">no</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setBike(true)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">ja</span><span class="en">yes</span>
                         </button>
                     </div>
@@ -1212,12 +1165,12 @@
                 <div class="setting__name">
                     <span class="de">Anzeige-Einstellungen</span><span class="en">View Settings</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--storage--display" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('displaySettings', false)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">nicht speichern</span><span class="en">do not store</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('displaySettings', true)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">speichern</span><span class="en">store</span>
                         </button>
                     </div>
@@ -1230,12 +1183,12 @@
                 <div class="setting__name">
                     <span class="de">Einstellungen zu Suchvorschlägen</span><span class="en">Search Suggestion Settings</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--storage--locations" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('locationsSettings', false)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">nicht speichern</span><span class="en">do not store</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('locationsSettings', true)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">speichern</span><span class="en">store</span>
                         </button>
                     </div>
@@ -1248,12 +1201,12 @@
                 <div class="setting__name">
                     <span class="de">Verbindungs-Einstellungen</span><span class="en">Connection Settings</span>
                 </div>
-                <div class="setting__action flex-column">
+                <div id="setting__action--storage--journeys" class="setting__action flex-column">
                     <div class="tab-row flex-row">
-                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('journeysSettings', false)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">nicht speichern</span><span class="en">do not store</span>
                         </button>
-                        <button type="button" class="hoverable tab-row__tab" onclick="setStorageSettings('journeysSettings', true)">
+                        <button type="button" class="hoverable tab-row__tab">
                             <span class="de">speichern</span><span class="en">store</span>
                         </button>
                     </div>
@@ -1302,5 +1255,7 @@
     </div>
 </template>
 
+<script src="bundle.js.br" type="module" defer></script>
+<script nomodule src="bundle.js.gz" defer></script>
 </body>
 </html>

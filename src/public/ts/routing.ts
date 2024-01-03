@@ -5,7 +5,7 @@ import {
     displayJourneyTree,
     showLeafletModal,
     showSubpage
-} from "./display.js";
+} from "./display";
 import {
     displayedStations,
     resetJourneys, selectedJourney,
@@ -13,55 +13,61 @@ import {
     setJourney, settings,
     tryLockingJourneySearch,
     unlockJourneySearch
-} from "./memorizer.js";
-import {hideLoadSlider, showLoadSlider, slideIndicator, toast} from "./pageActions.js";
+} from "./memorizer";
+import {addSelectableEvents, hideLoadSlider, showLoadSlider, slideIndicator, toast} from "./pageActions";
 import {Journey, JourneyWithRealtimeData} from "hafas-client";
-import {calculateJourneyBounds, mergeSelectedJourneys, selectJourney} from "./journeyMerge.js";
-import {parseStationStopLocation} from "./search.js";
+import {calculateJourneyBounds, mergeSelectedJourneys, selectJourney} from "./journeyMerge";
+import {parseStationStopLocation} from "./search";
 
-const path = <PageStateString>window.location.pathname.substring(1)
-const journeyQuery = new URLSearchParams(window.location.search).get("journey")
 
-window.history.replaceState(<PageState>{state: ""}, "", "/")
-switch (path) {
-    case "":
-        break
-    case "settings":
-    case "about":
-        showSubpage(path, false)
-        break
-    case "journey":
-        if (journeyQuery !== null) {
-            displaySharedJourney(journeyQuery, false)
+export function routeToInitialState() {
+    addSelectableEvents("footer__buttons", (value: PageStateString) => {
+        showSubpage(value, true)
+    }, ["", "journey", "journey/map", "journey", "settings", "about"])
+    const path = <PageStateString>window.location.pathname.substring(1)
+    const journeyQuery = new URLSearchParams(window.location.search).get("journey")
+
+    window.history.replaceState(<PageState>{state: ""}, "", "/")
+    switch (path) {
+        case "":
+            break
+        case "settings":
+        case "about":
+            showSubpage(path, false)
+            break
+        case "journey":
+            if (journeyQuery !== null) {
+                displaySharedJourney(journeyQuery, false)
+            }
+            break
+        case "journey/map":
+            if (journeyQuery !== null) {
+                displaySharedJourney(journeyQuery, true)
+            }
+    }
+
+    window.onpopstate = () => {
+        const oldState = <PageStateString>document.documentElement.getAttribute("data-state")
+        const newState = (<PageState>history.state).state
+        if (newState === oldState) {
+            return
         }
-        break
-    case "journey/map":
-        if (journeyQuery !== null) {
-            displaySharedJourney(journeyQuery, true)
+        document.documentElement.setAttribute("data-state", newState)
+        const [desktopStart, mobileStart] = pageStateStringToID(oldState)
+        const [desktopEnd, mobileEnd] = pageStateStringToID(newState)
+        slideIndicator("subpage-indicator--desktop", 4, desktopStart, desktopEnd)
+        slideIndicator("subpage-indicator--mobile", 5, mobileStart, mobileEnd)
+        if ((newState == "journey" || newState == "journey/map") && (<PageState>history.state).journeyID !== selectedJourney?.refreshToken) {
+            toast("neutral", "Lade die Seite neu, um die korrekte Verbindung anzeigen zu lassen", "Reload the page to show the correct journey")
         }
-}
+    }
 
-window.onpopstate = () => {
-    const oldState = <PageStateString>document.documentElement.getAttribute("data-state")
-    const newState = (<PageState>history.state).state
-    if (newState === oldState) {
-        return
-    }
-    document.documentElement.setAttribute("data-state", newState)
-    const [desktopStart, mobileStart] = pageStateStringToID(oldState)
-    const [desktopEnd, mobileEnd] = pageStateStringToID(newState)
-    slideIndicator("subpage-indicator--desktop", 4, desktopStart, desktopEnd)
-    slideIndicator("subpage-indicator--mobile", 5, mobileStart, mobileEnd)
-    if ((newState == "journey" || newState == "journey/map") && (<PageState>history.state).journeyID !== selectedJourney?.refreshToken) {
-        toast("neutral", "Lade die Seite neu, um die korrekte Verbindung anzeigen zu lassen", "Reload the page to show the correct journey")
-    }
+    window.addEventListener("keydown", event => {
+        if (event.key === "Escape" && (<PageState>history.state).state !== "") {
+            history.back()
+        }
+    })
 }
-
-window.addEventListener("keydown", event => {
-    if (event.key === "Escape" && (<PageState>history.state).state !== "") {
-        history.back()
-    }
-})
 
 export function pushState(newState: PageStateString, refreshToken?: string) {
     const oldState = <PageStateString>document.documentElement.getAttribute("data-state")

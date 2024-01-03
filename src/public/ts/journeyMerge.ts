@@ -4,12 +4,12 @@ import {
     selectedJourney,
     selectedJourneys, setJourneyBounds,
     setSelectedJourney
-} from "./memorizer.js";
-import {addClassToChildOfParent, dateDifference, timeToString, unixToHoursStringShort} from "./util.js";
+} from "./memorizer";
+import {addClassToChildOfParent, dateDifference, timeToString, unixToHoursStringShort} from "./util";
 import {Journey, Station, Stop, Location, Leg} from "hafas-client";
-import {findConnections, shareJourney} from "./main.js";
-import {legsShareTransfer} from "./map.js";
-import {parseStationStopLocation} from "./search.js";
+import {findConnections, shareJourney} from "./main";
+import {legsShareTransfer} from "./map";
+import {parseStationStopLocation} from "./search";
 
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)

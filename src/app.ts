@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import path from "path";
 import {fileURLToPath} from 'url';
 import {createClient, JourneysOptions, LocationsOptions} from "hafas-client"
@@ -7,13 +8,19 @@ import {profile as dbProfile} from "hafas-client/p/db/index.js"
 import {getJourneys} from "./api/journeys.js"
 
 const app = express();
-app.use(express.static("dist/public"));
+app.use(compression())
+app.use((req, res, next) => {
+    if (req.url.endsWith('.br')) {
+        res.set('Content-Encoding', 'br');
+        res.set('Content-Type', 'application/javascript; charset=UTF-8');
+    }
+    next();
+}, express.static("dist/public"));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const port = process.env.PORT || 8081;
-
 
 const userAgent = "github.com/dabund24/Zug"
 
