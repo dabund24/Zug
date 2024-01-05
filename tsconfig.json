@@ -8,5 +8,5 @@
     "outDir": "dist",
     "allowUmdGlobalAccess": true
   },
-  "include": ["src"]
+  "include": ["src/app.ts", "src/api"]
 }

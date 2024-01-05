@@ -339,6 +339,10 @@
     display: none;
 }
 
+/*#settings .header {
+    margin-top: 1rem;
+}*/
+
 .setting {
     width: 100%;
     align-items: center;
