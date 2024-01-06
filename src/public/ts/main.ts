@@ -41,6 +41,10 @@ for (let i = 0; i < refreshMapButtons.length; i++) {
     refreshMapButtons[i].addEventListener("click", () => refreshJourneyAndInitMap(undefined))
 }
 
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js")
+}
+
 export async function findConnections(fromInput: boolean) {
     if (!tryLockingJourneySearch()) {
         toast("warning", "Mensch bist du ungeduldig :)", "Please wait")

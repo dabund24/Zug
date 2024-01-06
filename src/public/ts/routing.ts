@@ -129,10 +129,7 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
     })
 
     // await promises
-    const journeys: Array<Journey | null> = []
-    for (const journeyPromise of journeyPromises) {
-        journeys.push(await journeyPromise)
-    }
+    const journeys = await Promise.all(journeyPromises)
 
     // write journeys
     const stations: SearchObject[] = []

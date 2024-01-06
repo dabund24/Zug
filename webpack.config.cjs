@@ -1,16 +1,20 @@
 const path = require("path")
 const CompressionPlugin = require("compression-webpack-plugin")
 const BrotliPlugin = require("brotli-webpack-plugin")
+//const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    entry: "./src/public/ts/main.ts",
+    entry: {
+        "bundle": "./src/public/ts/main.ts",
+        "service-worker": "./src/public/service-worker.js"
+    },
     mode: "production",
     module: {
         rules: [
             {
                 test: /\.ts$/,
                 use: "ts-loader",
-                include: [path.resolve(__dirname, "src/public/ts")]
+                include: path.resolve(__dirname, "src/public/ts")
             }
         ]
     },
@@ -31,7 +35,7 @@ module.exports = {
         extensions: [".ts", ".js"]
     },
     output: {
-        filename: "bundle.js",
+        filename: "[name].js",
         path: path.resolve(__dirname, "dist/public")
     }
 }
