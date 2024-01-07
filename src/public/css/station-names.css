@@ -108,8 +108,8 @@
 }
 
 .station-name__durations__wait-container {
-    margin-left: -4rem;
-    width: 8rem;
+    margin-left: -3em;
+    width: 6em;
     flex-shrink: 0;
     > * {
         display: none;
@@ -117,7 +117,7 @@
 }
 
 .station-name__durations__leg-container {
-    margin-right: 4rem;
+    margin-right: 3em;
     width: 100%;
     visibility: hidden;
 }
@@ -174,25 +174,25 @@
         text-align: left;
     }
     .station-name__line-container {
-        margin: 0 calc(var(--connection-width) / -2) 0 2rem;
+        margin: 0 calc(var(--connection-width) / -2) 0 1.5em;
     }
     .station-name__durations {
         margin: 0 calc(var(--connection-width) / -2) 0 0;
     }
     .station-name__durations__wait-container {
         margin-left: 0;
-        width: 4rem;
+        width: 3em;
     }
 }
 
 .station-name-container:nth-last-child(2) {
     .station-name__line-container {
-        margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 calc(var(--connection-width) / 2);
+        margin: 0 calc(var(--connection-width) / -2 + 1.5em) 0 calc(var(--connection-width) / 2);
     }
 }
 
 .station-name-container:first-child:nth-last-child(2) .station-name__line-container {
-    margin: 0 calc(var(--connection-width) / -2 + 2rem) 0 2rem;
+    margin: 0 calc(var(--connection-width) / -2 + 1.5em) 0 1.5em;
 }
 
 .station-name-container:last-child {
@@ -204,14 +204,14 @@
         display: none;
     }
     .station-name__line-container {
-        margin: 0 calc(2rem - 16px) 0 auto;
+        margin: 0 calc(1.5em - 16px) 0 auto;
     }
     .station-name__durations {
         margin: 0;
     }
     .station-name__durations__wait-container {
         margin-left: auto;
-        width: 4rem;
+        width: 3em;
     }
     .station-name__durations__leg-container {
         margin: 0;

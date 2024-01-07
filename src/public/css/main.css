@@ -70,7 +70,7 @@
     --line-width--small: 3px;
     --line-length: 2rem;
     --line-length--vertical: 1.5rem;
-    --connection-width: 30rem;
+    --connection-width: 24em;
 
     --blur: blur(1px);
     --map-filter: none;
@@ -476,6 +476,11 @@ p {
     margin-left: -16px;
 }
 
+.preload {
+    body, a, input, button, .modal, .modal header, .hoverable, footer {
+        transition: background 0s, border 0s;
+    }
+}
 
 @media screen and (min-width: 1701px) {
     .small-only {

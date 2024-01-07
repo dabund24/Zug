@@ -45,6 +45,12 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/service-worker.js")
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        document.documentElement.className = ""
+    }, 500)
+})
+
 export async function findConnections(fromInput: boolean) {
     if (!tryLockingJourneySearch()) {
         toast("warning", "Mensch bist du ungeduldig :)", "Please wait")

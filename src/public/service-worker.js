@@ -1,4 +1,4 @@
-const staticCacheName = "staticCache-v0.1.0"
+const staticCacheName = "staticCache-v0.2.0"
 const assets = [
     "/",
     "/journey",

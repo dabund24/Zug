@@ -9,7 +9,7 @@
 
 .connection {
     align-items: stretch;
-    min-height: 3.5rem;
+    min-height: 3em;
     width: var(--connection-width);
     flex-shrink: 0;
 }
@@ -21,7 +21,7 @@
 .time {
     font-variant-numeric: tabular-nums;
     align-self: center;
-    width: 4rem;
+    width: 3em;
     margin: auto;
     flex-shrink: 0;
 }
@@ -178,7 +178,7 @@
 
 .connection-line-selectable {
     height: unset;
-    width: calc(var(--connection-width) - 8rem);
+    width: calc(var(--connection-width) - 6em);
 }
 
 .connection-line-selectable button {
@@ -402,7 +402,7 @@
         display: none;
     }
     :root:not([data-vias="0"]) {
-        --connection-width: 15rem;
+        --connection-width: 12em;
     }
 
     [data-vias="0"] {
