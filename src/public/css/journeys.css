@@ -1,5 +1,13 @@
 #journeys {
+    --zoom: 1;
     margin: 1.5rem auto 5rem;
+    padding: .5rem;
+}
+
+#diagram {
+    font-size: calc(var(--zoom) / 10 * 1em);
+    transition: font-size ease-in-out .5s;
+    background-color: var(--background-color);
     padding: .5rem;
 }
 
@@ -292,7 +300,7 @@
 
 .stopover {
     align-items: center;
-    margin: 0 auto 0 calc(-6rem - 16px);
+    margin: 0 auto 0 calc(-3em - 2rem - 16px);
     .station-icon {
         margin: 0 1rem;
         flex-shrink: 0;

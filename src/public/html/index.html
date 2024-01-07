@@ -10,7 +10,7 @@
     <link rel="icon" type="image/x-icon" href="/img/favicon.svg">
     <title>Zug</title>
 
-    <meta id="theme-color" name="theme-color" content="var(--background-color)"/>
+    <meta id="theme-color" name="theme-color" content="#ffffff"/>
     <link rel="manifest" crossorigin="use-credentials" href="/manifest.json">
 
     <link rel="apple-touch-icon" href="/img/pwa/apple-icon-180.png">
@@ -326,20 +326,26 @@
             </div>
         </div>
     </section>
-    <section id="journeys" class="center padded-top-bottom">
-        <div id="station-names-container">
-            <div id="station-names" class="flex-row">
-
-            </div>
-            <div class="background-transition--horizontal"></div>
+    <section id="journeys" class="center" style="--zoom: 10">
+        <div id="diagram-actions" class="center">
+            <button id="diagram-actions__screenshot-button" class="hoverable">Screenshot</button>
+            <button id="diagram-actions__minus-button" class="hoverable">-</button>
+            <button id="diagram-actions__plus-button" class="hoverable">+</button>
         </div>
-        <template id="station-name-template">
-            <div class="station-name-container flex-column">
-                <button class="station-name__name hoverable header">
+        <div id="diagram">
+            <div id="station-names-container">
+                <div id="station-names" class="flex-row">
 
-                </button>
-                <div class="station-name__line-container flex-row">
-                    <button class="station-icon-container station-icon-container--via hoverable">
+                </div>
+                <div class="background-transition--horizontal"></div>
+            </div>
+            <template id="station-name-template">
+                <div class="station-name-container flex-column">
+                    <button class="station-name__name hoverable header">
+
+                    </button>
+                    <div class="station-name__line-container flex-row">
+                        <button class="station-icon-container station-icon-container--via hoverable">
                         <span class="mini-icon-container">
                             <span class="mini-icon--station">
                             <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
@@ -357,83 +363,83 @@
                             <polyline points="2,2 2,14 14,14 14,2 2,2" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
                         </svg>
                         </span>
-                        <svg class="mini-icon-overlay" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
-                            <g stroke="var(--accent-red)" stroke-width="4" stroke-linecap="round">
-                                <line x1="2" y1="2" x2="14" y2="14"/>
-                                <line x1="2" y1="14" x2="14" y2="2"/>
-                            </g>
+                            <svg class="mini-icon-overlay" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
+                                <g stroke="var(--accent-red)" stroke-width="4" stroke-linecap="round">
+                                    <line x1="2" y1="2" x2="14" y2="14"/>
+                                    <line x1="2" y1="14" x2="14" y2="2"/>
+                                </g>
+                            </svg>
+                        </button>
+                        <div class="station-name__connector flex-row">
+
+                        </div>
+                    </div>
+                    <div class="station-name__durations flex-row">
+                        <div class="station-name__durations__wait-container flex-row">
+                            <span class="station-name__durations__arrival time"></span>
+                            <i class="station-name__durations__wait"></i>
+                            <span class="station-name__durations__departure time"></span>
+                        </div>
+                        <div class="station-name__durations__leg-container flex-row">
+                            <i class="station-name__durations__leg">0min</i>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template id="station-name__line__stopover-template">
+                <div class="station-name__connector__stopover flex-row">
+                    <button class="station-icon-container station-icon-container--stopover hoverable tooltip tooltip--attribute">
+                        <svg class="station-icon station-icon--stopover" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                            <circle cx='6' cy='6' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
                         </svg>
                     </button>
-                    <div class="station-name__connector flex-row">
+                    <div class="station-name__connector__line-container tooltip tooltip--attribute">
+                        <div class="line--regular connection-line"></div>
+                    </div>
+                </div>
+            </template>
 
-                    </div>
-                </div>
-                <div class="station-name__durations flex-row">
-                    <div class="station-name__durations__wait-container flex-row">
-                        <span class="station-name__durations__arrival time"></span>
-                        <i class="station-name__durations__wait"></i>
-                        <span class="station-name__durations__departure time"></span>
-                    </div>
-                    <div class="station-name__durations__leg-container flex-row">
-                        <i class="station-name__durations__leg">0min</i>
-                    </div>
-                </div>
+            <div id="connections-root-container" class="connections flex-column">
+
             </div>
-        </template>
-        <template id="station-name__line__stopover-template">
-            <div class="station-name__connector__stopover flex-row">
-                <button class="station-icon-container station-icon-container--stopover hoverable tooltip tooltip--attribute">
-                    <svg class="station-icon station-icon--stopover" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
-                        <circle cx='6' cy='6' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
-                    </svg>
-                </button>
-                <div class="station-name__connector__line-container tooltip tooltip--attribute">
-                    <div class="line--regular connection-line"></div>
-                </div>
-            </div>
-        </template>
+            <template id="connection-template">
+                <div class="flex-row connections-container">
+                    <div class="flex-row connection">
+                        <div class="time time--departure flex-column">
+                            <div class="time--scheduled time--departure--scheduled tooltip tooltip--align-left">
 
-        <div id="connections-root-container" class="connections flex-column">
+                            </div>
+                            <div class="time--actual time--departure--actual tooltip tooltip--align-left">
 
-        </div>
-        <template id="connection-template">
-            <div class="flex-row connections-container">
-                <div class="flex-row connection">
-                    <div class="time time--departure flex-column">
-                        <div class="time--scheduled time--departure--scheduled tooltip tooltip--align-left">
-
+                            </div>
                         </div>
-                        <div class="time--actual time--departure--actual tooltip tooltip--align-left">
+                        <div class="connection-line-selectable selectable--horizontal">
+                            <button class="hoverable selectable__text flex-row">
 
-                        </div>
-                    </div>
-                    <div class="connection-line-selectable selectable--horizontal">
-                        <button class="hoverable selectable__text flex-row">
-
-                        </button>
-                        <template>
+                            </button>
+                            <template>
                             <span class="connection-line-container">
                                 <span class="connection-line-name"></span>
                                 <span class="line--regular connection-line"></span>
                             </span>
-                        </template>
-                        <div class="line--accent"></div>
+                            </template>
+                            <div class="line--accent"></div>
+                        </div>
+                        <div class="time time--arrival flex-column">
+                            <div class="time--scheduled time--arrival--scheduled tooltip tooltip--align-right">
+
+                            </div>
+                            <div class="time--scheduled time--arrival--actual tooltip tooltip--align-right">
+
+                            </div>
+                        </div>
                     </div>
-                    <div class="time time--arrival flex-column">
-                        <div class="time--scheduled time--arrival--scheduled tooltip tooltip--align-right">
+                    <div class="connections flex-column">
 
-                        </div>
-                        <div class="time--scheduled time--arrival--actual tooltip tooltip--align-right">
-
-                        </div>
                     </div>
                 </div>
-                <div class="connections flex-column">
-
-                </div>
-            </div>
-        </template>
-
+            </template>
+        </div>
     </section>
 </div>
 <footer class="flex-row">

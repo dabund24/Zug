@@ -65,6 +65,7 @@
         padding: 4px;
         border-radius: 100%;
         z-index: 1;
+        position: relative;
         cursor: pointer;
     }
     .mini-icon-overlay {

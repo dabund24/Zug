@@ -114,6 +114,7 @@ html, body {
 }
 
 body {
+    font-size: 1.25rem;
     min-height: calc(100vh - (100vh - 100%));
     margin: 0;
     padding: 0;
@@ -136,6 +137,10 @@ body, input, button, .tooltip:after {
     font-size: 1.25rem;
     color: var(--foreground-color);
     background-color: var(--background-color);
+}
+
+input, button, .tooltip:after {
+    font-size: 1em;
 }
 
 body, a, input, button, .modal, .modal header, .hoverable, footer {
@@ -493,7 +498,7 @@ p {
         font-size: .8rem;
     }
 
-    body, input, button {
+    body {
         font-size: 16px;
     }
 

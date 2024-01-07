@@ -21,10 +21,12 @@ import {setupSearch} from "./search";
 import {initMap} from "./map";
 import {mergeSelectedJourneys} from "./journeyMerge";
 import {routeToInitialState} from "./routing";
+import {prepareDiagramActions} from "./diagramActions";
 
 applyInitialSettings()
 routeToInitialState()
 setupSearch()
+prepareDiagramActions()
 
 const shareButtons = document.getElementsByClassName("share-button")
 for (let i = 0; i < shareButtons.length; i++) {

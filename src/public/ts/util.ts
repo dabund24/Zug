@@ -1,4 +1,5 @@
 import {Product} from "./types";
+import {settings} from "./memorizer";
 
 /**
  * adds, if necessary, leading zeroes to a number to reach an amount of digits
@@ -65,7 +66,9 @@ export function timeToString(time: [number, number]) {
 
 export function dateToString(date: string | number | Date) {
     const dateA = new Date(date)
-    return dateA.toLocaleDateString("de-DE", {
+    const locale = settings.displaySettings.language === "de" ? "de-DE" : "en-GB"
+    return dateA.toLocaleDateString(locale, {
+        weekday: "long",
         day: "2-digit",
         month: "2-digit",
         year: "numeric"
