@@ -401,13 +401,14 @@ p {
     position: fixed;
     z-index: 1001;
     left: calc(50% - 15rem);
-    bottom: 5rem;
+    bottom: calc(4.5rem + max(.5rem, env(safe-area-inset-bottom)));
 }
 
 .toast {
     margin: 1rem auto;
     max-width: calc(100vw - 2rem);
     backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
     animation: toast__fadein-animation .2s ease-out, toast__fadeout-animation .5s ease-in-out 2.5s both;
 }
 

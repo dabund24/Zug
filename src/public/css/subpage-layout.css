@@ -63,7 +63,7 @@
 }
 
 .modal-content {
-    padding: 0 1.5rem 5rem;
+    padding: 0 1.5rem calc(4.5rem + max(.5rem, env(safe-area-inset-bottom)));
 }
 
 .modal--full-screen .modal-content {
@@ -80,6 +80,7 @@
     top: 0;
     background-color: var(--background-color--opaque);
     backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
     margin: 0 -1.5rem 0;
     padding: 1rem .5rem .5rem 1.5rem;
     align-items: start;

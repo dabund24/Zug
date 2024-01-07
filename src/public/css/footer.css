@@ -107,6 +107,11 @@ footer:not(.valid-journey) {
 }
 
 @media screen and (max-width: 1000px) {
+    footer {
+        padding-bottom: max(.5rem, env(safe-area-inset-bottom));
+        height: calc(4.5rem + max(.5rem, env(safe-area-inset-bottom)));
+    }
+
     #footer__buttons {
         width: 100%;
     }

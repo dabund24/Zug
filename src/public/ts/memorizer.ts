@@ -231,6 +231,7 @@ export function setTheme(theme: Theme) {
     document.documentElement.setAttribute("data-theme", theme[1]);
     settings.displaySettings.theme = theme
     saveSettings("displaySettings")
+    document.getElementById("theme-color")!.setAttribute("content", theme[0] === 0 ? "#ffffff" : "#121212")
 }
 
 export function setColor(color: Color) {
