@@ -36,7 +36,7 @@ export function prepareDiagramActions() {
 
 function saveScreenshot(uri: string) {
     const downloadLink = document.createElement("a")
-    downloadLink.setAttribute("download", `${displayedStations.from?.name} – ${displayedStations.to?.name}`)
+    downloadLink.setAttribute("download", `${displayedStations.from?.name} – ${displayedStations.to?.name}.png`)
     downloadLink.setAttribute("href", uri)
     downloadLink.click()
 }
