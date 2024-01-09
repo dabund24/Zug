@@ -314,17 +314,23 @@ p {
     margin-right: -1.5rem;
 }
 
-#load-indicator {
+#load-indicator-container {
     display: none;
     position: sticky;
     top: .5rem;
-    height: var(--line-width);
+    left: 0;
+    width: 100vw;
     margin-top: calc(-1 * var(--line-width));
-    animation: load-indication .7s ease-in-out 0s infinite alternate, load-indication--margin-right .7s ease-in-out 0s infinite alternate;
     z-index: 1005;
 }
 
-.loading #load-indicator {
+#load-indicator {
+    display: none;
+    height: var(--line-width);
+    animation: load-indication .7s ease-in-out 0s infinite alternate, load-indication--margin-right .7s ease-in-out 0s infinite alternate;
+}
+
+.loading #load-indicator-container, .loading #load-indicator {
     display: block;
 }
 
