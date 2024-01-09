@@ -81,7 +81,7 @@
     backdrop-filter: var(--blur);
     background-color: var(--background-color--opaque);
     -webkit-backdrop-filter: var(--blur);
-    max-width: calc(100vw - 2rem - 12px);
+    max-width: calc(100vw - 4rem - 8px);
 }
 
 .search:focus-within .search__suggestions, .search__suggestions:active {

@@ -110,6 +110,9 @@ footer:not(.valid-journey) {
     footer {
         padding-bottom: max(.5rem, env(safe-area-inset-bottom));
         height: calc(4.5rem + max(.5rem, env(safe-area-inset-bottom)));
+        .selectable__text {
+            padding: .5rem;
+        }
     }
 
     #footer__buttons {
