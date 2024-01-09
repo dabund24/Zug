@@ -36,10 +36,15 @@
 }
 
 #inputs {
+    margin: 0 -1rem;
+}
+
+#inputs, #diagram-actions {
     position: sticky;
-    left: 1.5rem;
+    left: .5rem;
     z-index: 50;
-    width: calc(100vw - 3rem);
+    width: calc(100vw - 1rem);
+    margin: 0 -5rem;
 }
 
 .station-inputs {

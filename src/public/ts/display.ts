@@ -32,7 +32,6 @@ export function displayJourneyTree(tree: JourneyTree, treedepth: number) {
     journeyCounter = 0;
     resetJourneys(treedepth - 1)
 
-    //addStationNames(stations)
     const connectionsRootContainer = document.getElementById("connections-root-container")!
     connectionsRootContainer.replaceChildren()
 

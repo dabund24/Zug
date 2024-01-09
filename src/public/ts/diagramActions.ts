@@ -24,12 +24,8 @@ export function prepareDiagramActions() {
             hideLoadSlider()
         })
     })
-
-    document.getElementById("diagram-actions__plus-button")!.addEventListener("click", () => {
-        modifyDiagramZoom(true)
-    })
-    document.getElementById("diagram-actions__minus-button")!.addEventListener("click", () => {
-        modifyDiagramZoom(false)
+    document.getElementById("diagram-actions__zoom-button")!.addEventListener("click", () => {
+        modifyDiagramZoom()
     })
 
 }
@@ -41,14 +37,10 @@ function saveScreenshot(uri: string) {
     downloadLink.click()
 }
 
-function modifyDiagramZoom(zoomIn: boolean) {
-    console.log("zoom in: " + zoomIn)
-    const diagramContainer = document.getElementById("journeys")!
-    const oldZoom = Number.parseInt(diagramContainer.style.getPropertyValue("--zoom"))
-    console.log(oldZoom)
-    if ((oldZoom === 6 && !zoomIn) || (oldZoom === 10 && zoomIn)) {
-        return
-    }
-    diagramContainer.style.setProperty("--zoom", (zoomIn ? (oldZoom + 1) : (oldZoom - 1)).toString())
+function modifyDiagramZoom() {
+    const subpageContainer = document.getElementById("content")!
+    const oldZoom = Number.parseInt(subpageContainer.style.getPropertyValue("--zoom"))
+    const zoomAmount = 5
+    subpageContainer.style.setProperty("--zoom", (oldZoom === 10 ? (oldZoom - zoomAmount) : (oldZoom + zoomAmount)).toString())
 }
 

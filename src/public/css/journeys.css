@@ -1,14 +1,25 @@
-#journeys {
-    --zoom: 1;
-    margin: 1.5rem auto 5rem;
-    padding: .5rem;
+#content {
+    --zoom: 10;
+}
+
+#diagram-actions {
+    margin-top: 1rem;
+    justify-content: center;
+    .plus-maker {
+        opacity: calc((10 - var(--zoom)) * 2.5);
+    }
+}
+
+.loading #diagram-actions, [data-vias=""] #diagram-actions {
+    visibility: hidden;
 }
 
 #diagram {
+    margin: 0 auto 5rem;
+    padding: .5rem;
     font-size: calc(var(--zoom) / 10 * 1em);
     transition: font-size ease-in-out .5s;
     background-color: var(--background-color);
-    padding: .5rem;
 }
 
 .connections-container {
@@ -71,7 +82,7 @@
     background-color: var(--product-color);
 }
 
-#journeys .connection-line {
+#diagram .connection-line {
     animation: grow-connection-line .5s ease-in-out 0s normal both;
 }
 
@@ -380,12 +391,16 @@
         margin-top: 5rem;
     }
 
-    #journeys {
+    #diagram {
         margin-bottom: 0;
     }
 }
 
 @media screen and (max-width: 1000px) {
+    #diagram-actions__zoom-button {
+        margin-right: auto;
+    }
+
     #connection-leaflet-subpage {
         grid-template-columns: 100%;
     }

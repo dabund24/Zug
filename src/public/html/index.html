@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="preload" lang="de" data-theme="" data-color="" data-vias="0" data-state="">
+<html class="preload" lang="de" data-theme="" data-color="" data-vias="" data-state="">
 
 <head>
     <meta charset="UTF-8"/>
@@ -61,7 +61,7 @@
     <link href="/css/map.css" rel="stylesheet">
 </head>
 <body>
-<div id="content">
+<div id="content" style="--zoom: 10">
     <div id="load-indicator" class="line--accent"></div>
     <section id="inputs">
         <template id="suggestion-template">
@@ -326,120 +326,151 @@
             </div>
         </div>
     </section>
-    <section id="journeys" class="center" style="--zoom: 10">
-        <div id="diagram-actions" class="center">
-            <button id="diagram-actions__screenshot-button" class="hoverable">Screenshot</button>
-            <button id="diagram-actions__minus-button" class="hoverable">-</button>
-            <button id="diagram-actions__plus-button" class="hoverable">+</button>
-        </div>
-        <div id="diagram">
-            <div id="station-names-container">
-                <div id="station-names" class="flex-row">
+    <section id="diagram-actions" class="flex-row">
+        <!--button id="diagram-actions__minus-button" class="icon-button--large hoverable">
+            <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
+                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                    <line x1="5" y1="13" x2="21" y2="13"/>
+                </g>
+            </svg>
+        </button-->
+        <button id="diagram-actions__zoom-button" class="icon-button--large hoverable">
+            <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
+                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                    <line x1="5" y1="13" x2="21" y2="13"/>
+                    <line class="plus-maker" x1="13" y1="5" x2="13" y2="21"/>
+                </g>
+            </svg>
+        </button>
+        <button id="diagram-actions__screenshot-button" class="icon-button--large hoverable">
+            <svg width='26px' height='26px' xmlns='http://www.w3.org/2000/svg'>
+                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                    <polyline points="2,5 8,5 10,3 16,3 18,5 24,5 24,22 2,22 2,5"/>
+                    <circle cx="13" cy="13" r="4"/>
+                </g>
+            </svg>
+        </button>
+        <button class="icon-button--large hoverable">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26px" height="26px" onclick="alert('geht noch nicht :)')">
+                <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">
+                    <line y2="13" x1="20" y1="6" x2="6"></line>
+                    <line y1="13" x2="20" y2="20" x1="6"></line>
+                </g>
+                <g fill="var(--foreground-color)">
+                    <circle r="4" cx="20" cy="6"></circle>
+                    <circle cy="13" r="4" cx="6"></circle>
+                    <circle r="4" cx="20" cy="20"></circle>
+                </g>
+            </svg>
+        </button>
+    </section>
+    <section id="diagram" class="center">
+        <div id="station-names-container">
+            <div id="station-names" class="flex-row">
 
-                </div>
-                <div class="background-transition--horizontal"></div>
             </div>
-            <template id="station-name-template">
-                <div class="station-name-container flex-column">
-                    <button class="station-name__name hoverable header">
+            <div class="background-transition--horizontal"></div>
+        </div>
+        <template id="station-name-template">
+            <div class="station-name-container flex-column">
+                <button class="station-name__name hoverable header">
 
+                </button>
+                <div class="station-name__line-container flex-row">
+                    <button class="station-icon-container station-icon-container--via hoverable">
+                    <span class="mini-icon-container">
+                        <span class="mini-icon--station">
+                        <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                        <circle cx='8' cy='8' r='6.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                        <circle cx='8' cy='8' r='2' fill='var(--product-color)'/>
+                    </svg>
+                    <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                        <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
+                    </svg>
+                    </span>
+                    <svg class="mini-icon--poi" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
+                        <polyline points="1.5,13.5 14.5,13.5 8,2.25 1.5,13.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                    </svg>
+                    <svg class="mini-icon--address" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
+                        <polyline points="2,2 2,14 14,14 14,2 2,2" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
+                    </svg>
+                    </span>
+                        <svg class="mini-icon-overlay" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="var(--accent-red)" stroke-width="4" stroke-linecap="round">
+                                <line x1="2" y1="2" x2="14" y2="14"/>
+                                <line x1="2" y1="14" x2="14" y2="2"/>
+                            </g>
+                        </svg>
                     </button>
-                    <div class="station-name__line-container flex-row">
-                        <button class="station-icon-container station-icon-container--via hoverable">
-                        <span class="mini-icon-container">
-                            <span class="mini-icon--station">
-                            <svg class="station-icon station-icon--major" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
-                            <circle cx='8' cy='8' r='6.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
-                            <circle cx='8' cy='8' r='2' fill='var(--product-color)'/>
-                        </svg>
-                        <svg class="station-icon station-icon--minor" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
-                            <circle cx='6' cy='6' r='4.5' stroke='var(--product-color)' stroke-width='3' fill='var(--background-color)'/>
-                        </svg>
-                        </span>
-                        <svg class="mini-icon--poi" width='16px' height='16px' xmlns='http://www.w3.org/2000/svg'>
-                            <polyline points="1.5,13.5 14.5,13.5 8,2.25 1.5,13.5" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
-                        </svg>
-                        <svg class="mini-icon--address" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
-                            <polyline points="2,2 2,14 14,14 14,2 2,2" stroke="var(--product-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="var(--background-color)"/>
-                        </svg>
-                        </span>
-                            <svg class="mini-icon-overlay" width="16px" height="16px" xmlns="http://www.w3.org/2000/svg">
-                                <g stroke="var(--accent-red)" stroke-width="4" stroke-linecap="round">
-                                    <line x1="2" y1="2" x2="14" y2="14"/>
-                                    <line x1="2" y1="14" x2="14" y2="2"/>
-                                </g>
-                            </svg>
+                    <div class="station-name__connector flex-row">
+
+                    </div>
+                </div>
+                <div class="station-name__durations flex-row">
+                    <div class="station-name__durations__wait-container flex-row">
+                        <span class="station-name__durations__arrival time"></span>
+                        <i class="station-name__durations__wait"></i>
+                        <span class="station-name__durations__departure time"></span>
+                    </div>
+                    <div class="station-name__durations__leg-container flex-row">
+                        <i class="station-name__durations__leg">0min</i>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template id="station-name__line__stopover-template">
+            <div class="station-name__connector__stopover flex-row">
+                <button class="station-icon-container station-icon-container--stopover hoverable tooltip tooltip--attribute">
+                    <svg class="station-icon station-icon--stopover" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
+                        <circle cx='6' cy='6' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
+                    </svg>
+                </button>
+                <div class="station-name__connector__line-container tooltip tooltip--attribute">
+                    <div class="line--regular connection-line"></div>
+                </div>
+            </div>
+        </template>
+
+        <div id="connections-root-container" class="connections flex-column">
+
+        </div>
+        <template id="connection-template">
+            <div class="flex-row connections-container">
+                <div class="flex-row connection">
+                    <div class="time time--departure flex-column">
+                        <div class="time--scheduled time--departure--scheduled tooltip tooltip--align-left">
+
+                        </div>
+                        <div class="time--actual time--departure--actual tooltip tooltip--align-left">
+
+                        </div>
+                    </div>
+                    <div class="connection-line-selectable selectable--horizontal">
+                        <button class="hoverable selectable__text flex-row">
+
                         </button>
-                        <div class="station-name__connector flex-row">
+                        <template>
+                        <span class="connection-line-container">
+                            <span class="connection-line-name"></span>
+                            <span class="line--regular connection-line"></span>
+                        </span>
+                        </template>
+                        <div class="line--accent"></div>
+                    </div>
+                    <div class="time time--arrival flex-column">
+                        <div class="time--scheduled time--arrival--scheduled tooltip tooltip--align-right">
 
                         </div>
-                    </div>
-                    <div class="station-name__durations flex-row">
-                        <div class="station-name__durations__wait-container flex-row">
-                            <span class="station-name__durations__arrival time"></span>
-                            <i class="station-name__durations__wait"></i>
-                            <span class="station-name__durations__departure time"></span>
-                        </div>
-                        <div class="station-name__durations__leg-container flex-row">
-                            <i class="station-name__durations__leg">0min</i>
+                        <div class="time--scheduled time--arrival--actual tooltip tooltip--align-right">
+
                         </div>
                     </div>
                 </div>
-            </template>
-            <template id="station-name__line__stopover-template">
-                <div class="station-name__connector__stopover flex-row">
-                    <button class="station-icon-container station-icon-container--stopover hoverable tooltip tooltip--attribute">
-                        <svg class="station-icon station-icon--stopover" width='16px' height='16px' viewBox="-2 -2 16 16" xmlns='http://www.w3.org/2000/svg'>
-                            <circle cx='6' cy='6' r='4.5' stroke='var(--foreground-color)' stroke-width='3' fill='var(--background-color)'/>
-                        </svg>
-                    </button>
-                    <div class="station-name__connector__line-container tooltip tooltip--attribute">
-                        <div class="line--regular connection-line"></div>
-                    </div>
+                <div class="connections flex-column">
+
                 </div>
-            </template>
-
-            <div id="connections-root-container" class="connections flex-column">
-
             </div>
-            <template id="connection-template">
-                <div class="flex-row connections-container">
-                    <div class="flex-row connection">
-                        <div class="time time--departure flex-column">
-                            <div class="time--scheduled time--departure--scheduled tooltip tooltip--align-left">
-
-                            </div>
-                            <div class="time--actual time--departure--actual tooltip tooltip--align-left">
-
-                            </div>
-                        </div>
-                        <div class="connection-line-selectable selectable--horizontal">
-                            <button class="hoverable selectable__text flex-row">
-
-                            </button>
-                            <template>
-                            <span class="connection-line-container">
-                                <span class="connection-line-name"></span>
-                                <span class="line--regular connection-line"></span>
-                            </span>
-                            </template>
-                            <div class="line--accent"></div>
-                        </div>
-                        <div class="time time--arrival flex-column">
-                            <div class="time--scheduled time--arrival--scheduled tooltip tooltip--align-right">
-
-                            </div>
-                            <div class="time--scheduled time--arrival--actual tooltip tooltip--align-right">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="connections flex-column">
-
-                    </div>
-                </div>
-            </template>
-        </div>
+        </template>
     </section>
 </div>
 <footer class="flex-row">
@@ -539,7 +570,7 @@
             <div id="footer__info-panel__destination">Ziel</div>
         </div>
         <div class="line--vertical connection-line"></div>
-        <i id="footer__info-panel__duration" class="align-center">30min</i>
+        <i id="footer__info-panel__duration" class="align-center">0min</i>
         <button id="share-button--desktop" class="share-button flex-row align-center hoverable" title="share journey">
             <svg xmlns="http://www.w3.org/2000/svg" width="26px" height="26px">
                 <g stroke="var(--foreground-color)" stroke-width="3" stroke-linecap="round">

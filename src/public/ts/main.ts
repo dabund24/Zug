@@ -86,6 +86,7 @@ export async function findConnections(fromInput: boolean) {
     toast("neutral", "Suche Verbindungen", "Finding connections")
     addStationNames(stations)
     document.getElementById("connections-root-container")!.replaceChildren()
+    document.documentElement.setAttribute("data-vias", (vias.length).toString())
 
     const isArrQuery = "&isArrival=" + settings.isArrival
     let timeQuery = "";
@@ -130,8 +131,6 @@ export async function findConnections(fromInput: boolean) {
     displayedStations.from = from
     displayedStations.vias = vias.slice(0)
     displayedStations.to = to
-
-    console.log(journeyTree)
 
     const connectionCount = displayJourneyTree(journeyTree, stations.length)
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + " connections")

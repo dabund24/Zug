@@ -124,7 +124,7 @@ body {
 }
 
 section {
-    margin: 0 1rem;
+    margin: .5rem 0;
 }
 
 #content {
@@ -459,6 +459,11 @@ p {
     to {
         opacity: 0;
     }
+}
+
+.icon-button--large {
+    display: flex;
+    padding: .5rem;
 }
 
 .mini-icon-container > * {
