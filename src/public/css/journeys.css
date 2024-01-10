@@ -377,7 +377,6 @@
 
 #connection-subpage {
     overflow-y: scroll;
-    width: 100%;
     box-sizing: border-box;
 }
 
@@ -393,6 +392,11 @@
 
     #diagram {
         margin-bottom: 0;
+    }
+
+    #connection-subpage {
+        width: 100%;
+        height: 100%;
     }
 }
 

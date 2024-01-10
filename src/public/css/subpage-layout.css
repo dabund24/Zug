@@ -50,7 +50,7 @@
 
 .modal--full-screen__title {
     text-align: left;
-    max-width: calc(100% - 11rem);
+    max-width: calc(100% - 10rem);
     left: calc(1rem - var(--line-width));
 }
 
@@ -133,8 +133,11 @@
 
 @media screen and (max-width: 1000px) {
     .modal header {
-        margin: 0 -1rem 0;
-        padding: 1rem .5rem .5rem 1rem;
+        margin: 0 min(-1.5rem, calc(28.5rem - 50vw)) 0;
+        padding: 1rem max(1rem, 50vw - 29rem) .5rem max(1.5rem, 50vw - 28.5rem);
+        border-bottom: var(--border);
+        width: 100vw;
+        box-sizing: border-box;
     }
 
     .subpage__button {
