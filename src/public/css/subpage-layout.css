@@ -100,25 +100,6 @@
         margin-right: calc(-1 * var(--line-width));
     }
 }
-/*
-@media screen and (min-width: 1301px) {
-    .modal {
-        ::-webkit-scrollbar {
-            background-color: transparent;
-            width: var(--line-width);
-            height: var(--line-width);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            border-radius: var(--border-radius-small);
-            background-color: var(--foreground-color);
-        }
-
-        ::-webkit-scrollbar-track {
-            background-color: transparent;
-        }
-    }
-}*/
 
 @media screen and (min-width: 1001px) {
     .modal {
@@ -129,11 +110,15 @@
     .modal-content {
         padding-bottom: 0;
     }
+
+    #connection-subpage {
+        border-right: var(--border);
+    }
 }
 
 @media screen and (max-width: 1000px) {
     .modal header {
-        margin: 0 min(-1.5rem, calc(28.5rem - 50vw)) 0;
+        margin: 0 min(-1.5rem, 28.5rem - 50vw) .5rem;
         padding: 1rem max(1rem, 50vw - 29rem) .5rem max(1.5rem, 50vw - 28.5rem);
         border-bottom: var(--border);
         width: 100vw;

@@ -67,7 +67,7 @@
 }
 
 .connection-line-container {
-    margin: auto .3rem;
+    margin: auto .2em;
     overflow: hidden;
     text-overflow: ellipsis;
 }

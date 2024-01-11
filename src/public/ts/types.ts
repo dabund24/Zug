@@ -12,7 +12,7 @@ export type Settings = {
         theme: Theme,
         color: Color,
         language: Language
-        ormLayer: boolean
+        mapLayer: MapLayer
     }
     locationsSettings: LocationsOptions
     journeysSettings: JourneysOptions
@@ -39,6 +39,7 @@ export type Theme =
 export type ToasterType = "success" | "neutral" | "warning" | "error"
 
 export type Language = "en" | "de"
+export type MapLayer = "OSM" | "ORM" | "OEPNVK"
 export type Product =
     | "nationalExpress"
     | "national"

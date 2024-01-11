@@ -9,7 +9,7 @@ import {
     Product,
     SearchInputs,
     WalkingSpeed,
-    Theme, Color
+    Theme, Color, MapLayer
 } from "./types";
 import {calculateJourneyBounds} from "./journeyMerge";
 
@@ -77,7 +77,7 @@ export const settings: Settings = {
     displaySettings: {
         theme: [0, "light"],
         color: [2, "green"],
-        ormLayer: false,
+        mapLayer: "OSM",
         language: "de"
     },
     locationsSettings: {
@@ -118,7 +118,7 @@ export function applyDisplaySettings(newSettings: Settings["displaySettings"]) {
     setTheme(newSettings.theme)
     setColor(newSettings.color)
     setLanguage(newSettings.language)
-    setORMLayerAppearance(newSettings.ormLayer)
+    setMapLayer(newSettings.mapLayer)
 }
 
 export function applyLocationsSettings(newSettings: LocationsOptions) {
@@ -191,7 +191,7 @@ export function applyInitialSettings() {
         [4, "purple"],
         [5, "gray"]
     ])
-    addSelectableEvents("setting__action--orm-layer-appearance", setORMLayerAppearance, [false, true])
+    addSelectableEvents("setting__action--map-layer", setMapLayer, ["OSM", "ORM", "OEPNVK"])
     addSelectableEvents("setting__action--language", setLanguage, ["de", "en"])
     addSelectableEvents("setting__action--search-type", setSearchType, ["addresses", "poi"])
     addSelectableEvents("setting__action--products", setProduct, [
@@ -262,14 +262,20 @@ export function setLanguage(language: Language) {
     saveSettings("displaySettings")
 }
 
-export function setORMLayerAppearance(show: boolean) {
-    if (show === settings.displaySettings.ormLayer) {
+export function setMapLayer(layer: MapLayer) {
+    const oldLayer = settings.displaySettings.mapLayer
+    if (layer === oldLayer) {
         return
     }
+    const index = (value: MapLayer) => ({
+        "OSM": 0,
+        "ORM": 1,
+        "OEPNVK": 2
+    })[value]
 
-    slideIndicator("orm-indicator", 2, show ? 0 : 1, show ? 1 : 0)
-    document.getElementById("map")!.setAttribute("data-orm", "" + show)
-    settings.displaySettings.ormLayer = show
+    slideIndicator("map-layer-indicator", 3, index(oldLayer), index(layer))
+    document.getElementById("map")!.setAttribute("data-orm", layer)
+    settings.displaySettings.mapLayer = layer
     saveSettings("displaySettings")
 }
 

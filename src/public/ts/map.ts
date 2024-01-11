@@ -1,4 +1,4 @@
-import {Feature, FeatureCollection, Journey, StopOver, Location, Line, Leg, Stop} from "hafas-client";
+import {Journey, StopOver, Location, Leg} from "hafas-client";
 import {LineString, Point} from "geojson"
 import L, {FeatureGroup, GeoJSON, LatLngBounds, LayerGroup} from "leaflet";
 import {dateDifference, timeToString, unixToHoursStringShort} from "./util";
@@ -10,20 +10,27 @@ import {
     getLinePopupHTML, getTransferPopupHTML, getWalkPopupHTML, getLocationPopupHTML
 } from "./mapPopups";
 import {parseStationStopLocation} from "./search";
+import {settings} from "./memorizer";
 
 const map = L.map("map", {
     zoomControl: false
 })
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     className: "osm-tiles"
-}).addTo(map)
+})
 
 const ormLayer = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>, Style: <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA 2.0</a> <a href="http://www.openrailwaymap.org/">OpenRailwayMap</a> and OpenStreetMap',
     className: "orm-tiles"
+})
+
+const oepnvLayer = L.tileLayer('https://tileserver.memomaps.de/tilegen/{z}/{x}/{y}.png', {
+    maxZoom: 17,
+    attribution: 'Map <a href="https://memomaps.de/">memomaps.de</a> <a href="http://creativecommons.org/licenses/by-sa/2.0/"> CC-BY-SA</a>, map data <a href="http://openstreetmap.org/"> Openstreetmap</a> <a href="http://opendatacommons.org/licenses/odbl/1.0/">ODbL</a>',
+    className: "oepnvk-tiles"
 })
 
 let layer: LayerGroup = L.layerGroup();
@@ -32,10 +39,21 @@ layer.addTo(map)
 map.attributionControl.setPosition("bottomright")
 
 export function initMap(journey: Journey, withRezoom: boolean) {
-    if (document.getElementById("map")!.getAttribute("data-orm") === "true") {
-        ormLayer.addTo(map)
-    } else {
-        ormLayer.removeFrom(map)
+    switch (settings.displaySettings.mapLayer) {
+        case "OSM":
+            osmLayer.addTo(map)
+            oepnvLayer.removeFrom(map)
+            ormLayer.removeFrom(map)
+            break
+        case "ORM":
+            osmLayer.addTo(map)
+            ormLayer.addTo(map)
+            oepnvLayer.removeFrom(map)
+            break
+        case "OEPNVK":
+            osmLayer.removeFrom(map)
+            ormLayer.removeFrom(map)
+            oepnvLayer.addTo(map)
     }
     layer.removeFrom(map)
     const [featureGr, bounds] = journeyToGeoJSON(journey)

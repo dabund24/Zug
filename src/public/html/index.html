@@ -959,19 +959,22 @@
             </div>
             <div class="setting flex-row-column padded-top-bottom">
                 <div class="setting__name">
-                    <span class="de">OpenRailwayMap-Ebene</span><span class="en">OpenRailwayMap layer</span>
+                    <span class="de">Kartenebene</span><span class="en">Map Layer</span>
                 </div>
-                <div id="setting__action--orm-layer-appearance" class="setting__action flex-column">
+                <div id="setting__action--map-layer" class="setting__action flex-column">
                     <div class="tab-row flex-row">
                         <button type="button" class="hoverable tab-row__tab">
-                            <span class="de">verstecken</span><span class="en">hide</span>
+                            Open Street Map
                         </button>
                         <button type="button" class="hoverable tab-row__tab">
-                            <span class="de">anzeigen</span><span class="en">show</span>
+                            Open Railway Map
+                        </button>
+                        <button type="button" class="hoverable tab-row__tab">
+                            ÖPNV Karte
                         </button>
                     </div>
                     <div class="tab-indicator-container indicator-line-container">
-                        <div class="line--accent indicator" id="orm-indicator" style="--animation--tab-indicator__end: 25%"></div>
+                        <div class="line--accent indicator" id="map-layer-indicator" style="--animation--tab-indicator__end: calc(50% / 3)"></div>
                     </div>
                 </div>
             </div>
