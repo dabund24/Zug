@@ -10,7 +10,7 @@ import {
     unixToHoursStringShort
 } from "./util";
 import {
-    displayedStations,
+    displayedDiagramData,
     journeyBounds,
     resetJourneys,
     saveJourney,
@@ -44,7 +44,6 @@ export function displayJourneyTree(tree: JourneyTree, treedepth: number) {
 
 export function addJourneyNode(node: JourneyNode, parent: HTMLElement | DocumentFragment) {
     const newParent = displayJourney(node, parent)
-    //console.log(newParent)
     if (node.children === null) {
         return
     }
@@ -72,7 +71,7 @@ export function addStationNames(stations: SearchObject[]) {
 }
 
 function removeStation(index: number) {
-    displayedStations.vias.splice(index, 1)
+    displayedDiagramData.stations!.vias.splice(index, 1)
     findConnections(false)
 }
 

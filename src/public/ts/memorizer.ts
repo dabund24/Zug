@@ -4,12 +4,10 @@ import {
     Settings,
     Accessibility,
     Language,
-    PageState,
-    PageStateString,
     Product,
     SearchInputs,
     WalkingSpeed,
-    Theme, Color, MapLayer
+    Theme, Color, MapLayer, DisplayedDiagramData
 } from "./types";
 import {calculateJourneyBounds} from "./journeyMerge";
 
@@ -33,10 +31,8 @@ export const searchInputValues: SearchInputs = {
     to: undefined
 }
 
-export const displayedStations: SearchInputs = {
-    from: undefined,
-    vias: [],
-    to: undefined
+export const displayedDiagramData: DisplayedDiagramData = {
+    isArrival: 0
 }
 
 let displayedJourneys: Journey[][] = []

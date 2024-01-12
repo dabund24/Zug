@@ -4,6 +4,7 @@ import {searchInputValues, setDepArr, settings} from "./memorizer";
 import {SearchObject} from "./types";
 import {addSelectableEvents} from "./pageActions";
 import {findConnections} from "./main";
+import {pushState, replaceDiagramURL} from "./routing";
 
 
 let selectedSuggestion = 0
@@ -15,7 +16,9 @@ export function setupSearch() {
         clearButtons[i].addEventListener("click", () => clickSuggestion(undefined, i))
     }
     addSelectableEvents("search__departure-arrival-buttons", setDepArr, [0, 1])
-    document.getElementById("search__find-button")!.addEventListener("click", () => findConnections(true))
+    document.getElementById("search__find-button")!.addEventListener("click", () => {
+        findConnections(true).then(() => replaceDiagramURL())
+    })
 
     const searchInputs = <HTMLCollectionOf<HTMLInputElement>>document.getElementsByClassName("search--autocomplete")
     const suggestionsContainers = document.getElementsByClassName("search__suggestions")

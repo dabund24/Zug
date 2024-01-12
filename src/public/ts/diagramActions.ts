@@ -1,6 +1,6 @@
 import html2canvas from "html2canvas";
 import {hideLoadSlider, showLoadSlider, toast} from "./pageActions";
-import {displayedStations, getJourney} from "./memorizer";
+import {displayedDiagramData, getJourney} from "./memorizer";
 import {dateToString} from "./util";
 
 export function prepareDiagramActions() {
@@ -32,7 +32,7 @@ export function prepareDiagramActions() {
 
 function saveScreenshot(uri: string) {
     const downloadLink = document.createElement("a")
-    downloadLink.setAttribute("download", `${displayedStations.from?.name} – ${displayedStations.to?.name}.png`)
+    downloadLink.setAttribute("download", `${displayedDiagramData.stations?.from?.name} – ${displayedDiagramData.stations?.to?.name}.png`)
     downloadLink.setAttribute("href", uri)
     downloadLink.click()
 }

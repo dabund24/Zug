@@ -1,13 +1,12 @@
-import {Journey, JourneyWithRealtimeData, RefreshJourneyOptions, Station, Stop, Location} from "hafas-client";
+import {Journey, JourneyWithRealtimeData} from "hafas-client";
 import {
     addStationNames,
     displayJourneyModal,
-    displayJourneyModalFirstTime,
     displayJourneyTree,
 } from "./display";
 import {
     applyInitialSettings,
-    displayedStations,
+    displayedDiagramData,
     getJourney,
     journeyBounds,
     saveJourney, searchInputValues, selectedJourney, selectedJourneys,
@@ -16,7 +15,7 @@ import {
     unlockJourneySearch
 } from "./memorizer";
 import {hideLoadSlider, showLoadSlider, toast} from "./pageActions";
-import {PageState, PageStateString, SearchObject, ZugErrorType, ZugResponse} from "./types";
+import {SearchObject, ZugErrorType, ZugResponse} from "./types";
 import {setupSearch} from "./search";
 import {initMap} from "./map";
 import {mergeSelectedJourneys} from "./journeyMerge";
@@ -60,7 +59,7 @@ export async function findConnections(fromInput: boolean) {
     }
     showLoadSlider();
 
-    const requestValues = fromInput ? searchInputValues : displayedStations
+    const requestValues = fromInput ? searchInputValues : displayedDiagramData.stations!
 
     const vias = requestValues.vias
         .filter((station): station is SearchObject => station !== undefined)
@@ -88,13 +87,21 @@ export async function findConnections(fromInput: boolean) {
     document.getElementById("connections-root-container")!.replaceChildren()
     document.documentElement.setAttribute("data-vias", (vias.length).toString())
 
-    const isArrQuery = "&isArrival=" + settings.isArrival
-    let timeQuery = "";
-    if ((<HTMLInputElement>document.getElementById("time__input")).value !== "") {
-        timeQuery = "&time=" + (<HTMLInputElement>document.getElementById("time__input")).value
+    const isArr = settings.isArrival
+    const isArrQuery = "&isArrival=" + isArr
+    let time: string
+    const timeInputElement = <HTMLInputElement>document.getElementById("time__input")
+    if (fromInput && timeInputElement.value !== "") {
+        time = (<HTMLInputElement>document.getElementById("time__input")).value
+    } else if (fromInput && timeInputElement.value === "") {
+        time = new Date(Date.now()).toISOString()
+    } else {
+        time = displayedDiagramData.time!
     }
+    let timeQuery = "&time=" + time
     let viasQuery = "&vias=" + JSON.stringify(vias.map(via => via?.requestParameter))
-    let journeyOptionsQuery = "&options=" + JSON.stringify(settings.journeysSettings)
+    const options = settings.journeysSettings
+    let journeyOptionsQuery = "&options=" + JSON.stringify(options)
 
     let treeResponse: ZugResponse
     try {
@@ -128,9 +135,14 @@ export async function findConnections(fromInput: boolean) {
 
     const journeyTree = treeResponse.content
 
-    displayedStations.from = from
-    displayedStations.vias = vias.slice(0)
-    displayedStations.to = to
+    displayedDiagramData.stations = {
+        from: from,
+        vias: vias.slice(0),
+        to: to
+    }
+    displayedDiagramData.time = fromInput ? time : displayedDiagramData.time
+    displayedDiagramData.isArrival = isArr
+    displayedDiagramData.options = options
 
     const connectionCount = displayJourneyTree(journeyTree, stations.length)
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + " connections")
@@ -237,7 +249,6 @@ export function shareJourney() {
     if (journeyBounds === undefined) {
         sharedText = new URL(window.location.href).toString()
     } else {
-        mergeSelectedJourneys()
         sharedText = new URL("/journey?journey=" + btoa(<string>selectedJourney.refreshToken), window.location.href).toString()
     }
 

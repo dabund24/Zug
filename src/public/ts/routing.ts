@@ -1,4 +1,4 @@
-import {JourneyNode, JourneyTree, PageState, PageStateString, SearchObject} from "./types";
+import {DisplayedDiagramData, JourneyNode, JourneyTree, PageState, PageStateString, SearchObject} from "./types";
 import {
     addStationNames,
     displayJourneyModalFirstTime,
@@ -7,7 +7,7 @@ import {
     showSubpage
 } from "./display";
 import {
-    displayedStations,
+    displayedDiagramData,
     resetJourneys, selectedJourney,
     selectedJourneys,
     setJourney, settings,
@@ -18,18 +18,22 @@ import {addSelectableEvents, hideLoadSlider, showLoadSlider, slideIndicator, toa
 import {Journey, JourneyWithRealtimeData} from "hafas-client";
 import {calculateJourneyBounds, mergeSelectedJourneys, selectJourney} from "./journeyMerge";
 import {parseStationStopLocation} from "./search";
+import {findConnections} from "./main";
 
 
 export function routeToInitialState() {
     addSelectableEvents("footer__buttons", (value: PageStateString) => {
         showSubpage(value, true)
     }, ["", "journey", "journey/map", "journey", "settings", "about"])
+    const url = new URL(window.location.href)
     const path = <PageStateString>window.location.pathname.substring(1)
     const journeyQuery = new URLSearchParams(window.location.search).get("journey")
 
     window.history.replaceState(<PageState>{state: ""}, "", "/")
     switch (path) {
         case "":
+            parseDiagramURL(url)
+            window.history.replaceState(<PageState>{state: ""}, "", url)
             break
         case "settings":
         case "about":
@@ -79,6 +83,9 @@ export function pushState(newState: PageStateString, refreshToken?: string) {
         const refreshTokenEncoded = btoa(refreshToken)
         const url = new URL(`${newState}?journey=${refreshTokenEncoded}`, baseURL)
         window.history.pushState(<PageState>{state: newState, journeyID: refreshToken}, "", url)
+    } else if (newState === "") {
+        const url = getDisplayedDiagramURL(baseURL)
+        window.history.pushState(<PageState>{state: newState}, "", url)
     } else {
         const url = new URL(newState, baseURL)
         window.history.pushState(<PageState>{state: newState}, "", url)
@@ -88,6 +95,45 @@ export function pushState(newState: PageStateString, refreshToken?: string) {
     const [desktopEnd, mobileEnd] = pageStateStringToID(newState)
     slideIndicator("subpage-indicator--desktop", 4, desktopStart, desktopEnd)
     slideIndicator("subpage-indicator--mobile", 5, mobileStart, mobileEnd)
+}
+
+export function replaceDiagramURL() {
+    const baseURL = new URL(window.location.href).origin
+    const url = getDisplayedDiagramURL(baseURL)
+    window.history.replaceState(<PageState>{state: ""}, "", url)
+}
+
+function getDisplayedDiagramURL(baseURL: string) {
+    const url = new URL(baseURL)
+    const sharedData = displayedDiagramData
+    if (
+        sharedData.stations === undefined
+        || sharedData.time === undefined
+        || sharedData.options === undefined
+        || sharedData.isArrival === undefined
+    ) {
+        return url
+    }
+    url.searchParams.set("diagram", btoa(JSON.stringify(displayedDiagramData)))
+    return url
+}
+
+function parseDiagramURL(url: URL) {
+    const diagramParam = url.searchParams.get("diagram")
+    if (diagramParam === null) {
+        return
+    }
+    try {
+        const sharedData = <DisplayedDiagramData> JSON.parse(atob(diagramParam))
+        displayedDiagramData.stations = sharedData.stations
+        displayedDiagramData.time = sharedData.time
+        displayedDiagramData.isArrival = sharedData.isArrival
+        displayedDiagramData.options = sharedData.options
+        findConnections(false)
+    } catch (e) {
+        console.log(e)
+        toast("error", "Link ist fehlerhaft", "link is broken")
+    }
 }
 
 export async function displaySharedJourney(tokenString: string, withMap: boolean) {
@@ -150,9 +196,11 @@ export async function displaySharedJourney(tokenString: string, withMap: boolean
     }
 
     addStationNames(stations)
-    displayedStations.from = stations[0]
-    displayedStations.vias = stations.slice(1, -1)
-    displayedStations.to = stations.at(-1)
+    displayedDiagramData.stations = {
+        from: stations[0],
+        vias: stations.slice(1, -1),
+        to: stations.at(-1)!
+    }
     displayJourneyTree(getSimpleJourneyTree(<Journey[]>journeys), stations.length)
     for (let i = 0; i < journeys.length; i++) {
         selectJourney(i, 0)

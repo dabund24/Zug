@@ -24,6 +24,17 @@ export type Settings = {
     }
 }
 
+export type DisplayedDiagramData = {
+    stations?: {
+        from: SearchObject,
+        vias: SearchObject[],
+        to: SearchObject
+    },
+    time?: string
+    isArrival?: 0 | 1,
+    options?: JourneysOptions
+}
+
 export type Color =
     | [0, "red"]
     | [1, "yellow"]

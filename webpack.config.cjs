@@ -8,7 +8,7 @@ module.exports = {
         "bundle": "./src/public/ts/main.ts",
         "service-worker": "./src/public/service-worker.js"
     },
-    mode: "production",
+    mode: "development",
     module: {
         rules: [
             {

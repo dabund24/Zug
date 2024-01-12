@@ -1,5 +1,5 @@
 import {
-    displayedStations,
+    displayedDiagramData,
     getJourney, journeyBounds, searchInputValues,
     selectedJourney,
     selectedJourneys, setJourneyBounds,
@@ -10,6 +10,7 @@ import {Journey, Station, Stop, Location, Leg} from "hafas-client";
 import {findConnections, shareJourney} from "./main";
 import {legsShareTransfer} from "./map";
 import {parseStationStopLocation} from "./search";
+import {replaceDiagramURL} from "./routing";
 
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)
@@ -102,8 +103,8 @@ function addStopoversToStationNames(target: HTMLElement, journey: Journey, index
         const stopoverContainer = <HTMLButtonElement> toBeAdded.querySelector(".station-icon-container")!
         stopoverContainer.setAttribute("data-tooltip-content", origin.name)
         stopoverContainer.onclick = () => {
-            displayedStations.vias.splice(index, 0, origin)
-            findConnections(false)
+            displayedDiagramData.stations!.vias.splice(index, 0, origin)
+            findConnections(false).then(() => replaceDiagramURL())
         }
 
         toBeAdded.querySelector(".station-name__connector__line-container")!.setAttribute("data-tooltip-content", <string> leg.line?.name)
