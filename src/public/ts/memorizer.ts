@@ -32,7 +32,14 @@ export const searchInputValues: SearchInputs = {
 }
 
 export const displayedDiagramData: DisplayedDiagramData = {
-    isArrival: 0
+    stations: {
+        from: undefined,
+        vias: [],
+        to: undefined
+    },
+    time: "",
+    isArrival: 0,
+    options: {}
 }
 
 let displayedJourneys: Journey[][] = []

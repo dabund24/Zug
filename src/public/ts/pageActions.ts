@@ -1,5 +1,6 @@
 import {ToasterType} from "./types";
 import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util";
+import {displayedDiagramData, journeyBounds, selectedJourney} from "./memorizer";
 
 const indicators = document.getElementsByClassName("indicator")
 for (let i = 0; i < indicators.length; i++) {
@@ -54,4 +55,35 @@ export function toast(type: ToasterType, messageDe: string, messageEn: string) {
         toastElement.remove()
     })
     target.appendChild(toBeAdded)
+}
+
+export function sharePage(whatToShare: "journey" | "diagram") {
+    let url: string
+    let text: string
+    switch (whatToShare) {
+        case "journey":
+            if (journeyBounds === undefined) {
+                url = new URL(window.location.href).toString()
+            } else {
+                url = new URL("/journey?journey=" + btoa(<string>selectedJourney.refreshToken), window.location.href).toString()
+            }
+            text = `Reise von ${selectedJourney.legs[0].origin?.name} nach ${selectedJourney.legs.at(-1)?.origin?.name}`
+            break
+        case "diagram":
+            url = new URL(window.location.href).toString()
+            text = `Diagramm für Reise von ${displayedDiagramData.stations.from?.name} nach ${displayedDiagramData.stations.to?.name}`
+    }
+
+    if (navigator.share) {
+        navigator.share({
+            title: text,
+            url: url
+        }).then(() => {
+            toast("success", "Link geteilt :D", "Shared link :D")
+        })
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            toast("success", "Link in Zwischenablage gespeichert", "Saved link to clipboard")
+        })
+    }
 }

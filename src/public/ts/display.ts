@@ -1,5 +1,5 @@
 import {Hint, Journey, Leg, Location, Status, StopOver, Warning} from "hafas-client";
-import {findConnections, shareJourney} from "./main";
+import {findConnections} from "./main";
 import {
     addClassToChildOfParent,
     dateDifference,
@@ -14,7 +14,7 @@ import {
     journeyBounds,
     resetJourneys,
     saveJourney,
-    selectedJourney,
+    selectedJourney, settings,
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer";
@@ -71,8 +71,10 @@ export function addStationNames(stations: SearchObject[]) {
 }
 
 function removeStation(index: number) {
-    displayedDiagramData.stations!.vias.splice(index, 1)
-    findConnections(false)
+    const diagramData = displayedDiagramData
+    diagramData.stations!.vias.splice(index, 1)
+    diagramData.options = settings.journeysSettings
+    findConnections(diagramData)
 }
 
 export function displayJourney(journeyNode: JourneyNode, connectionsTarget: HTMLElement | DocumentFragment): HTMLElement {
@@ -446,7 +448,6 @@ function addStaticLegInfoToModal(leg: Leg, legToBeAdded: DocumentFragment) {
         addInfoToTarget(target, infoTemplate, "<span class='de'>Fahrtnummer</span><span class='en'>train number</span>: " + leg.line.fahrtNr)
         hasInfo = true
     }
-    console.log(hasInfo)
     if (hasInfo) {
         const a = legCounter;
         (<HTMLButtonElement>legToBeAdded.querySelector(".modal__trip-static-infos-button")).onclick = function(){toggleStaticInfoWarnings(a)};

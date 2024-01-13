@@ -1,10 +1,9 @@
 import {addClassToChildOfParent, setHTMLOfChildOfParent} from "./util";
 import {Location, Station, Stop} from "hafas-client";
 import {searchInputValues, setDepArr, settings} from "./memorizer";
-import {SearchObject} from "./types";
+import {DisplayedDiagramData, SearchObject} from "./types";
 import {addSelectableEvents} from "./pageActions";
 import {findConnections} from "./main";
-import {pushState, replaceDiagramURL} from "./routing";
 
 
 let selectedSuggestion = 0
@@ -17,7 +16,14 @@ export function setupSearch() {
     }
     addSelectableEvents("search__departure-arrival-buttons", setDepArr, [0, 1])
     document.getElementById("search__find-button")!.addEventListener("click", () => {
-        findConnections(true).then(() => replaceDiagramURL())
+        const timeInput = <HTMLInputElement> document.getElementById("time__input")
+        const diagramData: DisplayedDiagramData = {
+            stations: searchInputValues,
+            time: timeInput.value === "" ? new Date(Date.now()).toISOString() : timeInput.value,
+            isArrival: settings.isArrival,
+            options: settings.journeysSettings
+        }
+        findConnections(diagramData)
     })
 
     const searchInputs = <HTMLCollectionOf<HTMLInputElement>>document.getElementsByClassName("search--autocomplete")

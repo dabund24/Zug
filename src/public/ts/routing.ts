@@ -1,9 +1,7 @@
 import {DisplayedDiagramData, JourneyNode, JourneyTree, PageState, PageStateString, SearchObject} from "./types";
 import {
     addStationNames,
-    displayJourneyModalFirstTime,
     displayJourneyTree,
-    showLeafletModal,
     showSubpage
 } from "./display";
 import {
@@ -83,7 +81,7 @@ export function pushState(newState: PageStateString, refreshToken?: string) {
         const refreshTokenEncoded = btoa(refreshToken)
         const url = new URL(`${newState}?journey=${refreshTokenEncoded}`, baseURL)
         window.history.pushState(<PageState>{state: newState, journeyID: refreshToken}, "", url)
-    } else if (newState === "") {
+    } else if (newState === "" && displayedDiagramData.time !== "") {
         const url = getDisplayedDiagramURL(baseURL)
         window.history.pushState(<PageState>{state: newState}, "", url)
     } else {
@@ -125,11 +123,7 @@ function parseDiagramURL(url: URL) {
     }
     try {
         const sharedData = <DisplayedDiagramData> JSON.parse(atob(diagramParam))
-        displayedDiagramData.stations = sharedData.stations
-        displayedDiagramData.time = sharedData.time
-        displayedDiagramData.isArrival = sharedData.isArrival
-        displayedDiagramData.options = sharedData.options
-        findConnections(false)
+        findConnections(sharedData)
     } catch (e) {
         console.log(e)
         toast("error", "Link ist fehlerhaft", "link is broken")

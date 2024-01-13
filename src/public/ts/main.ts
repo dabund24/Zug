@@ -14,12 +14,12 @@ import {
     tryLockingJourneySearch,
     unlockJourneySearch
 } from "./memorizer";
-import {hideLoadSlider, showLoadSlider, toast} from "./pageActions";
-import {SearchObject, ZugErrorType, ZugResponse} from "./types";
+import {hideLoadSlider, showLoadSlider, toast, sharePage} from "./pageActions";
+import {DisplayedDiagramData, SearchObject, ZugErrorDescription, ZugErrorType, ZugResponse} from "./types";
 import {setupSearch} from "./search";
 import {initMap} from "./map";
 import {mergeSelectedJourneys} from "./journeyMerge";
-import {routeToInitialState} from "./routing";
+import {replaceDiagramURL, routeToInitialState} from "./routing";
 import {prepareDiagramActions} from "./diagramActions";
 
 applyInitialSettings()
@@ -29,7 +29,7 @@ prepareDiagramActions()
 
 const shareButtons = document.getElementsByClassName("share-button")
 for (let i = 0; i < shareButtons.length; i++) {
-    shareButtons[i].addEventListener("click", () => shareJourney())
+    shareButtons[i].addEventListener("click", () => sharePage("journey"))
 }
 
 const refreshButtons = document.getElementsByClassName("refresh-button")
@@ -48,32 +48,32 @@ if ("serviceWorker" in navigator) {
 
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
-        document.documentElement.className = ""
+        document.documentElement.classList.remove("preload")
     }, 500)
 })
 
-export async function findConnections(fromInput: boolean) {
+/**
+ * If passed data is valid, updates page url, fetches journey tree based on the passed data and invokes diagram generation.
+ * @param diagramData what the user wants to be generated
+ */
+export async function findConnections(diagramData: DisplayedDiagramData) {
     if (!tryLockingJourneySearch()) {
         toast("warning", "Mensch bist du ungeduldig :)", "Please wait")
         return
     }
     showLoadSlider();
 
-    const requestValues = fromInput ? searchInputValues : displayedDiagramData.stations!
-
-    const vias = requestValues.vias
-        .filter((station): station is SearchObject => station !== undefined)
-
-    if (requestValues.from === undefined || requestValues.to === undefined) {
+    // check for obvious/common mistakes in request
+    const from = diagramData.stations.from
+    const to = diagramData.stations.to
+    if (from === undefined || to === undefined) {
         toast("error", "Start und Ziel müssen angegeben werden", "Specifying start and destination is mandatory")
         unlockJourneySearch()
         hideLoadSlider()
         return
     }
-
-    const from = requestValues.from
-    const to = requestValues.to
-
+    const vias = diagramData.stations.vias
+        .filter((station): station is SearchObject => station !== undefined)
     const stations = [from, vias, to].flat()
     const invalidStation = checkStationsValidity(stations)
     if (invalidStation !== null) {
@@ -82,30 +82,35 @@ export async function findConnections(fromInput: boolean) {
         hideLoadSlider()
         return
     }
-    toast("neutral", "Suche Verbindungen", "Finding connections")
+
+    // update displayedDiagramData object
+    displayedDiagramData.stations = {
+        from: from,
+        vias: vias.slice(0),
+        to: to
+    }
+    displayedDiagramData.time = diagramData.time
+    displayedDiagramData.isArrival = diagramData.isArrival
+    displayedDiagramData.options = diagramData.options
+
+    replaceDiagramURL()
+
     addStationNames(stations)
     document.getElementById("connections-root-container")!.replaceChildren()
     document.documentElement.setAttribute("data-vias", (vias.length).toString())
 
-    const isArr = settings.isArrival
-    const isArrQuery = "&isArrival=" + isArr
-    let time: string
-    const timeInputElement = <HTMLInputElement>document.getElementById("time__input")
-    if (fromInput && timeInputElement.value !== "") {
-        time = (<HTMLInputElement>document.getElementById("time__input")).value
-    } else if (fromInput && timeInputElement.value === "") {
-        time = new Date(Date.now()).toISOString()
-    } else {
-        time = displayedDiagramData.time!
-    }
-    let timeQuery = "&time=" + time
-    let viasQuery = "&vias=" + JSON.stringify(vias.map(via => via?.requestParameter))
-    const options = settings.journeysSettings
-    let journeyOptionsQuery = "&options=" + JSON.stringify(options)
-
+    // fetch journey tree
+    const apiURL = new URL("/api/journeys", window.location.origin)
+    apiURL.searchParams.set("from", from.requestParameter)
+    apiURL.searchParams.set("vias", JSON.stringify(vias.map(via => via.requestParameter)))
+    apiURL.searchParams.set("to", to.requestParameter)
+    apiURL.searchParams.set("isArr", diagramData.isArrival.toString())
+    apiURL.searchParams.set("time", diagramData.time)
+    apiURL.searchParams.set("options", JSON.stringify(diagramData.options))
+    toast("neutral", "Suche Verbindungen", "Finding connections")
     let treeResponse: ZugResponse
     try {
-        treeResponse = await fetch("/api/journeys?from=" + from.requestParameter + viasQuery + "&to=" + to.requestParameter + timeQuery + isArrQuery + journeyOptionsQuery).then(res => res.json());
+        treeResponse = await fetch(apiURL).then(res => res.json());
     } catch (err) {
         toast("error", "Netzwerk-Fehler", "Network error")
         hideLoadSlider()
@@ -114,35 +119,11 @@ export async function findConnections(fromInput: boolean) {
     }
 
     if (treeResponse.isError) {
-        let stationA: string
-        let stationB: string
-        if (treeResponse.content.stationA === -1) {
-            stationA = "";
-        } else {
-            stationA = stations[treeResponse.content.stationA]!.name
-        }
-        if (treeResponse.content.stationB === -1) {
-            stationB = "";
-        } else {
-            stationB = stations[treeResponse.content.stationB]!.name
-        }
-
-        printErrorMessage(treeResponse.content.errorType, stationA, stationB)
-        hideLoadSlider()
-        unlockJourneySearch()
+        handleRequestError(treeResponse.content, stations.map(station => station.name))
         return
     }
 
     const journeyTree = treeResponse.content
-
-    displayedDiagramData.stations = {
-        from: from,
-        vias: vias.slice(0),
-        to: to
-    }
-    displayedDiagramData.time = fromInput ? time : displayedDiagramData.time
-    displayedDiagramData.isArrival = isArr
-    displayedDiagramData.options = options
 
     const connectionCount = displayJourneyTree(journeyTree, stations.length)
     toast("success", connectionCount + " Verbindungen gefunden", "Found " + connectionCount + " connections")
@@ -157,6 +138,25 @@ function checkStationsValidity(stations: SearchObject[]) {
         }
     }
     return null
+}
+
+function handleRequestError(errorContent: ZugErrorDescription, stationNames: string[]) {
+    let stationA: string
+    let stationB: string
+    if (errorContent.stationA === -1) {
+        stationA = "";
+    } else {
+        stationA = stationNames[errorContent.stationA]
+    }
+    if (errorContent.stationB === -1) {
+        stationB = "";
+    } else {
+        stationB = stationNames[errorContent.stationB]
+    }
+
+    printErrorMessage(errorContent.errorType, stationA, stationB)
+    hideLoadSlider()
+    unlockJourneySearch()
 }
 
 export async function refreshJourneyAndInitMap(tokenString: string | undefined) {
@@ -199,10 +199,8 @@ export async function refreshJourney(tokenString: string | undefined) {
     })
 
     // await promises
-    const journeys: Array<Journey | null> = []
-    for (const journeyPromise of journeyPromises) {
-        journeys.push(await journeyPromise)
-    }
+    const journeys = await Promise.all(journeyPromises)
+
     // write journeys
     for (let i = 0; i < journeys.length; i++) {
         const journey = journeys[i]
@@ -241,27 +239,5 @@ function printErrorMessage(errorType: ZugErrorType, stationA: string, stationB: 
             toast("error",
                 "Ein Fehler ist aufgetreten: " + errorType,
                 "An error occurred: " + errorType)
-    }
-}
-
-export function shareJourney() {
-    let sharedText: string
-    if (journeyBounds === undefined) {
-        sharedText = new URL(window.location.href).toString()
-    } else {
-        sharedText = new URL("/journey?journey=" + btoa(<string>selectedJourney.refreshToken), window.location.href).toString()
-    }
-
-    if (navigator.share) {
-        navigator.share({
-            title: `Reise von ${selectedJourney.legs[0].origin?.name} nach ${selectedJourney.legs.at(-1)?.origin?.name}`,
-            url: sharedText
-        }).then(() => {
-            toast("success", "Verbindung geteilt", "Shared connection")
-        })
-    } else {
-        navigator.clipboard.writeText(sharedText).then(() => {
-            toast("success", "Link in Zwischenablage gespeichert", "Saved link to clipboard")
-        })
     }
 }

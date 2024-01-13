@@ -3,14 +3,14 @@ import {
     getJourney, journeyBounds, searchInputValues,
     selectedJourney,
     selectedJourneys, setJourneyBounds,
-    setSelectedJourney
+    setSelectedJourney, settings
 } from "./memorizer";
 import {addClassToChildOfParent, dateDifference, timeToString, unixToHoursStringShort} from "./util";
 import {Journey, Station, Stop, Location, Leg} from "hafas-client";
-import {findConnections, shareJourney} from "./main";
+import {findConnections} from "./main";
 import {legsShareTransfer} from "./map";
 import {parseStationStopLocation} from "./search";
-import {replaceDiagramURL} from "./routing";
+import {sharePage} from "./pageActions";
 
 export function selectJourney(depth: number, idInDepth: number) {
     console.log("depth: " + depth)
@@ -103,8 +103,10 @@ function addStopoversToStationNames(target: HTMLElement, journey: Journey, index
         const stopoverContainer = <HTMLButtonElement> toBeAdded.querySelector(".station-icon-container")!
         stopoverContainer.setAttribute("data-tooltip-content", origin.name)
         stopoverContainer.onclick = () => {
-            displayedDiagramData.stations!.vias.splice(index, 0, origin)
-            findConnections(false).then(() => replaceDiagramURL())
+            const diagramData = displayedDiagramData
+            diagramData.stations!.vias.splice(index, 0, origin)
+            diagramData.options = settings.journeysSettings
+            findConnections(diagramData)
         }
 
         toBeAdded.querySelector(".station-name__connector__line-container")!.setAttribute("data-tooltip-content", <string> leg.line?.name)
@@ -135,7 +137,7 @@ export function calculateJourneyBounds(): [number, number] {
         document.querySelector("footer")!.classList.remove("valid-journey")
     } else {
         document.querySelector("footer")!.classList.add("valid-journey")
-        shareButton.onclick = () => shareJourney()
+        shareButton.onclick = () => sharePage("journey")
     }
     setJourneyBounds([start, end])
     displayFooterInfoPanel([start, end])

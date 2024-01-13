@@ -1,5 +1,5 @@
 import html2canvas from "html2canvas";
-import {hideLoadSlider, showLoadSlider, toast} from "./pageActions";
+import {hideLoadSlider, showLoadSlider, toast, sharePage} from "./pageActions";
 import {displayedDiagramData, getJourney} from "./memorizer";
 import {dateToString} from "./util";
 
@@ -27,7 +27,9 @@ export function prepareDiagramActions() {
     document.getElementById("diagram-actions__zoom-button")!.addEventListener("click", () => {
         modifyDiagramZoom()
     })
-
+    document.getElementById("diagram-actions__share-button")!.addEventListener("click", () => {
+        sharePage("diagram")
+    })
 }
 
 function saveScreenshot(uri: string) {
