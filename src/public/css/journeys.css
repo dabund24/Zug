@@ -443,7 +443,7 @@
 }
 
 @media screen and (min-width: 35rem) {
-    [data-vias="0"] body {
+    [data-vias=""] body, [data-vias="0"] body {
         overflow-x: hidden;
     }
 }

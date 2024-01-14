@@ -157,10 +157,8 @@ export function mergeSelectedJourneys() {
     for (let i = bounds[0]; i <= bounds[1]; i++) {
         const journey = getJourney(i, selectedJourneys[i])
 
-        const journeyOrigin = journey.legs[0].origin
-        const mergedJourneyDestination = mergedJourney.legs.at(-1)?.destination
-        if (mergedJourney.legs.length > 0 && !legsShareTransfer(mergedJourney.legs.at(-1)!, journey.legs[0]) && journeyOrigin !== undefined && mergedJourneyDestination !== undefined) {
-            mergedJourney.legs = mergedJourney.legs.concat(getMergingWalk(journeyOrigin, mergedJourneyDestination))
+        if (mergedJourney.legs.length > 0 && !legsShareTransfer(mergedJourney.legs.at(-1)!, journey.legs[0])) {
+            mergedJourney.legs = mergedJourney.legs.concat(getMergingWalk(mergedJourney.legs.at(-1)!, journey.legs[0]))
         }
 
         mergedJourney.legs = mergedJourney.legs.concat(journey.legs)
@@ -173,8 +171,14 @@ export function mergeSelectedJourneys() {
     setSelectedJourney(mergedJourney)
 }
 
-function getMergingWalk(origin: Station | Stop | Location, destination: Station | Stop | Location): Leg {
-    return {origin: origin, destination: destination, walking: true}
+function getMergingWalk(legA: Leg, legB: Leg): Leg {
+    return {
+        origin: legA.destination,
+        destination: legB.origin,
+        departure: legA.arrival,
+        arrival: legB.departure,
+        walking: true
+    }
 }
 
 function displayFooterInfoPanel(journeyBounds: [number, number]) {

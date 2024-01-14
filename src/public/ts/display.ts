@@ -182,13 +182,13 @@ export function displayJourneyModal(journey: Journey) {
             } else {
                 transferTime = timeToString(dateDifference(leg.departure!, leg.arrival!))
             }
-            if (leg.origin?.type === "location" && !(legs[i - 1] !== undefined && legs[i - 1].walking)) {
-                addLocationToModal(parseStationStopLocation(leg.origin), legsTarget, undefined, unixToHoursStringShort(legs[i].departure!))
+            if (leg.origin !== undefined && i === 0) {  // first leg is walk
+                addLocationToModal(parseStationStopLocation(leg.origin), legsTarget, undefined, unixToHoursStringShort(leg.departure!))
             }
             addWalkToModal(leg, legsTarget, transferTime)
-            if (leg.destination?.type === "location") {
+            if (leg.destination !== undefined && (i === legs.length - 1 || legs[i + 1].walking)) {  // walk before another walk or last leg is walk
                 let departure: string | undefined = undefined
-                if (legs[i + 1] !== undefined && legs[i + 1].walking) {
+                if (legs[i + 1] !== undefined && legs[i + 1].walking && legs[i + 1].departure !== undefined && legs[i + 1].departure !== leg.arrival) {
                     departure = unixToHoursStringShort(legs[i + 1].departure)
                 }
                 addLocationToModal(parseStationStopLocation(leg.destination), legsTarget, unixToHoursStringShort(leg.arrival!), departure)

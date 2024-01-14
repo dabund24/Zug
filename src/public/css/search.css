@@ -37,12 +37,12 @@
 
 #inputs {
     margin: 0 -1rem;
+    z-index: 50;
 }
 
 #inputs, #diagram-actions {
     position: sticky;
     left: .5rem;
-    z-index: 50;
     width: calc(100vw - 1rem);
     margin: 0 -5rem;
 }
@@ -86,7 +86,7 @@
     backdrop-filter: var(--blur);
     background-color: var(--background-color--opaque);
     -webkit-backdrop-filter: var(--blur);
-    max-width: calc(100vw - 4rem - 8px);
+    max-width: calc(100vw - 2rem - 8px);
 }
 
 .search:focus-within .search__suggestions, .search__suggestions:active {
