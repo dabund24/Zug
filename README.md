@@ -42,6 +42,14 @@ npm start
 
 Then, open [`http://localhost:8081`](http://localhost:8081) in your browser.
 
+## Tech Stack
+
+- Backend: Node.js, Express
+- Frontend: Vanilla TypeScript
+- Module Bundling: Webpack
+
+I'm planning to rewrite the project with a framework (most likely Svelte) to make it scale better. (I initially didn't aniticipate the project to grow as much as it has and I'm also not satisfied with the way the code looks right now)
+
 ## Great projects this app relies on
 
 - [hafas-client](https://github.com/public-transport/hafas-client)
