@@ -1,5 +1,11 @@
 # Zug
 
+## Important Note
+
+**This version of the project is no longer in development. The new version can be found [here](https://github.com/dabund24/Zug_svelte)**
+
+## Summary
+
 A web application assisting users of public transport in Germany on planning longer journeys with transfers.
 
 Users can investigate possible transfers in a detailed way in order to prepare for delays/cancellations in advance and/or incorporate longer stays into their journey. This is achieved by fetching journeys between all selected stopovers from [`Hafas`](https://de.wikipedia.org/wiki/HAFAS) and visualizing how they relate to each other in an interactive diagram.
@@ -48,7 +54,8 @@ Then, open [`http://localhost:8081`](http://localhost:8081) in your browser.
 - Frontend: Vanilla TypeScript
 - Module Bundling: Webpack
 
-I'm planning to rewrite the project with a framework (most likely Svelte) to make it scale better. (I initially didn't aniticipate the project to grow as much as it has and I'm also not satisfied with the way the code looks right now)
+~I'm planning to rewrite the project with a framework (most likely Svelte) to make it scale better. (I initially didn't aniticipate the project to grow as much as it has and I'm also not satisfied with the way the code looks right now)~
+Check out the new version [here](https://github.com/dabund24/Zug_svelte)
 
 ## Great projects this app relies on
 
